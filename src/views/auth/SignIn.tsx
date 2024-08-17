@@ -13,13 +13,14 @@ import { useForm } from '@mantine/form'
 import { useDisclosure } from '@mantine/hooks'
 import { useNavigate } from 'react-router-dom'
 import { LOCAL_STORAGE, ROUTER_PATH } from '../../shared/constants.ts'
-import { AuthContext } from '../../stores/Auth/AuthContext.tsx'
+import { AuthContext } from '../../stores/AuthContext.tsx'
 import { useContext } from 'react'
 import { sendErrorNotification, sendSuccessNotification } from '../../shared/notifications.ts'
+import useEnvVars from '../../hooks/useEnvVars.ts'
 
 export default function SignIn() {
   const navigate = useNavigate()
-  const { setAuthState } = useContext(AuthContext)
+  const authContext = useContext(AuthContext)!
   const form = useForm({
     initialValues: {
       email: localStorage.getItem('lastEmail') ?? '',
@@ -27,6 +28,7 @@ export default function SignIn() {
     },
   })
   const [loaderVisible, setLoaderState] = useDisclosure(false)
+  const envs = useEnvVars()
 
   const signInAccount = async () => {
     setLoaderState.open()
@@ -36,7 +38,7 @@ export default function SignIn() {
     let response
 
     try {
-      response = await fetch(`${process.env.API_SERVER_URL}/auth/signIn`, {
+      response = await fetch(`${envs?.API_SERVER_URL}/auth/signIn`, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -74,7 +76,7 @@ export default function SignIn() {
     localStorage.setItem('lastEmail', email)
 
     sendSuccessNotification('Successful')
-    setAuthState(true)
+    authContext.setAuthState(true)
     setLoaderState.close()
 
     // redirect to main after sign In

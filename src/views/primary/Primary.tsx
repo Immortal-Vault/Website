@@ -2,7 +2,7 @@ import { Title } from '@mantine/core'
 import { useContext, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ROUTER_PATH } from '../../shared/constants.ts'
-import { AuthContext } from '../../stores/Auth/AuthContext.tsx'
+import { AuthContext } from '../../stores/AuthContext.tsx'
 
 export default function Primary() {
   const navigate = useNavigate()

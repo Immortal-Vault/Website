@@ -1,5 +1,5 @@
 ﻿import { createContext, useState, ReactNode, FC } from 'react'
-import { LOCAL_STORAGE } from '../../shared/constants'
+import { LOCAL_STORAGE } from '../shared/constants.ts'
 
 export interface AuthContextType {
   authState: boolean

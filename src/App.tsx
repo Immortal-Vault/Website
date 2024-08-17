@@ -1,10 +1,9 @@
 import { createTheme, MantineProvider } from '@mantine/core'
 import SignUp from './views/auth/SignUp.tsx'
-import Update from './Update.tsx'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import { ROUTER_PATH } from './shared/constants.ts'
 import SignIn from './views/auth/SignIn.tsx'
-import { AuthProvider } from './stores/Auth/AuthContext.tsx'
+import { AuthProvider } from './stores/AuthContext.tsx'
 import { ToastContainer, Zoom } from 'react-toastify'
 import Primary from './views/primary/Primary.tsx'
 
@@ -36,7 +35,6 @@ export default function App() {
             <Route path={ROUTER_PATH.MAIN_MENU} element={<Primary />} />
           </Routes>
         </HashRouter>
-        <Update />
       </AuthProvider>
     </MantineProvider>
   )

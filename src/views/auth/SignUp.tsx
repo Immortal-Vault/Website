@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom'
 import { ROUTER_PATH } from '../../shared/constants.ts'
 import { useDisclosure } from '@mantine/hooks'
 import { sendErrorNotification, sendSuccessNotification } from '../../shared/notifications.ts'
+import useEnvVars from '../../hooks/useEnvVars.ts'
 
 export default function SignUp() {
   const navigate = useNavigate()
@@ -55,6 +56,7 @@ export default function SignUp() {
     },
   })
   const [loaderVisible, setLoaderState] = useDisclosure(false)
+  const envs = useEnvVars()
 
   const signUp = async () => {
     setLoaderState.open()
@@ -73,7 +75,7 @@ export default function SignUp() {
     let response
 
     try {
-      response = await fetch(`${process.env.API_SERVER_URL}/auth/signUp`, {
+      response = await fetch(`${envs?.API_SERVER_URL}/auth/signUp`, {
         headers: {
           'Content-Type': 'application/json',
         },
