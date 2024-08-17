@@ -84,12 +84,8 @@ export default function SignIn() {
   }
 
   return (
-    <div
-      style={{
-        marginTop: '20%',
-      }}
-    >
-      <Container size={460} my={40}>
+    <div>
+      <Container size={'xs'} my={40}>
         <LoadingOverlay
           visible={loaderVisible}
           zIndex={1000}
