@@ -1,29 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { createTheme, MantineProvider } from '@mantine/core'
+import SignUp from './views/auth/SignUp.tsx'
+import Update from './Update.tsx'
+import { HashRouter, Route, Routes } from 'react-router-dom'
+import { ROUTER_PATH } from './shared/constants.ts'
+import SignIn from './views/auth/SignIn.tsx'
+import { AuthProvider } from './stores/Auth/AuthContext.tsx'
+import { ToastContainer, Zoom } from 'react-toastify'
+import Primary from './views/primary/Primary.tsx'
 
-function App() {
-  const [count, setCount] = useState(0)
+const theme = createTheme({})
+
+export default function App() {
   return (
-    <>
-      <div>
-        <a target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Immortal Vault</h1>
-      <h2>Will be soon...</h2>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          Сount is {count}
-        </button>
-      </div>
-    </>
+    <MantineProvider theme={theme} defaultColorScheme={'dark'}>
+      <ToastContainer
+        position='top-center'
+        autoClose={2500}
+        limit={3}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='dark'
+        transition={Zoom}
+      />
+      <AuthProvider>
+        <HashRouter>
+          <Routes>
+            <Route path={ROUTER_PATH.ROOT} element={<SignIn />} />
+            <Route path={ROUTER_PATH.SIGN_IN} element={<SignIn />} />
+            <Route path={ROUTER_PATH.SIGN_UP} element={<SignUp />} />
+            <Route path={ROUTER_PATH.MAIN_MENU} element={<Primary />} />
+          </Routes>
+        </HashRouter>
+        <Update />
+      </AuthProvider>
+    </MantineProvider>
   )
 }
-
-export default App
