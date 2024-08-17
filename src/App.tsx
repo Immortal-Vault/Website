@@ -1,16 +1,22 @@
 import { createTheme, MantineProvider } from '@mantine/core'
 import SignUp from './views/auth/SignUp.tsx'
-import { HashRouter, Route, Routes } from 'react-router-dom'
+import { Route, Router, Routes } from 'react-router-dom'
 import { ROUTER_PATH } from './shared/constants.ts'
 import SignIn from './views/auth/SignIn.tsx'
 import { AuthProvider } from './stores/AuthContext.tsx'
 import { ToastContainer, Zoom } from 'react-toastify'
 import Primary from './views/primary/Primary.tsx'
 import { ErrorBoundary, ErrorBoundaryError } from './errors'
+import { initNavigator } from '@telegram-apps/sdk-react'
+import { useIntegration } from '@telegram-apps/react-router-integration'
+import { useMemo } from 'react'
 
 const theme = createTheme({})
 
 export default function App() {
+  const navigator = useMemo(() => initNavigator('app-navigation-state'), [])
+  const [location, reactNavigator] = useIntegration(navigator)
+
   return (
     <ErrorBoundary fallback={ErrorBoundaryError}>
       <MantineProvider theme={theme} defaultColorScheme={'dark'}>
@@ -29,14 +35,14 @@ export default function App() {
           transition={Zoom}
         />
         <AuthProvider>
-          <HashRouter>
+          <Router location={location} navigator={reactNavigator}>
             <Routes>
               <Route path={ROUTER_PATH.ROOT} element={<SignIn />} />
               <Route path={ROUTER_PATH.SIGN_IN} element={<SignIn />} />
               <Route path={ROUTER_PATH.SIGN_UP} element={<SignUp />} />
               <Route path={ROUTER_PATH.MAIN_MENU} element={<Primary />} />
             </Routes>
-          </HashRouter>
+          </Router>
         </AuthProvider>
       </MantineProvider>
     </ErrorBoundary>
