@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { TEnvVars } from '../models'
+import { EStage, TEnvVars } from '../models'
 
 const useEnvVars = () => {
   const [envVars, setEnvVars] = useState<TEnvVars>()
@@ -7,7 +7,7 @@ const useEnvVars = () => {
   useEffect(() => {
     const fetchEnvVars = async () => {
       try {
-        const environment = import.meta.env.PROD ? 'production' : 'development'
+        const environment: EStage = import.meta.env.STAGE ?? EStage.Development
         const url = `https://raw.githubusercontent.com/Immortal-Vault/Env-Vars/main/${environment}.json`
         const response = await fetch(url)
         const data: TEnvVars = await response.json()
