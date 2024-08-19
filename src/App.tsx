@@ -37,7 +37,7 @@ export default function App() {
         <AuthProvider>
           <Router location={location} navigator={reactNavigator}>
             <Routes>
-              <Route path={ROUTER_PATH.ROOT} element={<SignIn />} />
+              <Route path={ROUTER_PATH.ROOT} element={<Primary />} />
               <Route path={ROUTER_PATH.SIGN_IN} element={<SignIn />} />
               <Route path={ROUTER_PATH.SIGN_UP} element={<SignUp />} />
               <Route path={ROUTER_PATH.MAIN_MENU} element={<Primary />} />
