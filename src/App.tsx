@@ -7,7 +7,7 @@ import { AuthProvider } from './stores/AuthContext.tsx'
 import { ToastContainer, Zoom } from 'react-toastify'
 import Primary from './views/primary/Primary.tsx'
 import { ErrorBoundary, ErrorBoundaryError } from './errors'
-import { initNavigator } from '@telegram-apps/sdk-react'
+import { initNavigator, postEvent } from '@telegram-apps/sdk-react'
 import { useIntegration } from '@telegram-apps/react-router-integration'
 import { useMemo } from 'react'
 
@@ -16,6 +16,9 @@ const theme = createTheme({})
 export default function App() {
   const navigator = useMemo(() => initNavigator('app-navigation-state'), [])
   const [location, reactNavigator] = useIntegration(navigator)
+
+  // eslint-disable-next-line camelcase
+  postEvent('web_app_setup_swipe_behavior', { allow_vertical_swipe: false })
 
   return (
     <ErrorBoundary fallback={ErrorBoundaryError}>

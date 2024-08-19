@@ -8,6 +8,7 @@ export default function Primary() {
   const [opened, { toggle }] = useDisclosure()
   const navigate = useNavigate()
   const [currentPage, setCurrentPage] = useState(EPrimaryViewPage.Profile)
+  console.log(currentPage)
 
   const mainViewTabs: TPrimaryViewTab[] = [
     {
