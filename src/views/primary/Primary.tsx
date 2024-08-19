@@ -1,21 +1,105 @@
-import { AppShell, Burger, Group, Image, Skeleton } from '@mantine/core'
-import { useContext, useEffect } from 'react'
+import { Accordion, AppShell, Burger, Button, Flex, Group, Image, ScrollArea } from '@mantine/core'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ROUTER_PATH } from '../../shared/constants.ts'
-import { AuthContext } from '../../stores/AuthContext.tsx'
+import { EPrimaryViewPage, EPrimaryViewTabType, TPrimaryViewTab } from '../../models'
 import { useDisclosure } from '@mantine/hooks'
 
 export default function Primary() {
-  const navigate = useNavigate()
-  const context = useContext(AuthContext)!
-
-  useEffect(() => {
-    if (!context.authState) {
-      navigate(ROUTER_PATH.SIGN_IN)
-    }
-  }, [context.authState])
-
   const [opened, { toggle }] = useDisclosure()
+  const navigate = useNavigate()
+  const [currentPage, setCurrentPage] = useState(EPrimaryViewPage.Profile)
+
+  const mainViewTabs: TPrimaryViewTab[] = [
+    {
+      type: EPrimaryViewTabType.Button,
+      name: 'ui.views.main.tabs.profile',
+      onClick: () => {
+        setCurrentPage(EPrimaryViewPage.Profile)
+      },
+      sections: [],
+    },
+    {
+      type: EPrimaryViewTabType.Accordion,
+      name: 'ui.views.main.tabs.settings',
+      sections: [
+        {
+          title: 'ui.views.main.sections.settings.main.title',
+          click: () => {
+            // setSettingsPage(ESettingPage.Main)
+            setCurrentPage(EPrimaryViewPage.Settings)
+          },
+        },
+        {
+          title: 'ui.views.main.sections.settings.password.title',
+          click: () => {
+            // setSettingsPage(ESettingPage.Password)
+            setCurrentPage(EPrimaryViewPage.Settings)
+          },
+        },
+        {
+          title: 'ui.views.main.sections.settings.mfa.title',
+          click: () => {
+            // setSettingsPage(ESettingPage.Mfa)
+            setCurrentPage(EPrimaryViewPage.Settings)
+          },
+        },
+      ],
+    },
+    {
+      type: EPrimaryViewTabType.Accordion,
+      name: 'ui.views.main.tabs.event',
+      sections: [
+        {
+          title: 'ui.views.main.sections.event.view.title',
+          click: () => {
+            navigate('/events')
+          },
+        },
+        {
+          title: 'ui.views.main.sections.event.create.title',
+          click: () => {
+            // setEventPage(EEventPage.Create)
+            // setCurrentPage(EPrimaryViewPage.Event)
+          },
+        },
+      ],
+    },
+  ]
+
+  const createTabs = (tab: TPrimaryViewTab, index: number) => {
+    let component
+    switch (tab.type) {
+      case EPrimaryViewTabType.Accordion: {
+        component = (
+          <Accordion key={index}>
+            <Accordion.Item key={index} value={index.toString()}>
+              <Accordion.Control>{tab.name}</Accordion.Control>
+              <Accordion.Panel>
+                <Flex direction='column' gap={'1rem'} mt={'0.5rem'}>
+                  {tab.sections?.map((section, i: number) => (
+                    <Button onClick={section.click} key={i}>
+                      {section.title}
+                    </Button>
+                  ))}
+                </Flex>
+              </Accordion.Panel>
+            </Accordion.Item>
+          </Accordion>
+        )
+        break
+      }
+      case EPrimaryViewTabType.Button: {
+        component = (
+          <Button fullWidth mt={'0.5rem'} mb={'0.5rem'} onClick={tab.onClick}>
+            {tab.name}
+          </Button>
+        )
+        break
+      }
+    }
+
+    return component
+  }
 
   return (
     <AppShell
@@ -38,14 +122,26 @@ export default function Primary() {
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p='md'>
-        Navbar
-        {Array(15)
-          .fill(0)
-          .map((_, index) => (
-            <Skeleton key={index} h={28} mt='sm' animate={false} />
-          ))}
+        <AppShell.Section>{'ui.views.main.title'}</AppShell.Section>
+        <AppShell.Section grow component={ScrollArea}>
+          {mainViewTabs.map(createTabs)}
+        </AppShell.Section>
       </AppShell.Navbar>
-      <AppShell.Main>Main</AppShell.Main>
+      <AppShell.Main
+        style={{
+          height: '100vh',
+          backgroundColor: 'rgb(36, 36, 36)',
+        }}
+      >
+        {/*{currentPage === EPrimaryViewPage.Profile && <Profile account={props.account} />}*/}
+        {/*{currentPage === EPrimaryViewPage.Settings && (*/}
+        {/*  <Settings currentPage={settingPage} account={props.account} />*/}
+        {/*)}*/}
+        {/*{currentPage === EPrimaryViewPage.Event && (*/}
+        {/*  <Event currentPage={eventPage} account={props.account} />*/}
+        {/*)}*/}
+      </AppShell.Main>
+      <AppShell.Footer></AppShell.Footer>
     </AppShell>
   )
 }
