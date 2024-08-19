@@ -19,6 +19,11 @@ time, mark, audio, video {
     vertical-align: baseline;
 }
 
+html, body {
+    overflow: hidden;
+    height: 100%;
+}
+
 /* make sure to set some focus styles for accessibility */
 :focus {
     outline: 0;
