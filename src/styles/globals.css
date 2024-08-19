@@ -22,6 +22,12 @@ time, mark, audio, video {
 html, body {
     overflow: hidden;
     height: 100%;
+    max-width: 100vw;
+}
+
+* {
+    box-sizing: border-box;
+    max-width: 100%;
 }
 
 /* make sure to set some focus styles for accessibility */
