@@ -1,7 +1,7 @@
 import { createTheme, MantineProvider } from '@mantine/core'
 import SignUp from './views/auth/SignUp.tsx'
 import { Route, Router, Routes } from 'react-router-dom'
-import { ROUTER_PATH } from './shared/constants.ts'
+import { ROUTER_PATH } from './shared'
 import SignIn from './views/auth/SignIn.tsx'
 import { AuthProvider } from './stores/AuthContext.tsx'
 import { ToastContainer, Zoom } from 'react-toastify'
