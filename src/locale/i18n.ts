@@ -1,19 +1,23 @@
 import i18next from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import Backend from 'i18next-http-backend'
+import { initInitData } from '@telegram-apps/sdk-react'
 
-i18next.use(Backend).use(initReactI18next)
-
+const initData = initInitData()
 const loadPath = '/locales/{{lng}}/{{ns}}.json'
 
-i18next.init({
-  debug: true,
-  backend: {
-    loadPath,
-    customHeaders: {
-      'Cache-Control': 'no-cache',
+i18next
+  .use(Backend)
+  .use(initReactI18next)
+  .init({
+    debug: false,
+    backend: {
+      loadPath,
+      customHeaders: {
+        'Cache-Control': 'no-cache',
+      },
     },
-  },
-  fallbackLng: 'en',
-  ns: ['common'],
-})
+    lng: initData?.user?.languageCode,
+    fallbackLng: 'en',
+    ns: ['common'],
+  })
