@@ -1,0 +1,13 @@
+{
+  "profile": {
+    "name": "Профиль"
+  },
+  "settings": {
+    "name": "Настройки",
+    "subviews": {
+      "main": {
+        "name": "Главные"
+      }
+    }
+  }
+}

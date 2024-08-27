@@ -9,8 +9,10 @@ import {
 import { useDisclosure } from '@mantine/hooks'
 import { createTabs } from '../../shared'
 import { Profile, Settings } from './subviews'
+import { useTranslation } from 'react-i18next'
 
 export default function Primary() {
+  const { t } = useTranslation('views')
   const [burgerState, { toggle, close: closeBurger }] = useDisclosure()
   const [currentPage, setCurrentPage] = useState(EPrimaryViewPage.Profile)
   const [settingsPage, setSettingsPage] = useState(ESettingsViewPage.Main)
@@ -18,7 +20,7 @@ export default function Primary() {
   const mainViewTabs: TPrimaryViewTab[] = [
     {
       type: EPrimaryViewTabType.Button,
-      name: 'Profile',
+      name: t('profile.name'),
       onClick: () => {
         setCurrentPage(EPrimaryViewPage.Profile)
         closeBurger()
@@ -27,10 +29,10 @@ export default function Primary() {
     },
     {
       type: EPrimaryViewTabType.Accordion,
-      name: 'Settings',
+      name: t('settings.name'),
       sections: [
         {
-          title: 'Main',
+          title: t('settings.subviews.main.name'),
           click: () => {
             setSettingsPage(ESettingsViewPage.Main)
             setCurrentPage(EPrimaryViewPage.Settings)
@@ -62,9 +64,8 @@ export default function Primary() {
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p='md'>
-        <AppShell.Section>{'Primary view'}</AppShell.Section>
         <AppShell.Section grow component={ScrollArea}>
-          {mainViewTabs.map(createTabs)}
+          {mainViewTabs.map((tab, index) => createTabs(tab, index, t))}
         </AppShell.Section>
       </AppShell.Navbar>
       <AppShell.Main

@@ -19,5 +19,5 @@ i18next
     },
     lng: initData?.user?.languageCode,
     fallbackLng: 'en',
-    ns: ['common'],
+    ns: ['common', 'views', 'notifications', 'auth'],
   })

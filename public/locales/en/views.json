@@ -1,0 +1,13 @@
+{
+  "profile": {
+    "name": "Profile"
+  },
+  "settings": {
+    "name": "Settings",
+    "subviews": {
+      "main": {
+        "name": "Main"
+      }
+    }
+  }
+}

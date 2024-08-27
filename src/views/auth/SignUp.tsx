@@ -14,12 +14,13 @@ import { useForm } from '@mantine/form'
 import validator from 'validator'
 import passwordValidator from 'password-validator'
 import { useNavigate } from 'react-router-dom'
-import { ROUTER_PATH } from '../../shared/constants.ts'
+import { ROUTER_PATH, sendErrorNotification, sendSuccessNotification } from '../../shared'
 import { useDisclosure } from '@mantine/hooks'
-import { sendErrorNotification, sendSuccessNotification } from '../../shared/notifications.ts'
 import useEnvVars from '../../hooks/useEnvVars.ts'
+import { useTranslation } from 'react-i18next'
 
 export default function SignUp() {
+  const { t } = useTranslation('auth')
   const navigate = useNavigate()
   const form = useForm({
     initialValues: {
@@ -30,8 +31,8 @@ export default function SignUp() {
     },
 
     validate: {
-      name: (val) => (val.length < 4 ? 'The name cannot be less than 4 characters' : null),
-      email: (val) => (validator.isEmail(val) ? null : 'Email is not valid'),
+      name: (val) => (val.length < 4 ? 'signUp.fields.name.tooLittle' : null),
+      email: (val) => (validator.isEmail(val) ? null : 'signUp.fields.email.invalid'),
       password: (val) => {
         const schema = new passwordValidator()
         schema
@@ -49,9 +50,7 @@ export default function SignUp() {
           .not()
           .spaces() // Should not have spaces
 
-        return !schema.validate(val)
-          ? 'Password must be no less than 8 and no more than 100 characters, must have at least one small and capital letter, at least 2 characters and no spaces'
-          : null
+        return !schema.validate(val) ? t('signUp.fields.password.invalid') : null
       },
     },
   })
@@ -67,7 +66,7 @@ export default function SignUp() {
     const confirmPassword = formValues.confirmPassword
 
     if (password !== confirmPassword) {
-      sendErrorNotification('Passwords do not match')
+      sendErrorNotification(t('notifications:passwordsDoNotMatch'))
       setLoaderState.close()
       return
     }
@@ -87,7 +86,7 @@ export default function SignUp() {
         }),
       })
     } catch (error) {
-      sendErrorNotification('Immortal Vault server is down, please try again later')
+      sendErrorNotification(t('notifications:serverNotResponding'))
       setLoaderState.close()
       return
     }
@@ -95,12 +94,12 @@ export default function SignUp() {
     if (!response.ok) {
       switch (response.status) {
         case 303: {
-          sendErrorNotification('User with the same email or username is already exists')
+          sendErrorNotification(t('notifications:userAlreadyExists'))
           setLoaderState.close()
           return
         }
         default: {
-          sendErrorNotification(`Failed with: ${await response.text()}`)
+          sendErrorNotification(t('notifications:failedError', { error: await response.text() }))
           setLoaderState.close()
           return
         }
@@ -108,7 +107,7 @@ export default function SignUp() {
     }
 
     setLoaderState.close()
-    sendSuccessNotification('Successful')
+    sendSuccessNotification(t('notifications:successful'))
     navigate(ROUTER_PATH.SIGN_IN)
   }
 
@@ -122,10 +121,10 @@ export default function SignUp() {
           loaderProps={{ color: 'orange' }}
         />
         <Title order={1} ta='center'>
-          {'Sign up'}
+          {t('signUp.title')}
         </Title>
         <Title order={2} ta='center' mb={'xl'}>
-          {'Create your account'}
+          {t('signUp.desc')}
         </Title>
 
         <Flex direction={'column'}>
@@ -133,38 +132,38 @@ export default function SignUp() {
             <Stack>
               <TextInput
                 withAsterisk
-                label={'Username'}
+                label={t('signUp.fields.name.title')}
                 placeholder={'John Doe'}
                 value={form.values.name}
-                error={form.errors.name && form.errors.name.toString()}
+                error={form.errors.name && t(form.errors.name.toString())}
                 onChange={(e) => form.setFieldValue('name', e.currentTarget.value)}
                 radius='md'
               />
 
               <TextInput
                 withAsterisk
-                label={'Email'}
+                label={t('signUp.fields.email.title')}
                 placeholder={'JohnDoe@gmail.com'}
                 value={form.values.email}
                 onChange={(e) => form.setFieldValue('email', e.currentTarget.value)}
-                error={form.errors.email && form.errors.email.toString()}
+                error={form.errors.email && t(form.errors.email.toString())}
                 radius='md'
               />
 
               <PasswordInput
                 withAsterisk
-                label={'Password'}
+                label={t('signUp.fields.password.title')}
                 value={form.values.password}
                 onChange={(e) => form.setFieldValue('password', e.currentTarget.value)}
-                error={form.errors.password && form.errors.password.toString()}
+                error={form.errors.password && t(form.errors.password.toString())}
                 radius='md'
               />
               <PasswordInput
                 withAsterisk
-                label={'Confirm password'}
+                label={t('signUp.fields.confirmPassword.title')}
                 value={form.values.confirmPassword}
                 onChange={(e) => form.setFieldValue('confirmPassword', e.currentTarget.value)}
-                error={form.errors.password && form.errors.password.toString()}
+                error={form.errors.password && t(form.errors.password.toString())}
                 radius='md'
               />
             </Stack>
@@ -177,10 +176,10 @@ export default function SignUp() {
                 size='xs'
                 onClick={() => navigate(ROUTER_PATH.SIGN_IN)}
               >
-                {'Already have an account? Login'}
+                {t('signUp.alreadyHaveAccount')}
               </Anchor>
               <Button type='submit' radius='xl'>
-                {'Sign up'}
+                {t('signUp.title')}
               </Button>
             </Group>
           </form>

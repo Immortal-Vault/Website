@@ -12,11 +12,16 @@
 import { useForm } from '@mantine/form'
 import { useDisclosure } from '@mantine/hooks'
 import { useNavigate } from 'react-router-dom'
-import { LOCAL_STORAGE, ROUTER_PATH } from '../../shared/constants.ts'
+import {
+  LOCAL_STORAGE,
+  ROUTER_PATH,
+  sendErrorNotification,
+  sendSuccessNotification,
+} from '../../shared'
 import { AuthContext } from '../../stores/AuthContext.tsx'
 import { useContext } from 'react'
-import { sendErrorNotification, sendSuccessNotification } from '../../shared/notifications.ts'
 import useEnvVars from '../../hooks/useEnvVars.ts'
+import { useTranslation } from 'react-i18next'
 
 export default function SignIn() {
   const navigate = useNavigate()
@@ -29,6 +34,7 @@ export default function SignIn() {
   })
   const [loaderVisible, setLoaderState] = useDisclosure(false)
   const envs = useEnvVars()
+  const { t } = useTranslation('auth')
 
   const signInAccount = async () => {
     setLoaderState.open()
@@ -46,7 +52,7 @@ export default function SignIn() {
         body: JSON.stringify({ email, password }),
       })
     } catch (error) {
-      sendErrorNotification('Immortal Vault server is down, please try again later')
+      sendErrorNotification(t('notifications:serverNotResponding'))
       setLoaderState.close()
       return
     }
@@ -54,17 +60,17 @@ export default function SignIn() {
     if (!response.ok) {
       switch (response.status) {
         case 404: {
-          sendErrorNotification(`User ${email} was not found`)
+          sendErrorNotification(t('notifications:userNotFound', { user: email }))
           setLoaderState.close()
           return
         }
         case 409: {
-          sendErrorNotification('Incorrect password')
+          sendErrorNotification(t('notifications:incorrectPassword'))
           setLoaderState.close()
           return
         }
         default: {
-          sendErrorNotification(`Failed with: ${await response.text()}`)
+          sendErrorNotification(t('notifications:failedError', { error: await response.text() }))
           setLoaderState.close()
           return
         }
@@ -75,7 +81,7 @@ export default function SignIn() {
     localStorage.setItem(LOCAL_STORAGE.jwtToken, jwtToken)
     localStorage.setItem('lastEmail', email)
 
-    sendSuccessNotification('Successful')
+    sendSuccessNotification(t('notifications:successful'))
     authContext.setAuthState(true)
     setLoaderState.close()
 
@@ -93,27 +99,27 @@ export default function SignIn() {
           loaderProps={{ color: 'orange' }}
         />
         <Title order={1} ta='center'>
-          {'Sign In'}
+          {t('signIn.title')}
         </Title>
         <Title order={2} ta='center' mb={'xl'}>
-          {'Log into your account'}
+          {t('signIn.desc')}
         </Title>
 
         <form onSubmit={form.onSubmit(signInAccount)}>
           <Stack>
             <TextInput
               required
-              label={'Email'}
+              label={t('signIn.fields.email.title')}
               placeholder={'JohnDoe@gmail.com'}
               value={form.values.email}
               onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
-              error={form.errors.email && 'fields.email.invalid'}
+              error={form.errors.email && t('signIn.fields.email.invalid')}
               radius='md'
             />
 
             <PasswordInput
               required
-              label={'Password'}
+              label={t('signIn.fields.password.title')}
               value={form.values.password}
               onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
               radius='md'
@@ -128,10 +134,10 @@ export default function SignIn() {
               size='xs'
               onClick={() => navigate(ROUTER_PATH.SIGN_UP)}
             >
-              {'Do not have account? Sign Up'}
+              {t('signIn.doNotHaveAccount')}
             </Anchor>
             <Button type='submit' radius='xl'>
-              {'Sign In'}
+              {t('signIn.title')}
             </Button>
           </Group>
         </form>
