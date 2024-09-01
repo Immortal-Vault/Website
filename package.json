@@ -1,5 +1,5 @@
 {
-  "name": "immortal-vault-telegram-mini-app",
+  "name": "immortal-vault-client",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -14,9 +14,7 @@
     "@mantine/core": "^7.10.2",
     "@mantine/form": "^7.10.2",
     "@mantine/hooks": "^7.10.2",
-    "@telegram-apps/react-router-integration": "^1.0.0",
-    "@telegram-apps/sdk-react": "^1.0.0",
-    "@telegram-apps/telegram-ui": "^2.1.5",
+    "@react-oauth/google": "^0.12.1",
     "eslint-config-next": "^14.2.4",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.1",
