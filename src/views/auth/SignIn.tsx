@@ -3,6 +3,7 @@
   Button,
   Container,
   Group,
+  Image,
   LoadingOverlay,
   PasswordInput,
   Stack,
@@ -10,7 +11,7 @@
   Title,
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
-import { useDisclosure } from '@mantine/hooks'
+import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 import { useNavigate } from 'react-router-dom'
 import {
   LOCAL_STORAGE,
@@ -35,6 +36,7 @@ export default function SignIn() {
   const [loaderVisible, setLoaderState] = useDisclosure(false)
   const envs = useEnvVars()
   const { t } = useTranslation('auth')
+  const isMobile = useMediaQuery('(max-width: 768px)')
 
   const signInAccount = async () => {
     setLoaderState.open()
@@ -90,48 +92,61 @@ export default function SignIn() {
   }
 
   return (
-    <div>
-      <Container size={'xs'} my={40}>
-        <LoadingOverlay
-          visible={loaderVisible}
-          zIndex={1000}
-          overlayProps={{ radius: 'sm', blur: 2 }}
-          loaderProps={{ color: 'blue' }}
-        />
-        <Title order={1} ta='center'>
-          {t('signIn.title')}
-        </Title>
-        <Title order={2} ta='center' mb={'xl'}>
-          {t('signIn.desc')}
-        </Title>
+    <Container size={isMobile ? 'xs' : 'sm'} mt={isMobile ? '4.5rem' : '6.5rem'}>
+      <LoadingOverlay
+        visible={loaderVisible}
+        zIndex={1000}
+        overlayProps={{ radius: 'sm', blur: 2 }}
+        loaderProps={{ color: 'blue' }}
+      />
+      <Image
+        src={'/logo.png'}
+        style={{
+          maxWidth: isMobile ? '80%' : 'fit-content',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          marginBottom: isMobile ? '2rem' : '5rem',
+        }}
+        h={isMobile ? 120 : 180}
+        w='auto'
+        fit='contain'
+        alt={'Immortal Vault'}
+      />
+      <Title order={1} ta='center' size={isMobile ? 'h3' : 'h1'}>
+        {t('signIn.title')}
+      </Title>
+      <Title order={2} ta='center' mb={'xl'} size={isMobile ? 'h4' : 'h2'}>
+        {t('signIn.desc')}
+      </Title>
 
-        <form onSubmit={form.onSubmit(signInAccount)}>
-          <Stack>
-            <TextInput
-              required
-              label={t('signIn.fields.email.title')}
-              placeholder={'JohnDoe@gmail.com'}
-              value={form.values.email}
-              onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
-              error={form.errors.email && t('signIn.fields.email.invalid')}
-              radius='md'
-            />
+      <form onSubmit={form.onSubmit(signInAccount)}>
+        <Stack align={'center'} justify={'center'}>
+          <TextInput
+            required
+            label={t('signIn.fields.email.title')}
+            placeholder={'JohnDoe@gmail.com'}
+            value={form.values.email}
+            onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
+            error={form.errors.email && t('signIn.fields.email.invalid')}
+            radius='md'
+            w={'90%'}
+          />
 
-            <PasswordInput
-              required
-              label={t('signIn.fields.password.title')}
-              value={form.values.password}
-              onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
-              radius='md'
-            />
-          </Stack>
+          <PasswordInput
+            required
+            label={t('signIn.fields.password.title')}
+            value={form.values.password}
+            onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
+            radius='md'
+            w={'90%'}
+          />
 
-          <Group justify='space-between' mt='xl'>
+          <Group justify='space-between' mt='xl' w={'90%'}>
             <Anchor
               component='button'
               type='button'
               c='dimmed'
-              size='xs'
+              size={isMobile ? 'sm' : 'xs'}
               onClick={() => navigate(ROUTER_PATH.SIGN_UP)}
             >
               {t('signIn.doNotHaveAccount')}
@@ -140,8 +155,8 @@ export default function SignIn() {
               {t('signIn.title')}
             </Button>
           </Group>
-        </form>
-      </Container>
-    </div>
+        </Stack>
+      </form>
+    </Container>
   )
 }
