@@ -1,4 +1,4 @@
-import { AppShell, Burger, Group, Image, ScrollArea } from '@mantine/core'
+import { AppShell, Burger, Group, Image, ScrollArea, Title } from '@mantine/core'
 import { useState } from 'react'
 import {
   EPrimaryViewPage,
@@ -52,15 +52,8 @@ export default function Primary() {
       <AppShell.Header>
         <Group h='100%' px='md'>
           <Burger opened={burgerState} onClick={toggle} hiddenFrom='sm' size='sm' />
-          <Image
-            src={'/logo.png'}
-            width={'40px'}
-            height={'40px'}
-            style={{
-              marginLeft: '75%',
-            }}
-            alt={'Immortal Vault'}
-          />
+          <Image src={'/logo.png'} width={'40px'} height={'40px'} alt={'Immortal Vault'} />
+          <Title order={2}>Immortal Vault</Title>
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p='md'>
