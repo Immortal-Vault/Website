@@ -96,7 +96,7 @@ export default function SignIn() {
           visible={loaderVisible}
           zIndex={1000}
           overlayProps={{ radius: 'sm', blur: 2 }}
-          loaderProps={{ color: 'orange' }}
+          loaderProps={{ color: 'blue' }}
         />
         <Title order={1} ta='center'>
           {t('signIn.title')}
