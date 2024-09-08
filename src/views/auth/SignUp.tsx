@@ -99,7 +99,7 @@ export default function SignUp() {
           return
         }
         default: {
-          sendErrorNotification(t('notifications:failedError', { error: await response.text() }))
+          sendErrorNotification(t('notifications:failedError'))
           setLoaderState.close()
           return
         }

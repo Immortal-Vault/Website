@@ -2,7 +2,7 @@
   "serverNotResponding": "Immortal Vault сервер недоступен, пожалуйста повторите попытке позже",
   "userNotFound": "Пользователь {{user}} не найден",
   "incorrectPassword": "Неверный пароль",
-  "failedError": "Произошла ошибка: {{error}}",
+  "failedError": "Произошла ошибка, свяжитесь с технической поддержкой",
   "successful": "Успешно",
   "passwordsDoNotMatch": "Пароли не совпадают",
   "userAlreadyExists": "Пользователь с такой почтой или именем уже существует"

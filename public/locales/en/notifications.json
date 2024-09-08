@@ -2,7 +2,7 @@
   "serverNotResponding": "Immortal Vault server is down, please try again later",
   "userNotFound": "User {{user}} was not found",
   "incorrectPassword": "Incorrect password",
-  "failedError": "Failed with: {{error}}",
+  "failedError": "An error has occurred, contact technical support",
   "successful": "Successful",
   "passwordsDoNotMatch": "Passwords do not match",
   "userAlreadyExists": "User with the same email or username is already exists"

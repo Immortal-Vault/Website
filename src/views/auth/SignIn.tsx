@@ -70,7 +70,7 @@ export default function SignIn() {
           return
         }
         default: {
-          sendErrorNotification(t('notifications:failedError', { error: await response.text() }))
+          sendErrorNotification(t('notifications:failedError'))
           setLoaderState.close()
           return
         }
