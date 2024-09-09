@@ -41,9 +41,7 @@ export default function App() {
           newestOnTop={false}
           closeOnClick
           rtl={false}
-          pauseOnFocusLoss
           draggable
-          pauseOnHover
           theme='dark'
           transition={Zoom}
         />
