@@ -52,7 +52,7 @@ export default function Primary() {
       <AppShell.Header>
         <Group h='100%' px='md'>
           <Burger opened={burgerState} onClick={toggle} hiddenFrom='sm' size='sm' />
-          <Image src={'/logo.png'} width={'40px'} height={'40px'} alt={'Immortal Vault'} />
+          <Image src={'/logo.svg'} w={'2.5rem'} alt={'Immortal Vault'} />
           <Title order={2}>Immortal Vault</Title>
         </Group>
       </AppShell.Header>

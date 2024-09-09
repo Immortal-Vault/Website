@@ -113,7 +113,7 @@ export default function SignUp() {
   }
 
   return (
-    <Container size={isMobile ? 'xs' : 'sm'} mt={isMobile ? '1.2rem' : '4rem'}>
+    <Container size={isMobile ? 'xs' : 'sm'} mt={isMobile ? '2rem' : '3.5rem'}>
       <LoadingOverlay
         visible={loaderVisible}
         zIndex={1000}
@@ -121,14 +121,14 @@ export default function SignUp() {
         loaderProps={{ color: 'blue' }}
       />
       <Image
-        src={'/logo.png'}
+        src={'/logo.svg'}
         style={{
           maxWidth: isMobile ? '80%' : 'fit-content',
           marginLeft: 'auto',
           marginRight: 'auto',
-          marginBottom: isMobile ? '2rem' : '5rem',
+          marginBottom: isMobile ? '2rem' : '3rem',
         }}
-        h={isMobile ? 120 : 180}
+        h={isMobile ? 100 : 140}
         w='auto'
         fit='contain'
         alt={'Immortal Vault'}
