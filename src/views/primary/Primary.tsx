@@ -5,7 +5,7 @@ import {
   EPrimaryViewTabType,
   ESettingsViewPage,
   TPrimaryViewTab,
-} from '../../models'
+} from '../../types'
 import { useDisclosure } from '@mantine/hooks'
 import { createTabs } from '../../shared'
 import { Profile, Settings } from './subviews'

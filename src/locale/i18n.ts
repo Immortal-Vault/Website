@@ -4,7 +4,7 @@ import Backend from 'i18next-http-backend'
 import LanguageDetector from 'i18next-browser-languagedetector'
 
 const loadPath = '/locales/{{lng}}/{{ns}}.json'
-
+// TODO: get current language from database
 i18next
   .use(LanguageDetector)
   .use(Backend)
@@ -18,7 +18,7 @@ i18next
       escapeValue: false,
     },
     fallbackLng: 'en',
-    ns: ['common', 'views', 'notifications', 'auth'],
+    ns: ['common', 'views', 'notifications', 'auth', 'settings'],
     detection: {
       order: ['navigator'],
     },

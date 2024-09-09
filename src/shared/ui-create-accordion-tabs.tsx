@@ -1,4 +1,4 @@
-import { EPrimaryViewTabType, TPrimaryViewTab } from '../models'
+import { EPrimaryViewTabType, TPrimaryViewTab } from '../types'
 import { Accordion, Button, Flex } from '@mantine/core'
 import { TFunction } from 'i18next'
 

@@ -85,6 +85,7 @@ export default function SignIn() {
 
     sendSuccessNotification(t('notifications:successful'))
     authContext.setAuthState(true)
+    authContext.setEmail(email)
     setLoaderState.close()
 
     // redirect to main after sign In
@@ -141,7 +142,7 @@ export default function SignIn() {
             w={'90%'}
           />
 
-          <Group justify='space-between' mt='xl' w={'90%'}>
+          <Group justify='space-between' w={'90%'}>
             <Anchor
               component='button'
               type='button'

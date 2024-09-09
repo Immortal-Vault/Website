@@ -183,7 +183,7 @@ export default function SignUp() {
             w={'90%'}
           />
 
-          <Group justify='space-between' mt='xl' w={'90%'}>
+          <Group justify='space-between' w={'90%'}>
             <Anchor
               component='button'
               type='button'
