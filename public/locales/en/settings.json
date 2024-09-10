@@ -1,0 +1,11 @@
+{
+  "main": {
+    "title": "Main",
+    "header": "Main settings",
+    "language": {
+      "title": "Interface language",
+      "placeholder": "English...",
+      "nothingFound": "Nothing found"
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { EStage, TEnvVars } from '../models'
+import { EStage, TEnvVars } from '../types'
 
 const useEnvVars = () => {
   const [envVars, setEnvVars] = useState<TEnvVars>()

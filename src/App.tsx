@@ -6,7 +6,7 @@ import SignIn from './views/auth/SignIn.tsx'
 import { AuthProvider } from './stores/AuthContext.tsx'
 import { ToastContainer, Zoom } from 'react-toastify'
 import Primary from './views/primary/Primary.tsx'
-import { ErrorBoundary, ErrorBoundaryError } from './errors'
+import { ErrorBoundary, ErrorBoundaryError } from './components/errors'
 
 const theme = createTheme({})
 
@@ -41,9 +41,7 @@ export default function App() {
           newestOnTop={false}
           closeOnClick
           rtl={false}
-          pauseOnFocusLoss
           draggable
-          pauseOnHover
           theme='dark'
           transition={Zoom}
         />

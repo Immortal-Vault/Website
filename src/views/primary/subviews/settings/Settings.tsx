@@ -1,4 +1,4 @@
-import { ESettingsViewPage } from '../../../../models'
+import { ESettingsViewPage } from '../../../../types'
 import { Main } from './Main.tsx'
 
 const settingPages: any[] = [Main]
