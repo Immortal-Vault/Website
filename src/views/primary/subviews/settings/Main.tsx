@@ -20,6 +20,10 @@ export const Main = (): JSX.Element => {
   const authContext = useContext(AuthContext)!
 
   const selectLanguage = async (newLanguage: string | null) => {
+    if (!newLanguage) {
+      return
+    }
+
     setLoaderState.open()
     setLanguage(newLanguage as ELanguage)
     await i18n.changeLanguage(newLanguage ?? 'en')
