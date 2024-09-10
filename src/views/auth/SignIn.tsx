@@ -35,7 +35,7 @@ export default function SignIn() {
   })
   const [loaderVisible, setLoaderState] = useDisclosure(false)
   const envs = useEnvVars()
-  const { t } = useTranslation('auth')
+  const { t, i18n } = useTranslation('auth')
   const isMobile = useMediaQuery('(max-width: 768px)')
 
   const signInAccount = async () => {
@@ -79,9 +79,15 @@ export default function SignIn() {
       }
     }
 
-    const jwtToken = (await response.json()).token
+    const jsonResponse = await response.json()
+    const jwtToken = jsonResponse.token
     localStorage.setItem(LOCAL_STORAGE.jwtToken, jwtToken)
     localStorage.setItem('lastEmail', email)
+
+    const userLocalization = jsonResponse.localization
+    if (i18n.languages.includes(userLocalization)) {
+      await i18n.changeLanguage(userLocalization)
+    }
 
     sendSuccessNotification(t('notifications:successful'))
     authContext.setAuthState(true)
