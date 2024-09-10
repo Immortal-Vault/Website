@@ -31,6 +31,3 @@ Since the project is still in development, an official release is not yet availa
 - End-to-end encryption for all stored data.
 - Multi-device synchronization.
 - Additional language support.
-
-## 📜 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
