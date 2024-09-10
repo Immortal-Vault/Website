@@ -3,7 +3,7 @@ import { ELanguage } from '../../../../types'
 import { useTranslation } from 'react-i18next'
 import { Select, Title, Container, Stack, LoadingOverlay } from '@mantine/core'
 import { useDisclosure, useMediaQuery } from '@mantine/hooks'
-import { sendErrorNotification } from '../../../../shared'
+import { sendErrorNotification, sendSuccessNotification } from '../../../../shared'
 import useEnvVars from '../../../../hooks/useEnvVars.ts'
 import { AuthContext } from '../../../../stores/AuthContext.tsx'
 
@@ -24,14 +24,15 @@ export const Main = (): JSX.Element => {
     setLanguage(newLanguage as ELanguage)
     await i18n.changeLanguage(newLanguage ?? 'en')
 
+    let response
+
     try {
-      // TODO: implement method serverside
-      await fetch(`${envs?.API_SERVER_URL}/user/changeLanguage`, {
+      response = await fetch(`${envs?.API_SERVER_URL}/user/changeLanguage`, {
         headers: {
           'Content-Type': 'application/json',
         },
         method: 'POST',
-        body: JSON.stringify({ email: authContext.email, language }),
+        body: JSON.stringify({ email: authContext.email, language: newLanguage }),
       })
     } catch (error) {
       sendErrorNotification(t('notifications:serverNotResponding'))
@@ -39,8 +40,28 @@ export const Main = (): JSX.Element => {
       return
     }
 
+    if (!response.ok) {
+      switch (response.status) {
+        case 404: {
+          sendErrorNotification(t('notifications:userNotFound', { user: authContext.email }))
+          setLoaderState.close()
+          return
+        }
+        default: {
+          sendErrorNotification(t('notifications:failedError'))
+          console.error(await response.text())
+          setLoaderState.close()
+          return
+        }
+      }
+    }
+
     setLoaderState.close()
-    // TODO: server error code switch
+    sendSuccessNotification(
+      t('notifications:languageChanged', {
+        language: languages.find((lng) => lng.value === newLanguage)?.label,
+      }),
+    )
   }
 
   const MobileView = () => (

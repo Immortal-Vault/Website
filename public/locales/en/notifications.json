@@ -5,5 +5,6 @@
   "failedError": "An error has occurred, contact technical support",
   "successful": "Successful",
   "passwordsDoNotMatch": "Passwords do not match",
-  "userAlreadyExists": "User with the same email or username is already exists"
+  "userAlreadyExists": "User with the same email or username is already exists",
+  "languageChanged": "Language successfully changed to {{language}}"
 }
