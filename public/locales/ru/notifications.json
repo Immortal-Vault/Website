@@ -1,5 +1,5 @@
 {
-  "serverNotResponding": "Immortal Vault сервер недоступен, пожалуйста повторите попытке позже",
+  "serverNotResponding": "Immortal Vault сервер недоступен, пожалуйста повторите попытку позже",
   "userNotFound": "Пользователь {{user}} не найден",
   "incorrectPassword": "Неверный пароль",
   "failedError": "Произошла ошибка, свяжитесь с технической поддержкой",
