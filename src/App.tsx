@@ -7,6 +7,7 @@ import { AuthProvider } from './stores/AuthContext.tsx'
 import { ToastContainer, Zoom } from 'react-toastify'
 import Primary from './views/primary/Primary.tsx'
 import { ErrorBoundary, ErrorBoundaryError } from './components/errors'
+import { useMediaQuery } from '@mantine/hooks'
 
 const theme = createTheme({})
 
@@ -30,11 +31,13 @@ const router = createBrowserRouter([
 ])
 
 export default function App() {
+  const isMobile = useMediaQuery('(max-width: 768px)')
+
   return (
     <ErrorBoundary fallback={ErrorBoundaryError}>
       <MantineProvider theme={theme} defaultColorScheme={'dark'}>
         <ToastContainer
-          position='top-center'
+          position={isMobile ? 'bottom-center' : 'top-right'}
           autoClose={2500}
           limit={3}
           hideProgressBar={false}
