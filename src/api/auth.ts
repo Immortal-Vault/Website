@@ -27,19 +27,17 @@ export async function signIn(
   switch (response.status) {
     case 404: {
       sendErrorNotification(t('notifications:userNotFound'))
-      break
+      return null
     }
     case 409: {
       sendErrorNotification(t('notifications:incorrectPassword'))
-      break
+      return null
     }
     default: {
       sendErrorNotification(t('notifications:failedError'))
-      break
+      return null
     }
   }
-
-  return response
 }
 
 export async function signUp(
@@ -71,15 +69,13 @@ export async function signUp(
   switch (response.status) {
     case 303: {
       sendErrorNotification(t('notifications:userAlreadyExists'))
-      break
+      return null
     }
     default: {
       sendErrorNotification(t('notifications:failedError'))
-      break
+      return null
     }
   }
-
-  return response
 }
 
 export async function signOut(envs: TEnvVars | undefined, t: TFunction): Promise<Response | null> {

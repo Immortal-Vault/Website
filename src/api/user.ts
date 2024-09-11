@@ -33,14 +33,12 @@ export async function changeLanguage(
   switch (response.status) {
     case 404: {
       sendErrorNotification(t('notifications:userNotFound'))
-      break
+      return null
     }
     default: {
       sendErrorNotification(t('notifications:failedError'))
       console.error(await response.text())
-      break
+      return null
     }
   }
-
-  return response
 }
