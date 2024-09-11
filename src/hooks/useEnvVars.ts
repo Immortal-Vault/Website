@@ -7,7 +7,7 @@ const useEnvVars = () => {
   useEffect(() => {
     const fetchEnvVars = async () => {
       try {
-        const environment: EStage = import.meta.env.VITE_VERCEL_GIT_COMMIT_REF ?? EStage.Development
+        const environment: EStage = import.meta.env.VITE_APP_STAGE ?? EStage.Development
         const url = `https://raw.githubusercontent.com/Immortal-Vault/Env-Vars/main/${environment}.json`
         const response = await fetch(url)
         const data: TEnvVars = await response.json()
