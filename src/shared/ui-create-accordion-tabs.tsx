@@ -2,7 +2,7 @@ import { EPrimaryViewTabType, TPrimaryViewTab } from '../types'
 import { Accordion, Button, Flex } from '@mantine/core'
 import { TFunction } from 'i18next'
 
-export const createTabs = (tab: TPrimaryViewTab, index: number, t: TFunction) => {
+export const createTab = (tab: TPrimaryViewTab, index: number, t: TFunction) => {
   let component
   switch (tab.type) {
     case EPrimaryViewTabType.Accordion: {
