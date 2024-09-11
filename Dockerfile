@@ -8,6 +8,9 @@ RUN yarn install
 
 COPY . .
 
+ARG VITE_APP_STAGE
+ENV VITE_APP_STAGE=$VITE_APP_STAGE
+
 RUN yarn build
 
 FROM node:18-alpine
