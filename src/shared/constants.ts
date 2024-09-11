@@ -6,5 +6,6 @@
 }
 
 export const LOCAL_STORAGE = {
-  jwtToken: 'jwt_token',
+  LAST_EMAIL: 'last_email',
+  AUTH_STATE: 'auth_state',
 }

@@ -8,6 +8,7 @@ import { ToastContainer, Zoom } from 'react-toastify'
 import Primary from './views/primary/Primary.tsx'
 import { ErrorBoundary, ErrorBoundaryError } from './components/errors'
 import { useMediaQuery } from '@mantine/hooks'
+import { ProtectedRoute } from './components/router/ProtectedRoute.tsx'
 
 const theme = createTheme({})
 
@@ -26,7 +27,11 @@ const router = createBrowserRouter([
   },
   {
     path: ROUTER_PATH.MAIN_MENU,
-    element: <Primary />,
+    element: (
+      <ProtectedRoute>
+        <Primary />
+      </ProtectedRoute>
+    ),
   },
 ])
 
@@ -47,6 +52,8 @@ export default function App() {
           draggable
           theme='dark'
           transition={Zoom}
+          pauseOnFocusLoss={false}
+          pauseOnHover={false}
         />
         <AuthProvider>
           <RouterProvider router={router} />

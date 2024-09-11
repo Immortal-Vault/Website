@@ -1,10 +1,11 @@
 {
   "serverNotResponding": "Immortal Vault сервер недоступен, пожалуйста повторите попытку позже",
-  "userNotFound": "Пользователь {{user}} не найден",
+  "userNotFound": "Пользователь не найден",
   "incorrectPassword": "Неверный пароль",
   "failedError": "Произошла ошибка, свяжитесь с технической поддержкой",
   "successful": "Успешно",
   "passwordsDoNotMatch": "Пароли не совпадают",
   "userAlreadyExists": "Пользователь с такой почтой или именем уже существует",
-  "languageChanged": "Язык успешно изменён на {{language}}"
+  "languageChanged": "Язык успешно изменён на {{language}}",
+  "sessionExpired": "Ваша сессия истекла, необходима авторизация"
 }

@@ -7,12 +7,14 @@ import {
   TPrimaryViewTab,
 } from '../../types'
 import { useDisclosure } from '@mantine/hooks'
-import { createTabs } from '../../shared'
+import { createTab, sendSuccessNotification } from '../../shared'
 import { Profile, Settings } from './subviews'
 import { useTranslation } from 'react-i18next'
+import { useAuth } from '../../stores'
 
 export default function Primary() {
   const { t } = useTranslation('views')
+  const { authSignOut } = useAuth()
   const [burgerState, { toggle, close: closeBurger }] = useDisclosure()
   const [currentPage, setCurrentPage] = useState(EPrimaryViewPage.Profile)
   const [settingsPage, setSettingsPage] = useState(ESettingsViewPage.Main)
@@ -25,7 +27,6 @@ export default function Primary() {
         setCurrentPage(EPrimaryViewPage.Profile)
         closeBurger()
       },
-      sections: [],
     },
     {
       type: EPrimaryViewTabType.Accordion,
@@ -40,6 +41,14 @@ export default function Primary() {
           },
         },
       ],
+    },
+    {
+      type: EPrimaryViewTabType.Button,
+      name: t('auth:signOut:title'),
+      onClick: () => {
+        authSignOut()
+        sendSuccessNotification(t('auth:signOut:successful'))
+      },
     },
   ]
 
@@ -58,7 +67,7 @@ export default function Primary() {
       </AppShell.Header>
       <AppShell.Navbar p='md'>
         <AppShell.Section grow component={ScrollArea}>
-          {mainViewTabs.map((tab, index) => createTabs(tab, index, t))}
+          {mainViewTabs.map((tab, index) => createTab(tab, index, t))}
         </AppShell.Section>
       </AppShell.Navbar>
       <AppShell.Main

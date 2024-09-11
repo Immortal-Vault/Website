@@ -18,6 +18,7 @@ import { ROUTER_PATH, sendErrorNotification, sendSuccessNotification } from '../
 import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 import useEnvVars from '../../hooks/useEnvVars.ts'
 import { useTranslation } from 'react-i18next'
+import { signUp } from '../../api'
 
 export default function SignUp() {
   const { t } = useTranslation('auth')
@@ -58,7 +59,7 @@ export default function SignUp() {
   const envs = useEnvVars()
   const isMobile = useMediaQuery('(max-width: 768px)')
 
-  const signUp = async () => {
+  const signUpUser = async () => {
     setLoaderState.open()
     const formValues = form.values
     const username = formValues.name
@@ -72,40 +73,7 @@ export default function SignUp() {
       return
     }
 
-    let response
-
-    try {
-      response = await fetch(`${envs?.API_SERVER_URL}/auth/signUp`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          username,
-          email,
-          password,
-        }),
-      })
-    } catch (error) {
-      sendErrorNotification(t('notifications:serverNotResponding'))
-      setLoaderState.close()
-      return
-    }
-
-    if (!response.ok) {
-      switch (response.status) {
-        case 303: {
-          sendErrorNotification(t('notifications:userAlreadyExists'))
-          setLoaderState.close()
-          return
-        }
-        default: {
-          sendErrorNotification(t('notifications:failedError'))
-          setLoaderState.close()
-          return
-        }
-      }
-    }
+    await signUp(username, email, password, envs, t)
 
     setLoaderState.close()
     sendSuccessNotification(t('notifications:successful'))
@@ -140,65 +108,63 @@ export default function SignUp() {
         {t('signUp.desc')}
       </Title>
 
-      <form onSubmit={form.onSubmit(signUp)}>
-        <Stack align={'center'} justify={'center'}>
-          <TextInput
-            withAsterisk
-            label={t('signUp.fields.name.title')}
-            placeholder={'John Doe'}
-            value={form.values.name}
-            error={form.errors.name && t(form.errors.name.toString())}
-            onChange={(e) => form.setFieldValue('name', e.currentTarget.value)}
-            radius='md'
-            w={'90%'}
-          />
+      <Stack align={'center'} justify={'center'}>
+        <TextInput
+          withAsterisk
+          label={t('signUp.fields.name.title')}
+          placeholder={'John Doe'}
+          value={form.values.name}
+          error={form.errors.name && t(form.errors.name.toString())}
+          onChange={(e) => form.setFieldValue('name', e.currentTarget.value)}
+          radius='md'
+          w={'90%'}
+        />
 
-          <TextInput
-            withAsterisk
-            label={t('signUp.fields.email.title')}
-            placeholder={'JohnDoe@gmail.com'}
-            value={form.values.email}
-            onChange={(e) => form.setFieldValue('email', e.currentTarget.value)}
-            error={form.errors.email && t(form.errors.email.toString())}
-            radius='md'
-            w={'90%'}
-          />
+        <TextInput
+          withAsterisk
+          label={t('signUp.fields.email.title')}
+          placeholder={'JohnDoe@gmail.com'}
+          value={form.values.email}
+          onChange={(e) => form.setFieldValue('email', e.currentTarget.value)}
+          error={form.errors.email && t(form.errors.email.toString())}
+          radius='md'
+          w={'90%'}
+        />
 
-          <PasswordInput
-            withAsterisk
-            label={t('signUp.fields.password.title')}
-            value={form.values.password}
-            onChange={(e) => form.setFieldValue('password', e.currentTarget.value)}
-            error={form.errors.password && t(form.errors.password.toString())}
-            radius='md'
-            w={'90%'}
-          />
-          <PasswordInput
-            withAsterisk
-            label={t('signUp.fields.confirmPassword.title')}
-            value={form.values.confirmPassword}
-            onChange={(e) => form.setFieldValue('confirmPassword', e.currentTarget.value)}
-            error={form.errors.password && t(form.errors.password.toString())}
-            radius='md'
-            w={'90%'}
-          />
+        <PasswordInput
+          withAsterisk
+          label={t('signUp.fields.password.title')}
+          value={form.values.password}
+          onChange={(e) => form.setFieldValue('password', e.currentTarget.value)}
+          error={form.errors.password && t(form.errors.password.toString())}
+          radius='md'
+          w={'90%'}
+        />
+        <PasswordInput
+          withAsterisk
+          label={t('signUp.fields.confirmPassword.title')}
+          value={form.values.confirmPassword}
+          onChange={(e) => form.setFieldValue('confirmPassword', e.currentTarget.value)}
+          error={form.errors.password && t(form.errors.password.toString())}
+          radius='md'
+          w={'90%'}
+        />
 
-          <Group justify='space-between' w={'90%'}>
-            <Anchor
-              component='button'
-              type='button'
-              c='dimmed'
-              size={isMobile ? 'sm' : 'xs'}
-              onClick={() => navigate(ROUTER_PATH.SIGN_IN)}
-            >
-              {t('signUp.alreadyHaveAccount')}
-            </Anchor>
-            <Button type='submit' radius='xl'>
-              {t('signUp.title')}
-            </Button>
-          </Group>
-        </Stack>
-      </form>
+        <Group justify='space-between' w={'90%'}>
+          <Anchor
+            component='button'
+            type='button'
+            c='dimmed'
+            size={isMobile ? 'sm' : 'xs'}
+            onClick={() => navigate(ROUTER_PATH.SIGN_IN)}
+          >
+            {t('signUp.alreadyHaveAccount')}
+          </Anchor>
+          <Button type='submit' radius='xl' onClick={signUpUser}>
+            {t('signUp.title')}
+          </Button>
+        </Group>
+      </Stack>
     </Container>
   )
 }

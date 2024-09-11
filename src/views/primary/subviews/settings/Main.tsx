@@ -1,11 +1,12 @@
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import { ELanguage } from '../../../../types'
 import { useTranslation } from 'react-i18next'
 import { Select, Title, Container, Stack, LoadingOverlay } from '@mantine/core'
 import { useDisclosure, useMediaQuery } from '@mantine/hooks'
-import { sendErrorNotification, sendSuccessNotification } from '../../../../shared'
+import { sendSuccessNotification } from '../../../../shared'
 import useEnvVars from '../../../../hooks/useEnvVars.ts'
-import { AuthContext } from '../../../../stores/AuthContext.tsx'
+import { changeLanguage } from '../../../../api'
+import { useAuth } from '../../../../stores'
 
 export const Main = (): JSX.Element => {
   const [language, setLanguage] = useState<ELanguage | null>(null)
@@ -17,7 +18,7 @@ export const Main = (): JSX.Element => {
   const { t, i18n } = useTranslation('settings')
   const isMobile = useMediaQuery('(max-width: 768px)')
   const envs = useEnvVars()
-  const authContext = useContext(AuthContext)!
+  const authContext = useAuth()
 
   const selectLanguage = async (newLanguage: string | null) => {
     if (!newLanguage) {
@@ -28,36 +29,10 @@ export const Main = (): JSX.Element => {
     setLanguage(newLanguage as ELanguage)
     await i18n.changeLanguage(newLanguage ?? 'en')
 
-    let response
-
-    try {
-      response = await fetch(`${envs?.API_SERVER_URL}/user/changeLanguage`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify({ email: authContext.email, language: newLanguage }),
-      })
-    } catch (error) {
-      sendErrorNotification(t('notifications:serverNotResponding'))
+    const response = await changeLanguage(newLanguage, envs, t, authContext)
+    if (!response) {
       setLoaderState.close()
       return
-    }
-
-    if (!response.ok) {
-      switch (response.status) {
-        case 404: {
-          sendErrorNotification(t('notifications:userNotFound', { user: authContext.email }))
-          setLoaderState.close()
-          return
-        }
-        default: {
-          sendErrorNotification(t('notifications:failedError'))
-          console.error(await response.text())
-          setLoaderState.close()
-          return
-        }
-      }
     }
 
     setLoaderState.close()
