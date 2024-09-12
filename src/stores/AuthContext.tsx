@@ -9,7 +9,7 @@ export interface AuthContextType {
   authState: EAuthState
   authEmail: string
   authSignIn: (email: string) => void
-  authSignOut: () => Promise<void>
+  authSignOut: (expired: boolean) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -18,7 +18,7 @@ const AuthContext = createContext<AuthContextType>({
   authSignIn: function (_email: string): void {
     throw new Error('Function is not implemented.')
   },
-  authSignOut: async function (): Promise<void> {
+  authSignOut: async function (_expired: boolean): Promise<void> {
     throw new Error('Function is not implemented.')
   },
 })
@@ -41,11 +41,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setAuthEmail_(email)
   }
 
-  const setAuthSignOut = async (): Promise<void> => {
+  const setAuthSignOut = async (expired: boolean): Promise<void> => {
     signOut(envs, t)
     setAuthState_(EAuthState.Deauthorized)
     setAuthEmail_('')
-    sendNotification(t('notifications:sessionExpired'))
+
+    if (expired) {
+      sendNotification(t('notifications:sessionExpired'))
+    }
   }
 
   useEffect(() => {

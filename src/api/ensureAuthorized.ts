@@ -5,7 +5,7 @@ export async function ensureAuthorized(
   context: AuthContextType,
 ): Promise<boolean> {
   if (!response || response.status === 401) {
-    await context.authSignOut()
+    await context.authSignOut(true)
     return false
   }
 
