@@ -16,9 +16,9 @@ import passwordValidator from 'password-validator'
 import { useNavigate } from 'react-router-dom'
 import { ROUTER_PATH, sendErrorNotification, sendSuccessNotification } from '../../shared'
 import { useDisclosure, useMediaQuery } from '@mantine/hooks'
-import useEnvVars from '../../hooks/useEnvVars.ts'
 import { useTranslation } from 'react-i18next'
 import { signUp } from '../../api'
+import { useEnvVars } from '../../stores'
 
 export default function SignUp() {
   const { t } = useTranslation('auth')
@@ -56,7 +56,7 @@ export default function SignUp() {
     },
   })
   const [loaderVisible, setLoaderState] = useDisclosure(false)
-  const envs = useEnvVars()
+  const { envs } = useEnvVars()
   const isMobile = useMediaQuery('(max-width: 768px)')
 
   const signUpUser = async () => {

@@ -9,6 +9,7 @@ import Primary from './views/primary/Primary.tsx'
 import { ErrorBoundary, ErrorBoundaryError } from './components/errors'
 import { useMediaQuery } from '@mantine/hooks'
 import { ProtectedRoute } from './components/router/ProtectedRoute.tsx'
+import { EnvVarsProvider } from './stores/EnvVarsContext.tsx'
 
 const theme = createTheme({})
 
@@ -55,9 +56,11 @@ export default function App() {
           pauseOnFocusLoss={false}
           pauseOnHover={false}
         />
-        <AuthProvider>
-          <RouterProvider router={router} />
-        </AuthProvider>
+        <EnvVarsProvider>
+          <AuthProvider>
+            <RouterProvider router={router} />
+          </AuthProvider>
+        </EnvVarsProvider>
       </MantineProvider>
     </ErrorBoundary>
   )

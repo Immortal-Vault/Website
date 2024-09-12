@@ -4,9 +4,8 @@ import { useTranslation } from 'react-i18next'
 import { Select, Title, Container, Stack, LoadingOverlay } from '@mantine/core'
 import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 import { sendSuccessNotification } from '../../../../shared'
-import useEnvVars from '../../../../hooks/useEnvVars.ts'
 import { changeLanguage } from '../../../../api'
-import { useAuth } from '../../../../stores'
+import { useAuth, useEnvVars } from '../../../../stores'
 
 export const Main = (): JSX.Element => {
   const [language, setLanguage] = useState<ELanguage | null>(null)
@@ -17,7 +16,7 @@ export const Main = (): JSX.Element => {
   const [loaderVisible, setLoaderState] = useDisclosure(false)
   const { t, i18n } = useTranslation('settings')
   const isMobile = useMediaQuery('(max-width: 768px)')
-  const envs = useEnvVars()
+  const { envs } = useEnvVars()
   const authContext = useAuth()
 
   const selectLanguage = async (newLanguage: string | null) => {

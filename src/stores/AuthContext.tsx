@@ -2,8 +2,8 @@
 import { EAuthState } from '../types'
 import { signOut } from '../api'
 import { useTranslation } from 'react-i18next'
-import useEnvVars from '../hooks/useEnvVars.ts'
 import { sendNotification } from '../shared'
+import { useEnvVars } from './'
 
 export interface AuthContextType {
   authState: EAuthState
@@ -29,7 +29,7 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const { t } = useTranslation()
-  const envs = useEnvVars()
+  const { envs } = useEnvVars()
 
   const [authState, setAuthState_] = useState<EAuthState>(
     (localStorage.getItem('authState') as EAuthState) ?? EAuthState.Deauthorized,

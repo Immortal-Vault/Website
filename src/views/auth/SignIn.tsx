@@ -14,9 +14,8 @@ import { useForm } from '@mantine/form'
 import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 import { useNavigate } from 'react-router-dom'
 import { LOCAL_STORAGE, ROUTER_PATH, sendSuccessNotification } from '../../shared'
-import useEnvVars from '../../hooks/useEnvVars.ts'
 import { useTranslation } from 'react-i18next'
-import { useAuth } from '../../stores'
+import { useAuth, useEnvVars } from '../../stores'
 import { signIn } from '../../api'
 
 export default function SignIn() {
@@ -28,7 +27,7 @@ export default function SignIn() {
     },
   })
   const [loaderVisible, setLoaderState] = useDisclosure(false)
-  const envs = useEnvVars()
+  const { envs } = useEnvVars()
   const { t, i18n } = useTranslation('auth')
   const isMobile = useMediaQuery('(max-width: 768px)')
   const { authSignIn } = useAuth()
