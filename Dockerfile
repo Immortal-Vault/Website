@@ -8,9 +8,6 @@ RUN yarn install
 
 COPY . .
 
-ARG VITE_APP_STAGE
-ENV VITE_APP_STAGE=$VITE_APP_STAGE
-
 RUN yarn build
 
 FROM node:18-alpine
@@ -21,6 +18,10 @@ WORKDIR /app
 
 COPY --from=build /app/dist ./dist
 
+COPY env.sh /docker-entrypoint.d/env.sh
+
+RUN chmod +x /docker-entrypoint.d/env.sh
+
 EXPOSE 3000
 
-CMD ["serve", "-s", "dist"]
+CMD ["/bin/sh", "-c", "/docker-entrypoint.d/env.sh && serve -s dist"]
