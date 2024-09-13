@@ -122,6 +122,7 @@ export default function SignUp() {
 
         <TextInput
           withAsterisk
+          type={'email'}
           label={t('signUp.fields.email.title')}
           placeholder={'JohnDoe@gmail.com'}
           value={form.values.email}

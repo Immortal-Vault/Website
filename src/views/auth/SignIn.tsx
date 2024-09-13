@@ -90,6 +90,7 @@ export default function SignIn() {
       <Stack align={'center'} justify={'center'}>
         <TextInput
           required
+          type={'email'}
           label={t('signIn.fields.email.title')}
           placeholder={'JohnDoe@gmail.com'}
           value={form.values.email}
