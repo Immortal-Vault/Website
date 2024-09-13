@@ -73,9 +73,12 @@ export default function SignUp() {
       return
     }
 
-    await signUp(username, email, password, envs, t)
+    const response = await signUp(username, email, password, envs, t)
+    if (!response || !response.ok) {
+      setLoaderState.close()
+      return
+    }
 
-    setLoaderState.close()
     sendSuccessNotification(t('notifications:successful'))
     navigate(ROUTER_PATH.SIGN_IN)
   }
@@ -156,10 +159,21 @@ export default function SignUp() {
             component='button'
             type='button'
             c='dimmed'
-            size={isMobile ? 'sm' : 'xs'}
+            underline={'never'}
+            size={isMobile ? 'lg' : 'xl'}
             onClick={() => navigate(ROUTER_PATH.SIGN_IN)}
           >
             {t('signUp.alreadyHaveAccount')}
+            &nbsp;
+            <Anchor
+              component='button'
+              type='button'
+              underline={'never'}
+              c='blue'
+              size={isMobile ? 'lg' : 'xl'}
+            >
+              {t('signIn.title')}
+            </Anchor>
           </Anchor>
           <Button type='submit' radius='xl' onClick={signUpUser}>
             {t('signUp.title')}

@@ -114,10 +114,21 @@ export default function SignIn() {
             component='button'
             type='button'
             c='dimmed'
-            size={isMobile ? 'sm' : 'xs'}
+            underline={'never'}
+            size={isMobile ? 'lg' : 'xl'}
             onClick={() => navigate(ROUTER_PATH.SIGN_UP)}
           >
             {t('signIn.doNotHaveAccount')}
+            &nbsp;
+            <Anchor
+              component='button'
+              type='button'
+              underline={'never'}
+              c='blue'
+              size={isMobile ? 'lg' : 'xl'}
+            >
+              {t('signUp.title')}
+            </Anchor>
           </Anchor>
           <Button type='submit' radius='xl' onClick={signInUser}>
             {t('signIn.title')}
