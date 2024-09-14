@@ -10,21 +10,34 @@ import { ErrorBoundary, ErrorBoundaryError } from './components/errors'
 import { useMediaQuery } from '@mantine/hooks'
 import { ProtectedRoute } from './components/router/ProtectedRoute.tsx'
 import { EnvVarsProvider } from './stores'
+import { NonAuthorizedRoute } from './components/router/NonAuthorizedRoute.tsx'
 
 const theme = createTheme({})
 
 const router = createBrowserRouter([
   {
     path: ROUTER_PATH.ROOT,
-    element: <SignIn />,
+    element: (
+      <NonAuthorizedRoute>
+        <SignIn />
+      </NonAuthorizedRoute>
+    ),
   },
   {
     path: ROUTER_PATH.SIGN_IN,
-    element: <SignIn />,
+    element: (
+      <NonAuthorizedRoute>
+        <SignIn />
+      </NonAuthorizedRoute>
+    ),
   },
   {
     path: ROUTER_PATH.SIGN_UP,
-    element: <SignUp />,
+    element: (
+      <NonAuthorizedRoute>
+        <SignUp />
+      </NonAuthorizedRoute>
+    ),
   },
   {
     path: ROUTER_PATH.MAIN_MENU,

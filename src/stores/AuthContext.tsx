@@ -2,8 +2,9 @@
 import { EAuthState } from '../types'
 import { signOut } from '../api'
 import { useTranslation } from 'react-i18next'
-import { sendNotification } from '../shared'
+import { LOCAL_STORAGE, sendNotification } from '../shared'
 import { useEnvVars } from './'
+import { useInterval } from '@mantine/hooks'
 
 export interface AuthContextType {
   authState: EAuthState
@@ -30,9 +31,10 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const { t } = useTranslation()
   const { envs } = useEnvVars()
+  const authPingInterval = useInterval(() => authPing(), 10000)
 
   const [authState, setAuthState_] = useState<EAuthState>(
-    (localStorage.getItem('authState') as EAuthState) ?? EAuthState.Deauthorized,
+    (localStorage.getItem(LOCAL_STORAGE.AUTH_STATE) as EAuthState) ?? EAuthState.Deauthorized,
   )
   const [authEmail, setAuthEmail_] = useState('')
 
@@ -51,12 +53,40 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }
 
+  const authPing = () => {
+    fetch(`${envs?.API_SERVER_URL}/auth/ping`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      method: 'GET',
+    })
+      .then((response) => {
+        if (!response || !response.ok) {
+          setAuthSignOut(true)
+        }
+      })
+      .catch((_e) => {
+        setAuthSignOut(true)
+      })
+  }
+
   useEffect(() => {
     if (authState) {
-      localStorage.setItem('authState', authState)
+      localStorage.setItem(LOCAL_STORAGE.AUTH_STATE, authState)
     } else {
-      localStorage.removeItem('authState')
+      localStorage.removeItem(LOCAL_STORAGE.AUTH_STATE)
     }
+  }, [authState])
+
+  useEffect(() => {
+    if (authState !== EAuthState.Authorized) {
+      authPingInterval.stop()
+    } else {
+      authPingInterval.start()
+    }
+
+    return authPingInterval.stop
   }, [authState])
 
   const contextValue = useMemo(
