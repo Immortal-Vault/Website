@@ -1,4 +1,4 @@
-﻿import {
+import {
   Anchor,
   Button,
   Container,
@@ -7,7 +7,6 @@
   LoadingOverlay,
   PasswordInput,
   Stack,
-  TextInput,
   Title,
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
@@ -19,7 +18,7 @@ import { useAuth, useEnvVars } from '../../stores'
 import { signIn } from '../../api'
 import { useEffect } from 'react'
 
-export default function SignIn() {
+export default function ApproveSignIn() {
   const navigate = useNavigate()
   const form = useForm({
     initialValues: {
@@ -38,8 +37,8 @@ export default function SignIn() {
   const { authSignIn } = useAuth()
 
   useEffect(() => {
-    if (form.values.email) {
-      navigate(ROUTER_PATH.SIGN_IN_APPROVE)
+    if (!form.values.email) {
+      navigate(ROUTER_PATH.SIGN_IN)
     }
   }, [])
 
@@ -99,28 +98,16 @@ export default function SignIn() {
         {t('signIn.title')}
       </Title>
       <Title order={2} ta='center' mb={'xl'} size={isMobile ? 'h4' : 'h2'}>
-        {t('signIn.desc')}
+        {t('signIn.exists', { user: form.values.email })}
       </Title>
 
       <Stack align={'center'} justify={'center'}>
-        <TextInput
-          required
-          type={'email'}
-          label={t('signIn.fields.email.title')}
-          placeholder={'JohnDoe@gmail.com'}
-          value={form.values.email}
-          onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
-          error={form.errors.email && t(form.errors.email.toString())}
-          radius='md'
-          w={'90%'}
-        />
-
         <PasswordInput
           required
           label={t('signIn.fields.password.title')}
           value={form.values.password}
-          error={form.errors.password && t(form.errors.password.toString())}
           onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
+          error={form.errors.password && t(form.errors.password.toString())}
           radius='md'
           w={'90%'}
         />
@@ -132,9 +119,12 @@ export default function SignIn() {
             c='dimmed'
             underline={'never'}
             size={isMobile ? 'lg' : 'xl'}
-            onClick={() => navigate(ROUTER_PATH.SIGN_UP)}
+            onClick={() => {
+              localStorage.removeItem(LOCAL_STORAGE.LAST_EMAIL)
+              navigate(ROUTER_PATH.SIGN_IN)
+            }}
           >
-            {t('signIn.doNotHaveAccount')}
+            {t('signIn.anotherAccount')}
             &nbsp;
             <Anchor
               component='button'
@@ -143,7 +133,7 @@ export default function SignIn() {
               c='blue'
               size={isMobile ? 'lg' : 'xl'}
             >
-              {t('signUp.title')}
+              {t('signOut.title')}
             </Anchor>
           </Anchor>
           <Button type='submit' radius='xl' onClick={signInUser}>
