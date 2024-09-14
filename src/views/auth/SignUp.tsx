@@ -25,8 +25,8 @@ export default function SignUp() {
   const navigate = useNavigate()
   const form = useForm({
     initialValues: {
-      email: '',
       name: '',
+      email: '',
       password: '',
       confirmPassword: '',
     },
@@ -51,7 +51,14 @@ export default function SignUp() {
           .not()
           .spaces() // Should not have spaces
 
-        return !schema.validate(val) ? t('signUp.fields.password.invalid') : null
+        return !schema.validate(val) ? 'signUp.fields.password.invalid' : null
+      },
+      confirmPassword: (val) => {
+        if (val == form.values.password) {
+          return null
+        }
+
+        return 'signUp.fields.confirmPassword.invalid'
       },
     },
   })
@@ -60,6 +67,10 @@ export default function SignUp() {
   const isMobile = useMediaQuery('(max-width: 768px)')
 
   const signUpUser = async () => {
+    if (form.validate().hasErrors) {
+      return
+    }
+
     setLoaderState.open()
     const formValues = form.values
     const username = formValues.name
@@ -149,7 +160,7 @@ export default function SignUp() {
           label={t('signUp.fields.confirmPassword.title')}
           value={form.values.confirmPassword}
           onChange={(e) => form.setFieldValue('confirmPassword', e.currentTarget.value)}
-          error={form.errors.password && t(form.errors.password.toString())}
+          error={form.errors.confirmPassword && t(form.errors.confirmPassword.toString())}
           radius='md'
           w={'90%'}
         />

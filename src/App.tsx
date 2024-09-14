@@ -9,7 +9,7 @@ import Primary from './views/primary/Primary.tsx'
 import { ErrorBoundary, ErrorBoundaryError } from './components/errors'
 import { useMediaQuery } from '@mantine/hooks'
 import { ProtectedRoute } from './components/router/ProtectedRoute.tsx'
-import { EnvVarsProvider } from './stores/EnvVarsContext.tsx'
+import { EnvVarsProvider } from './stores'
 
 const theme = createTheme({})
 

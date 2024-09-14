@@ -17,6 +17,7 @@ import { LOCAL_STORAGE, ROUTER_PATH, sendSuccessNotification } from '../../share
 import { useTranslation } from 'react-i18next'
 import { useAuth, useEnvVars } from '../../stores'
 import { signIn } from '../../api'
+import validator from 'validator'
 
 export default function SignIn() {
   const navigate = useNavigate()
@@ -24,6 +25,9 @@ export default function SignIn() {
     initialValues: {
       email: localStorage.getItem(LOCAL_STORAGE.LAST_EMAIL) ?? '',
       password: '',
+    },
+    validate: {
+      email: (val) => (validator.isEmail(val) ? null : 'signUp.fields.email.invalid'),
     },
   })
   const [loaderVisible, setLoaderState] = useDisclosure(false)
@@ -33,6 +37,10 @@ export default function SignIn() {
   const { authSignIn } = useAuth()
 
   const signInUser = async () => {
+    if (form.validate().hasErrors) {
+      return
+    }
+
     setLoaderState.open()
     const email = form.values.email
     const password = form.values.password
@@ -95,7 +103,7 @@ export default function SignIn() {
           placeholder={'JohnDoe@gmail.com'}
           value={form.values.email}
           onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
-          error={form.errors.email && t('signIn.fields.email.invalid')}
+          error={form.errors.email && t(form.errors.email.toString())}
           radius='md'
           w={'90%'}
         />
