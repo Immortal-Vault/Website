@@ -1,5 +1,5 @@
 {
-  "name": "immortal-vault-client",
+  "name": "immortal-vault-website",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -7,8 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "ngrok": "ngrok http http://localhost:5173"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@mantine/core": "^7.10.2",
