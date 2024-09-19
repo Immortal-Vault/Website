@@ -29,7 +29,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { envs } = useEnvVars()
   const authPingInterval = useInterval(() => authPing(), 10000)
 
@@ -41,12 +41,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const setAuthSignIn = (email: string): void => {
     setAuthState_(EAuthState.Authorized)
     setAuthEmail_(email)
+    const userLocalization = localStorage.getItem(LOCAL_STORAGE.USER_LOCALE)
+    if (userLocalization && i18n.languages.includes(userLocalization)) {
+      i18n.changeLanguage(userLocalization)
+    }
   }
 
   const setAuthSignOut = async (expired: boolean): Promise<void> => {
     signOut(envs, t)
     setAuthState_(EAuthState.Deauthorized)
     setAuthEmail_('')
+    localStorage.removeItem(LOCAL_STORAGE.USER_LOCALE)
+    i18n.changeLanguage(undefined)
 
     if (expired) {
       sendNotification(t('notifications:sessionExpired'))

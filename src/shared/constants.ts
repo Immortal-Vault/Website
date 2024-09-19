@@ -8,5 +8,6 @@
 
 export const LOCAL_STORAGE = {
   LAST_EMAIL: 'last_email',
+  USER_LOCALE: 'user_locale',
   AUTH_STATE: 'auth_state',
 }

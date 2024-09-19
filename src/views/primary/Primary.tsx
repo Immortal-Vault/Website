@@ -1,5 +1,5 @@
 import { AppShell, Burger, Group, Image, ScrollArea, Title } from '@mantine/core'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   EPrimaryViewPage,
   EPrimaryViewTabType,
@@ -7,17 +7,24 @@ import {
   TPrimaryViewTab,
 } from '../../types'
 import { useDisclosure } from '@mantine/hooks'
-import { createTab, sendSuccessNotification } from '../../shared'
+import { createTab, LOCAL_STORAGE, sendSuccessNotification } from '../../shared'
 import { Profile, Settings } from './subviews'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../../stores'
 
 export default function Primary() {
-  const { t } = useTranslation('views')
+  const { t, i18n } = useTranslation('views')
   const { authSignOut } = useAuth()
   const [burgerState, { toggle, close: closeBurger }] = useDisclosure()
   const [currentPage, setCurrentPage] = useState(EPrimaryViewPage.Profile)
   const [settingsPage, setSettingsPage] = useState(ESettingsViewPage.Main)
+
+  useEffect(() => {
+    const userLocalization = localStorage.getItem(LOCAL_STORAGE.USER_LOCALE)
+    if (userLocalization && i18n.languages.includes(userLocalization)) {
+      i18n.changeLanguage(userLocalization)
+    }
+  }, [])
 
   const mainViewTabs: TPrimaryViewTab[] = [
     {

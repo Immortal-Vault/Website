@@ -3,7 +3,7 @@ import { ELanguage } from '../../../../types'
 import { useTranslation } from 'react-i18next'
 import { Select, Title, Container, Stack, LoadingOverlay } from '@mantine/core'
 import { useDisclosure, useMediaQuery } from '@mantine/hooks'
-import { sendSuccessNotification } from '../../../../shared'
+import { LOCAL_STORAGE, sendSuccessNotification } from '../../../../shared'
 import { changeLanguage } from '../../../../api'
 import { useAuth, useEnvVars } from '../../../../stores'
 
@@ -27,6 +27,7 @@ export const Main = (): JSX.Element => {
     setLoaderState.open()
     setLanguage(newLanguage as ELanguage)
     await i18n.changeLanguage(newLanguage ?? 'en')
+    localStorage.setItem(LOCAL_STORAGE.USER_LOCALE, newLanguage ?? 'en')
 
     const response = await changeLanguage(newLanguage, envs, t, authContext)
     if (!response) {

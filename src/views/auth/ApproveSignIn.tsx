@@ -32,7 +32,7 @@ export default function ApproveSignIn() {
   })
   const [loaderVisible, setLoaderState] = useDisclosure(false)
   const { envs } = useEnvVars()
-  const { t, i18n } = useTranslation('auth')
+  const { t } = useTranslation('auth')
   const isMobile = useMediaQuery('(max-width: 768px)')
   const { authSignIn } = useAuth()
 
@@ -61,9 +61,7 @@ export default function ApproveSignIn() {
     localStorage.setItem(LOCAL_STORAGE.LAST_EMAIL, email)
 
     const userLocalization = jsonResponse.localization
-    if (i18n.languages.includes(userLocalization)) {
-      await i18n.changeLanguage(userLocalization)
-    }
+    localStorage.setItem(LOCAL_STORAGE.USER_LOCALE, userLocalization)
 
     sendSuccessNotification(t('notifications:successful'))
     authSignIn(email)
