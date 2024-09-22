@@ -26,6 +26,8 @@ export const Vault = (): JSX.Element => {
   const googleLogin = useGoogleLogin({
     flow: 'auth-code',
     scope: envs?.GOOGLE_DRIVE_SCOPES,
+    // eslint-disable-next-line camelcase
+    redirect_uri: envs?.GOOGLE_REDIRECT_URI,
     onSuccess: async (codeResponse) => {
       await signInGoogle(codeResponse.code, envs, t)
       setGoogleDriveState(true)
