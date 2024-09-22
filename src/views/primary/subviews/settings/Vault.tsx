@@ -20,6 +20,7 @@ export const Vault = (): JSX.Element => {
   const signOutGoogleButton = async () => {
     setLoaderState.open()
     await signOutGoogle(envs, t)
+    setGoogleDriveState(false)
     setLoaderState.close()
   }
 
@@ -41,9 +42,9 @@ export const Vault = (): JSX.Element => {
 
   const getGoogleStateButton = (state: boolean) => {
     return state ? (
-      <Button onClick={signOutGoogleButton}>Google logout</Button>
+      <Button onClick={signOutGoogleButton}>{t('vault.google.signOut')}</Button>
     ) : (
-      <Button onClick={googleLoginButton}>Google login</Button>
+      <Button onClick={googleLoginButton}>{t('vault.google.signIn')}</Button>
     )
   }
 
@@ -57,7 +58,7 @@ export const Vault = (): JSX.Element => {
         <Flex direction={'row'} align={'center'} justify={'center'} mb='md'>
           <Title order={3}>{t('Google disk')}:&nbsp;</Title>
           <Badge color={googleDriveState ? 'green' : 'red'}>
-            {googleDriveState ? 'Connected' : 'Disconnected'}
+            {googleDriveState ? t('vault.states.connected') : t('vault.states.disconnected')}
           </Badge>
         </Flex>
         {getGoogleStateButton(googleDriveState)}
@@ -70,13 +71,14 @@ export const Vault = (): JSX.Element => {
       <Title order={1} mb={'10px'}>
         {t('main.header')}
       </Title>
-      <div
-        style={{
-          width: '15rem',
-        }}
-      >
+
+      <Flex direction={'row'} mb='md' align={'center'} gap={'xs'}>
+        <Title order={3}>{t('Google disk')}:&nbsp;</Title>
+        <Badge color={googleDriveState ? 'green' : 'red'}>
+          {googleDriveState ? t('vault.states.connected') : t('vault.states.disconnected')}
+        </Badge>
         {getGoogleStateButton(googleDriveState)}
-      </div>
+      </Flex>
     </div>
   )
 

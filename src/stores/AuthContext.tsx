@@ -122,7 +122,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       authSignIn: setAuthSignIn,
       authSignOut: setAuthSignOut,
     }),
-    [authState, authEmail],
+    [authState, authEmail, googleDriveState],
   )
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

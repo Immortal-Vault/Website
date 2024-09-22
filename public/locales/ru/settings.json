@@ -7,5 +7,15 @@
       "placeholder": "Русский...",
       "nothingFound": "Ничего не найдено"
     }
+  },
+  "vault": {
+    "states": {
+      "connected": "Подключен",
+      "disconnected": "Не подключен"
+    },
+    "google": {
+      "signIn": "Войти в аккаунт Google",
+      "signOut": "Выйти из аккаунта Google"
+    }
   }
 }

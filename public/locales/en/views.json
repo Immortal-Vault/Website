@@ -7,6 +7,9 @@
     "subviews": {
       "main": {
         "name": "Main"
+      },
+      "vault": {
+        "name": "Vault"
       }
     }
   }

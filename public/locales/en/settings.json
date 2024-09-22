@@ -7,5 +7,15 @@
       "placeholder": "English...",
       "nothingFound": "Nothing found"
     }
+  },
+  "vault": {
+    "states": {
+      "connected": "Connected",
+      "disconnected": "Disconnected"
+    },
+    "google": {
+      "signIn": "Sign In Google",
+      "signOut": "Sign Out Google"
+    }
   }
 }
