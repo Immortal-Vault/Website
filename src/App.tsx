@@ -12,6 +12,7 @@ import { ProtectedRoute } from './components/router/ProtectedRoute.tsx'
 import { EnvVarsProvider } from './stores'
 import { NonAuthorizedRoute } from './components/router/NonAuthorizedRoute.tsx'
 import ApproveSignIn from './views/auth/ApproveSignIn.tsx'
+import { GoogleOAuthProvider } from '@react-oauth/google'
 
 const theme = createTheme({})
 
@@ -80,7 +81,9 @@ export default function App() {
         />
         <EnvVarsProvider>
           <AuthProvider>
-            <RouterProvider router={router} />
+            <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+              <RouterProvider router={router} />
+            </GoogleOAuthProvider>
           </AuthProvider>
         </EnvVarsProvider>
       </MantineProvider>

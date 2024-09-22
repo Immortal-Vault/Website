@@ -81,3 +81,61 @@ export async function signUp(
 export async function signOut(envs: TEnvVars | undefined, t: TFunction): Promise<Response | null> {
   return customFetch(`${envs?.API_SERVER_URL}/auth/signOut`, null, 'POST', t)
 }
+
+export async function signInGoogle(
+  code: string,
+  envs: TEnvVars | undefined,
+  t: TFunction,
+): Promise<Response | null> {
+  const response = await customFetch(
+    `${envs?.API_SERVER_URL}/auth/signIn/google`,
+    JSON.stringify({ code }),
+    'POST',
+    t,
+  )
+
+  if (!response) {
+    return null
+  }
+
+  if (response.ok) {
+    return response
+  }
+
+  switch (response.status) {
+    case 404: {
+      sendErrorNotification(t('notifications:userNotFound'))
+      return null
+    }
+    default: {
+      sendErrorNotification(t('notifications:failedError'))
+      return null
+    }
+  }
+}
+
+export async function signOutGoogle(
+  envs: TEnvVars | undefined,
+  t: TFunction,
+): Promise<Response | null> {
+  const response = await customFetch(`${envs?.API_SERVER_URL}/auth/signOut/google`, null, 'POST', t)
+
+  if (!response) {
+    return null
+  }
+
+  if (response.ok) {
+    return response
+  }
+
+  switch (response.status) {
+    case 404: {
+      sendErrorNotification(t('notifications:userNotFound'))
+      return null
+    }
+    default: {
+      sendErrorNotification(t('notifications:failedError'))
+      return null
+    }
+  }
+}

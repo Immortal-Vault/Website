@@ -47,6 +47,14 @@ export default function Primary() {
             closeBurger()
           },
         },
+        {
+          title: t('settings.subviews.vault.name'),
+          click: () => {
+            setSettingsPage(ESettingsViewPage.Vault)
+            setCurrentPage(EPrimaryViewPage.Settings)
+            closeBurger()
+          },
+        },
       ],
     },
     {

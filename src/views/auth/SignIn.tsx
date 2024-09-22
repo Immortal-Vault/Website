@@ -61,11 +61,12 @@ export default function SignIn() {
     const jsonResponse = await response.json()
     localStorage.setItem(LOCAL_STORAGE.LAST_EMAIL, email)
 
-    const userLocalization = jsonResponse.localization
-    localStorage.setItem(LOCAL_STORAGE.USER_LOCALE, userLocalization)
+    const localization = jsonResponse.localization
+    const googleDriveState = jsonResponse.googleDriveState
+    localStorage.setItem(LOCAL_STORAGE.USER_LOCALE, localization)
 
     sendSuccessNotification(t('notifications:successful'))
-    authSignIn(email)
+    authSignIn(email, googleDriveState)
     setLoaderState.close()
 
     // redirect to main after sign In
