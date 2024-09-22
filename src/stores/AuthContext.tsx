@@ -1,13 +1,4 @@
-﻿import {
-  createContext,
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+﻿import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react'
 import { EAuthState } from '../types'
 import { signOut } from '../api'
 import { useTranslation } from 'react-i18next'
@@ -18,23 +9,17 @@ import { useInterval } from '@mantine/hooks'
 export interface AuthContextType {
   authState: EAuthState
   authEmail: string
-  googleDriveState: boolean
-  authSignIn: (email: string, googleDriveState: boolean) => void
+  authSignIn: (email: string) => void
   authSignOut: (expired: boolean) => Promise<void>
-  setGoogleDriveState: Dispatch<SetStateAction<boolean>>
 }
 
 const AuthContext = createContext<AuthContextType>({
   authState: EAuthState.Deauthorized,
   authEmail: '',
-  googleDriveState: false,
-  authSignIn: function (_email: string, _googleDriveState: boolean): void {
+  authSignIn: function (_email: string): void {
     throw new Error('Function is not implemented.')
   },
   authSignOut: async function (_expired: boolean): Promise<void> {
-    throw new Error('Function is not implemented.')
-  },
-  setGoogleDriveState: function (): void {
     throw new Error('Function is not implemented.')
   },
 })
@@ -52,12 +37,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     (localStorage.getItem(LOCAL_STORAGE.AUTH_STATE) as EAuthState) ?? EAuthState.Deauthorized,
   )
   const [authEmail, setAuthEmail] = useState('')
-  const [googleDriveState, setGoogleDriveState] = useState(false)
 
-  const setAuthSignIn = (email: string, googleDriveState: boolean): void => {
+  const setAuthSignIn = (email: string): void => {
     setAuthState(EAuthState.Authorized)
     setAuthEmail(email)
-    setGoogleDriveState(googleDriveState)
     const userLocalization = localStorage.getItem(LOCAL_STORAGE.USER_LOCALE)
     if (userLocalization && i18n.languages.includes(userLocalization)) {
       i18n.changeLanguage(userLocalization)
@@ -68,7 +51,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     await signOut(envs, t)
     setAuthState(EAuthState.Deauthorized)
     setAuthEmail('')
-    setGoogleDriveState(false)
     localStorage.removeItem(LOCAL_STORAGE.USER_LOCALE)
     i18n.changeLanguage(undefined)
 
@@ -117,12 +99,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     () => ({
       authState,
       authEmail,
-      googleDriveState,
-      setGoogleDriveState,
       authSignIn: setAuthSignIn,
       authSignOut: setAuthSignOut,
     }),
-    [authState, authEmail, googleDriveState],
+    [authState, authEmail],
   )
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

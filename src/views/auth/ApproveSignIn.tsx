@@ -61,11 +61,10 @@ export default function ApproveSignIn() {
     localStorage.setItem(LOCAL_STORAGE.LAST_EMAIL, email)
 
     const localization = jsonResponse.localization
-    const googleDriveState = jsonResponse.googleDriveState
     localStorage.setItem(LOCAL_STORAGE.USER_LOCALE, localization)
 
     sendSuccessNotification(t('notifications:successful'))
-    authSignIn(email, googleDriveState)
+    authSignIn(email)
     setLoaderState.close()
 
     // redirect to main after sign In

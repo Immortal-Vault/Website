@@ -3,14 +3,14 @@ import { Title, Container, Stack, LoadingOverlay, Button, Badge, Flex } from '@m
 import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 import { useGoogleLogin } from '@react-oauth/google'
 import { signInGoogle, signOutGoogle } from '../../../../api'
-import { useAuth, useEnvVars } from '../../../../stores'
+import { useEnvVars, useGoogleDrive } from '../../../../stores'
 
 export const Vault = (): JSX.Element => {
   const [loaderVisible, setLoaderState] = useDisclosure(false)
   const { t } = useTranslation('settings')
   const isMobile = useMediaQuery('(max-width: 768px)')
   const { envs } = useEnvVars()
-  const { googleDriveState, setGoogleDriveState } = useAuth()
+  const { googleDriveState, setGoogleDriveState } = useGoogleDrive()
 
   const googleLoginButton = () => {
     setLoaderState.open()

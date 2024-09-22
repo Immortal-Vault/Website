@@ -13,6 +13,7 @@ import { EnvVarsProvider } from './stores'
 import { NonAuthorizedRoute } from './components/router/NonAuthorizedRoute.tsx'
 import ApproveSignIn from './views/auth/ApproveSignIn.tsx'
 import { GoogleOAuthProvider } from '@react-oauth/google'
+import GoogleDriveProvider from './stores/GoogleDriveContext.tsx'
 
 const theme = createTheme({})
 
@@ -81,9 +82,11 @@ export default function App() {
         />
         <EnvVarsProvider>
           <AuthProvider>
-            <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-              <RouterProvider router={router} />
-            </GoogleOAuthProvider>
+            <GoogleDriveProvider>
+              <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+                <RouterProvider router={router} />
+              </GoogleOAuthProvider>
+            </GoogleDriveProvider>
           </AuthProvider>
         </EnvVarsProvider>
       </MantineProvider>
