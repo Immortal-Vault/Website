@@ -3,17 +3,14 @@ import SignUp from './views/auth/SignUp.tsx'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { ROUTER_PATH } from './shared'
 import SignIn from './views/auth/SignIn.tsx'
-import { AuthProvider } from './stores/AuthContext.tsx'
 import { ToastContainer, Zoom } from 'react-toastify'
 import Primary from './views/primary/Primary.tsx'
 import { ErrorBoundary, ErrorBoundaryError } from './components/errors'
 import { useMediaQuery } from '@mantine/hooks'
 import { ProtectedRoute } from './components/router/ProtectedRoute.tsx'
-import { EnvVarsProvider } from './stores'
+import { EnvVarsProvider, AuthProvider, GoogleDriveProvider } from './stores'
 import { NonAuthorizedRoute } from './components/router/NonAuthorizedRoute.tsx'
 import ApproveSignIn from './views/auth/ApproveSignIn.tsx'
-import { GoogleOAuthProvider } from '@react-oauth/google'
-import GoogleDriveProvider from './stores/GoogleDriveContext.tsx'
 
 const theme = createTheme({})
 
@@ -83,9 +80,7 @@ export default function App() {
         <EnvVarsProvider>
           <AuthProvider>
             <GoogleDriveProvider>
-              <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-                <RouterProvider router={router} />
-              </GoogleOAuthProvider>
+              <RouterProvider router={router} />
             </GoogleDriveProvider>
           </AuthProvider>
         </EnvVarsProvider>

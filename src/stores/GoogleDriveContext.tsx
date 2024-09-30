@@ -11,6 +11,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { useEnvVars } from './'
 import { getGoogleDriveState } from '../api'
+import { GoogleOAuthProvider } from '@react-oauth/google'
 
 export interface GoogleDriveType {
   googleDriveState: boolean
@@ -46,7 +47,13 @@ export const GoogleDriveProvider = ({ children }: GoogleDriveProviderProps) => {
     [googleDriveState],
   )
 
-  return <GoogleDriveContext.Provider value={contextValue}>{children}</GoogleDriveContext.Provider>
+  return (
+    <GoogleDriveContext.Provider value={contextValue}>
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+        {children}
+      </GoogleOAuthProvider>
+    </GoogleDriveContext.Provider>
+  )
 }
 
 export const useGoogleDrive = () => {

@@ -2,6 +2,9 @@
   "profile": {
     "name": "Профиль"
   },
+  "secrets": {
+    "name": "Secrets"
+  },
   "settings": {
     "name": "Настройки",
     "subviews": {
