@@ -2,6 +2,8 @@ import { customFetch } from './customFetch.ts'
 import { TFunction } from 'i18next'
 import { TEnvVars } from '../types'
 import { sendErrorNotification } from '../shared'
+import { ensureAuthorized } from './ensureAuthorized.ts'
+import { AuthContextType } from '../stores'
 
 export async function signIn(
   email: string,
@@ -86,6 +88,7 @@ export async function signInGoogle(
   code: string,
   envs: TEnvVars | undefined,
   t: TFunction,
+  context: AuthContextType,
 ): Promise<Response | null> {
   const response = await customFetch(
     `${envs?.API_SERVER_URL}/auth/signIn/google`,
@@ -100,6 +103,10 @@ export async function signInGoogle(
 
   if (response.ok) {
     return response
+  }
+
+  if (!(await ensureAuthorized(response, context))) {
+    return null
   }
 
   switch (response.status) {
@@ -117,6 +124,7 @@ export async function signInGoogle(
 export async function signOutGoogle(
   envs: TEnvVars | undefined,
   t: TFunction,
+  context: AuthContextType,
 ): Promise<Response | null> {
   const response = await customFetch(`${envs?.API_SERVER_URL}/auth/signOut/google`, null, 'POST', t)
 
@@ -126,6 +134,10 @@ export async function signOutGoogle(
 
   if (response.ok) {
     return response
+  }
+
+  if (!(await ensureAuthorized(response, context))) {
+    return null
   }
 
   switch (response.status) {

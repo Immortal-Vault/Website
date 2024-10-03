@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useAuth, useEnvVars } from '../../../../stores'
 import { toast } from 'react-toastify'
-import { customFetch } from '../../../../api'
+import { customFetch, uploadSecretFile } from '../../../../api'
 import { useEffect, useState } from 'react'
 import { Button } from '@mantine/core'
 import { decrypt, encrypt } from '../../../../shared'
@@ -10,7 +10,7 @@ export const Secrets = (): JSX.Element => {
   const [secrets, setSecrets] = useState<string | null>(null)
   const { envs } = useEnvVars()
   const { t } = useTranslation()
-  const { secretPassword, openSecretPasswordModel } = useAuth()
+  const authContext = useAuth()
 
   const fetchSecrets = async () => {
     const notificationId = toast.loading('Fetching secrets...')
@@ -26,10 +26,10 @@ export const Secrets = (): JSX.Element => {
         return
       }
       setSecrets(secrets)
-      console.log('secrets: ', await decrypt(secrets, secretPassword))
+      console.log('secrets: ', await decrypt(secrets, authContext.secretPassword))
       toast.dismiss(notificationId)
     } catch (error) {
-      openSecretPasswordModel()
+      authContext.openSecretPasswordModel()
       console.error(error)
       toast.error('Failed to decrypt passwords')
       toast.dismiss(notificationId)
@@ -37,29 +37,32 @@ export const Secrets = (): JSX.Element => {
   }
 
   useEffect(() => {
-    if (!secretPassword) {
-      openSecretPasswordModel()
+    if (!authContext.secretPassword) {
+      authContext.openSecretPasswordModel()
     } else {
       fetchSecrets()
     }
-  }, [secretPassword])
+  }, [authContext.secretPassword])
 
   return (
     <div>
       <Button
         onClick={async () => {
           const notificationId = toast.loading('Updating secrets...')
-          const response = await customFetch(
-            `${envs?.API_SERVER_URL}/googleDrive/secretFile`,
-            JSON.stringify({
-              content: await encrypt('{ "version": "0.0.1" }', secretPassword),
-            }),
-            'POST',
+
+          const result = await uploadSecretFile(
+            await encrypt('{ "version": "0.0.1" }', authContext.secretPassword),
+            envs,
             t,
+            authContext,
           )
 
-          const status = response?.ok
-          console.log('status: ', status)
+          if (!result) {
+            console.error('failed')
+            toast.dismiss(notificationId)
+          }
+
+          console.log('status: ', result)
           toast.dismiss(notificationId)
         }}
       >

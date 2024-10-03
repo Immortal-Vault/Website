@@ -1,25 +1,45 @@
 import { useTranslation } from 'react-i18next'
-import { Title, Container, Stack, LoadingOverlay, Button, Badge, Flex } from '@mantine/core'
+import {
+  Badge,
+  Button,
+  Container,
+  Flex,
+  Group,
+  Input,
+  LoadingOverlay,
+  Modal,
+  Stack,
+  Title,
+} from '@mantine/core'
 import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 import { useGoogleLogin } from '@react-oauth/google'
-import { signInGoogle, signOutGoogle } from '../../../../api'
-import { useEnvVars, useGoogleDrive } from '../../../../stores'
+import { signInGoogle, signOutGoogle, uploadSecretFile } from '../../../../api'
+import { useAuth, useEnvVars, useGoogleDrive } from '../../../../stores'
+import { encrypt } from '../../../../shared'
+import { useState } from 'react'
 
 export const Vault = (): JSX.Element => {
   const [loaderVisible, setLoaderState] = useDisclosure(false)
+  const [secretPassword, setSecretPassword] = useState('')
+  const [
+    secretPasswordModalState,
+    { open: openSecretPasswordModel, close: closeSecretPasswordModal },
+  ] = useDisclosure(false)
   const { t } = useTranslation('settings')
   const isMobile = useMediaQuery('(max-width: 768px)')
   const { envs } = useEnvVars()
+  const authContext = useAuth()
   const { googleDriveState, setGoogleDriveState } = useGoogleDrive()
-
-  const googleLoginButton = () => {
-    setLoaderState.open()
-    googleLogin()
-  }
 
   const signOutGoogleButton = async () => {
     setLoaderState.open()
-    await signOutGoogle(envs, t)
+
+    const response = await signOutGoogle(envs, t, authContext)
+    if (!response) {
+      setLoaderState.close()
+      return
+    }
+
     setGoogleDriveState(false)
     setLoaderState.close()
   }
@@ -30,7 +50,24 @@ export const Vault = (): JSX.Element => {
     // eslint-disable-next-line camelcase
     redirect_uri: envs?.GOOGLE_REDIRECT_URI,
     onSuccess: async (codeResponse) => {
-      await signInGoogle(codeResponse.code, envs, t)
+      const response = await signInGoogle(codeResponse.code, envs, t, authContext)
+      if (!response) {
+        setLoaderState.close()
+        return
+      }
+
+      const result = await uploadSecretFile(
+        await encrypt('{ "version": "0.0.1" }', secretPassword),
+        envs,
+        t,
+        authContext,
+      )
+
+      if (!result) {
+        setLoaderState.close()
+        return
+      }
+
       setGoogleDriveState(true)
       setLoaderState.close()
     },
@@ -44,7 +81,7 @@ export const Vault = (): JSX.Element => {
     return state ? (
       <Button onClick={signOutGoogleButton}>{t('vault.google.signOut')}</Button>
     ) : (
-      <Button onClick={googleLoginButton}>{t('vault.google.signIn')}</Button>
+      <Button onClick={openSecretPasswordModel}>{t('vault.google.signIn')}</Button>
     )
   }
 
@@ -90,6 +127,29 @@ export const Vault = (): JSX.Element => {
         overlayProps={{ radius: 'sm', blur: 2 }}
         loaderProps={{ color: 'blue' }}
       />
+      <Modal
+        centered={true}
+        opened={secretPasswordModalState}
+        onClose={closeSecretPasswordModal}
+        size='auto'
+        title='Enter your secure master password'
+        overlayProps={{
+          backgroundOpacity: 0.55,
+          blur: 3,
+        }}
+      >
+        <Input type={'password'} onChange={(e) => setSecretPassword(e.target.value)} />
+        <Group mt='xl' justify={'end'}>
+          <Button
+            onClick={() => {
+              closeSecretPasswordModal()
+              googleLogin()
+            }}
+          >
+            Submit
+          </Button>
+        </Group>
+      </Modal>
       {!isMobile ? <DesktopView /> : <MobileView />}
     </div>
   )

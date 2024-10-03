@@ -9,7 +9,7 @@ import {
   useState,
 } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useEnvVars } from './'
+import { useAuth, useEnvVars } from './'
 import { getGoogleDriveState } from '../api'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 
@@ -32,12 +32,23 @@ interface GoogleDriveProviderProps {
 export const GoogleDriveProvider = ({ children }: GoogleDriveProviderProps) => {
   const { t } = useTranslation()
   const { envs } = useEnvVars()
+  const authContext = useAuth()
 
   const [googleDriveState, setGoogleDriveState] = useState(false)
 
   useEffect(() => {
-    getGoogleDriveState(envs, t).then((state) => setGoogleDriveState(state))
-  }, [])
+    if (!envs) {
+      return
+    }
+
+    getGoogleDriveState(envs, t, authContext).then((state) => {
+      if (!state) {
+        setGoogleDriveState(false)
+        return
+      }
+      setGoogleDriveState(state)
+    })
+  }, [envs])
 
   const contextValue = useMemo(
     () => ({
