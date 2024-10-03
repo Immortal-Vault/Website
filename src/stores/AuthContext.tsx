@@ -4,11 +4,14 @@ import { signOut } from '../api'
 import { useTranslation } from 'react-i18next'
 import { LOCAL_STORAGE, sendNotification } from '../shared'
 import { useEnvVars } from './'
-import { useInterval } from '@mantine/hooks'
+import { useDisclosure, useInterval } from '@mantine/hooks'
+import { Button, Group, Input, Modal } from '@mantine/core'
 
 export interface AuthContextType {
   authState: EAuthState
   authEmail: string
+  secretPassword: string
+  openSecretPasswordModel: () => void
   authSignIn: (email: string) => void
   authSignOut: (expired: boolean) => Promise<void>
 }
@@ -16,6 +19,10 @@ export interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({
   authState: EAuthState.Deauthorized,
   authEmail: '',
+  secretPassword: '',
+  openSecretPasswordModel: function (): void {
+    throw new Error('Function is not implemented.')
+  },
   authSignIn: function (_email: string): void {
     throw new Error('Function is not implemented.')
   },
@@ -31,6 +38,12 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const { t, i18n } = useTranslation()
   const { envs } = useEnvVars()
+  const [
+    secretPasswordModalState,
+    { open: openSecretPasswordModel, close: closeSecretPasswordModal },
+  ] = useDisclosure(false)
+  const [passwordInput, setPasswordInput] = useState('')
+  const [secretPassword, setSecretPassword] = useState('')
   const authPingInterval = useInterval(() => authPing(), 10000)
 
   const [authState, setAuthState] = useState<EAuthState>(
@@ -99,13 +112,46 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     () => ({
       authState,
       authEmail,
+      secretPassword,
+      openSecretPasswordModel,
       authSignIn: setAuthSignIn,
       authSignOut: setAuthSignOut,
     }),
-    [authState, authEmail],
+    [authState, authEmail, secretPassword],
   )
 
-  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
+  return (
+    <>
+      <Modal
+        centered={true}
+        opened={secretPasswordModalState}
+        onClose={closeSecretPasswordModal}
+        size='auto'
+        title='Enter password to decrypt'
+        closeOnClickOutside={false}
+        closeOnEscape={false}
+        withCloseButton={false}
+        overlayProps={{
+          backgroundOpacity: 0.55,
+          blur: 3,
+        }}
+      >
+        <Input type={'password'} onChange={(e) => setPasswordInput(e.target.value)} />
+
+        <Group mt='xl' justify={'end'}>
+          <Button
+            onClick={() => {
+              setSecretPassword(passwordInput)
+              closeSecretPasswordModal()
+            }}
+          >
+            Submit
+          </Button>
+        </Group>
+      </Modal>
+      <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
+    </>
+  )
 }
 
 export const useAuth = () => {

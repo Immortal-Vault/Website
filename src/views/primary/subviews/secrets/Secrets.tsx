@@ -1,37 +1,48 @@
 import { useTranslation } from 'react-i18next'
-import { useEnvVars } from '../../../../stores'
+import { useAuth, useEnvVars } from '../../../../stores'
 import { toast } from 'react-toastify'
 import { customFetch } from '../../../../api'
 import { useEffect, useState } from 'react'
 import { Button } from '@mantine/core'
+import { decrypt, encrypt } from '../../../../shared'
 
 export const Secrets = (): JSX.Element => {
   const [secrets, setSecrets] = useState<string | null>(null)
   const { envs } = useEnvVars()
   const { t } = useTranslation()
+  const { secretPassword, openSecretPasswordModel } = useAuth()
+
+  const fetchSecrets = async () => {
+    const notificationId = toast.loading('Fetching secrets...')
+    try {
+      const response = await customFetch(
+        `${envs?.API_SERVER_URL}/googleDrive/secretFile`,
+        null,
+        'GET',
+        t,
+      )
+      const secrets = await response?.text()
+      if (!secrets) {
+        return
+      }
+      setSecrets(secrets)
+      console.log('secrets: ', await decrypt(secrets, secretPassword))
+      toast.dismiss(notificationId)
+    } catch (error) {
+      openSecretPasswordModel()
+      console.error(error)
+      toast.error('Failed to decrypt passwords')
+      toast.dismiss(notificationId)
+    }
+  }
 
   useEffect(() => {
-    const fetchSecrets = async () => {
-      const notificationId = toast.loading('Fetching secrets...')
-      try {
-        const response = await customFetch(
-          `${envs?.API_SERVER_URL}/googleDrive/secretFile`,
-          null,
-          'GET',
-          t,
-        )
-        const secrets = await response?.json()
-        setSecrets(secrets)
-        console.log('secrets: ', secrets)
-        toast.dismiss(notificationId)
-      } catch (error) {
-        toast.error('Failed to fetch passwords')
-        toast.dismiss(notificationId)
-      }
+    if (!secretPassword) {
+      openSecretPasswordModel()
+    } else {
+      fetchSecrets()
     }
-
-    fetchSecrets()
-  }, [])
+  }, [secretPassword])
 
   return (
     <div>
@@ -41,7 +52,7 @@ export const Secrets = (): JSX.Element => {
           const response = await customFetch(
             `${envs?.API_SERVER_URL}/googleDrive/secretFile`,
             JSON.stringify({
-              content: '{ "version": "0.0.1" }',
+              content: await encrypt('{ "version": "0.0.1" }', secretPassword),
             }),
             'POST',
             t,
