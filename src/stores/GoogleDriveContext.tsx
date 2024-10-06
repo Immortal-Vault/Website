@@ -13,12 +13,12 @@ import { useAuth, useEnvVars } from './'
 import { getGoogleDriveState } from '../api'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 
-export interface GoogleDriveType {
+export interface GoogleDriveContextType {
   googleDriveState: boolean
   setGoogleDriveState: Dispatch<SetStateAction<boolean>>
 }
 
-const GoogleDriveContext = createContext<GoogleDriveType>({
+const GoogleDriveContext = createContext<GoogleDriveContextType>({
   googleDriveState: false,
   setGoogleDriveState: function (): void {
     throw new Error('Function is not implemented.')

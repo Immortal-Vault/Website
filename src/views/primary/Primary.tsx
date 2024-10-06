@@ -1,5 +1,5 @@
 import { AppShell, Burger, Group, Image, ScrollArea, Title } from '@mantine/core'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import {
   EPrimaryViewPage,
   EPrimaryViewTabType,
@@ -10,14 +10,13 @@ import { useDisclosure } from '@mantine/hooks'
 import { createTab, LOCAL_STORAGE, sendSuccessNotification } from '../../shared'
 import { Profile, Secrets, Settings } from './subviews'
 import { useTranslation } from 'react-i18next'
-import { useAuth } from '../../stores'
+import { useAuth, useMenu } from '../../stores'
 
 export default function Primary() {
   const { t, i18n } = useTranslation('views')
   const { authSignOut } = useAuth()
+  const { currentPage, settingsPage, setCurrentPage, setSettingsPage } = useMenu()
   const [burgerState, { toggle, close: closeBurger }] = useDisclosure()
-  const [currentPage, setCurrentPage] = useState(EPrimaryViewPage.Profile)
-  const [settingsPage, setSettingsPage] = useState(ESettingsViewPage.Main)
 
   useEffect(() => {
     const userLocalization = localStorage.getItem(LOCAL_STORAGE.USER_LOCALE)

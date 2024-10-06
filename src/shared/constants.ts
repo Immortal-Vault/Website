@@ -3,7 +3,7 @@
   SIGN_IN: '/auth/signIn',
   SIGN_IN_APPROVE: '/auth/signIn/approve',
   SIGN_UP: '/auth/signUp',
-  MAIN_MENU: '/main_menu',
+  MAIN_MENU: '/menu',
 }
 
 export const LOCAL_STORAGE = {

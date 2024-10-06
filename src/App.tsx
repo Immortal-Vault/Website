@@ -8,7 +8,7 @@ import Primary from './views/primary/Primary.tsx'
 import { ErrorBoundary, ErrorBoundaryError } from './components/errors'
 import { useMediaQuery } from '@mantine/hooks'
 import { ProtectedRoute } from './components/router/ProtectedRoute.tsx'
-import { EnvVarsProvider, AuthProvider, GoogleDriveProvider } from './stores'
+import { EnvVarsProvider, AuthProvider, GoogleDriveProvider, MenuProvider } from './stores'
 import { NonAuthorizedRoute } from './components/router/NonAuthorizedRoute.tsx'
 import ApproveSignIn from './views/auth/ApproveSignIn.tsx'
 
@@ -78,11 +78,13 @@ export default function App() {
           pauseOnHover={false}
         />
         <EnvVarsProvider>
-          <AuthProvider>
-            <GoogleDriveProvider>
-              <RouterProvider router={router} />
-            </GoogleDriveProvider>
-          </AuthProvider>
+          <MenuProvider>
+            <AuthProvider>
+              <GoogleDriveProvider>
+                <RouterProvider router={router} />
+              </GoogleDriveProvider>
+            </AuthProvider>
+          </MenuProvider>
         </EnvVarsProvider>
       </MantineProvider>
     </ErrorBoundary>

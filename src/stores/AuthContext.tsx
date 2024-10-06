@@ -1,9 +1,9 @@
 ﻿import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react'
-import { EAuthState } from '../types'
+import { EAuthState, EPrimaryViewPage } from '../types'
 import { signOut } from '../api'
 import { useTranslation } from 'react-i18next'
 import { LOCAL_STORAGE, sendNotification } from '../shared'
-import { useEnvVars } from './'
+import { useEnvVars, useMenu } from './'
 import { useDisclosure, useInterval } from '@mantine/hooks'
 import { Button, Group, Input, Modal } from '@mantine/core'
 
@@ -38,6 +38,7 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const { t, i18n } = useTranslation()
   const { envs } = useEnvVars()
+  const { setCurrentPage } = useMenu()
   const [
     secretPasswordModalState,
     { open: openSecretPasswordModel, close: closeSecretPasswordModal },
@@ -45,7 +46,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [passwordInput, setPasswordInput] = useState('')
   const [secretPassword, setSecretPassword] = useState('')
   const authPingInterval = useInterval(() => authPing(), 10000)
-
   const [authState, setAuthState] = useState<EAuthState>(
     (localStorage.getItem(LOCAL_STORAGE.AUTH_STATE) as EAuthState) ?? EAuthState.Deauthorized,
   )
@@ -139,6 +139,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         <Input type={'password'} onChange={(e) => setPasswordInput(e.target.value)} />
 
         <Group mt='xl' justify={'end'}>
+          <Button
+            onClick={() => {
+              setCurrentPage(EPrimaryViewPage.Profile)
+              closeSecretPasswordModal()
+            }}
+          >
+            Cancel
+          </Button>
           <Button
             onClick={() => {
               setSecretPassword(passwordInput)
