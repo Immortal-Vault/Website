@@ -1,11 +1,19 @@
 import { Button, Flex, Group, Text, Title } from '@mantine/core'
-import { FaExternalLinkAlt, FaUserAlt, FaLock } from 'react-icons/fa'
+import { FaExternalLinkAlt, FaUserAlt, FaLock, FaAddressCard, FaClock } from 'react-icons/fa'
 import { TSecret } from '../types'
+import { useEffect, useState } from 'react'
 
 export const Secret = (props: { secret: TSecret }) => {
+  const [showPassword, setShowPassword] = useState(false)
+
+  useEffect(() => {
+    setShowPassword(false)
+  }, [])
+
   return (
     <>
-      <Group align='center' justify='space-between' mb='xl'>
+      <Group align='center' mb='xl'>
+        <FaAddressCard />
         <Title order={3}>{props.secret.label}</Title>
       </Group>
       <Flex direction='column' mb='xl'>
@@ -17,8 +25,9 @@ export const Secret = (props: { secret: TSecret }) => {
         <Group>
           <FaLock />
           <Text c='gray'>Password:</Text>
-          <Button variant='outline' size='xs' c='green'>
-            Show
+          {showPassword && props.secret.password}
+          <Button size='xs' onClick={() => setShowPassword(!showPassword)}>
+            {showPassword ? 'Hide' : 'Show'}
           </Button>
         </Group>
         <Group>
@@ -30,8 +39,14 @@ export const Secret = (props: { secret: TSecret }) => {
         </Group>
       </Flex>
       <Flex direction='column'>
-        <Text c='gray'>Last Updated: {new Date(props.secret.lastUpdated).toLocaleString()}</Text>
-        <Text c='gray'>Created: {new Date(props.secret.lastUpdated).toLocaleString()}</Text>
+        <Group>
+          <FaClock />
+          <Text c='gray'>Last Updated: {new Date(props.secret.lastUpdated).toLocaleString()}</Text>
+        </Group>
+        <Group>
+          <FaClock />
+          <Text c='gray'>Created: {new Date(props.secret.lastUpdated).toLocaleString()}</Text>
+        </Group>
       </Flex>
     </>
   )

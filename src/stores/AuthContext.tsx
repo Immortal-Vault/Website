@@ -127,7 +127,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         opened={secretPasswordModalState}
         onClose={closeSecretPasswordModal}
         size='auto'
-        title='Enter password to decrypt'
+        title='Enter master password'
         closeOnClickOutside={false}
         closeOnEscape={false}
         withCloseButton={false}

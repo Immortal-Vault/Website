@@ -50,6 +50,8 @@ export const Vault = (): JSX.Element => {
     // eslint-disable-next-line camelcase
     redirect_uri: envs?.GOOGLE_REDIRECT_URI,
     onSuccess: async (codeResponse) => {
+      setLoaderState.open()
+
       const response = await signInGoogle(codeResponse.code, envs, t, authContext)
       if (!response) {
         setLoaderState.close()
@@ -57,7 +59,13 @@ export const Vault = (): JSX.Element => {
       }
 
       const result = await uploadSecretFile(
-        await encrypt('{ "version": "0.0.1" }', secretPassword),
+        await encrypt(
+          JSON.stringify({
+            version: '0.0.1',
+            secrets: [],
+          }),
+          secretPassword,
+        ),
         envs,
         t,
         authContext,
