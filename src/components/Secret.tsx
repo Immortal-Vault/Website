@@ -1,4 +1,4 @@
-import { Button, Flex, Group, Text, Title } from '@mantine/core'
+import { Anchor, Button, Flex, Group, Text, Title } from '@mantine/core'
 import { FaExternalLinkAlt, FaUserAlt, FaLock, FaAddressCard, FaClock } from 'react-icons/fa'
 import { TSecret } from '../types'
 import { useEffect, useState } from 'react'
@@ -30,13 +30,23 @@ export const Secret = (props: { secret: TSecret }) => {
             {showPassword ? 'Hide' : 'Show'}
           </Button>
         </Group>
-        <Group>
-          <FaExternalLinkAlt />
-          <Text c='gray'>Website:</Text>
-          <Text component='a' href={props.secret.website} c='blue' target='_blank'>
-            {props.secret.website}
-          </Text>
-        </Group>
+        {props.secret.website && (
+          <Group>
+            <FaExternalLinkAlt />
+            <Text c='gray'>Website:</Text>
+            <Anchor
+              href={
+                props.secret.website.startsWith('http')
+                  ? props.secret.website
+                  : `https://${props.secret.website}`
+              }
+              target='_blank'
+              underline={'never'}
+            >
+              {props.secret.website}
+            </Anchor>
+          </Group>
+        )}
       </Flex>
       <Flex direction='column'>
         <Group>
