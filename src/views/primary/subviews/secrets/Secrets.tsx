@@ -41,6 +41,9 @@ export const Secrets = () => {
       phone: '',
       notes: '',
     },
+    validate: {
+      label: (val) => (val.length < 1 ? 'label tooLittle' : null),
+    },
   })
 
   const fetchSecrets = async () => {
@@ -98,6 +101,11 @@ export const Secrets = () => {
 
   const addSecret = async () => {
     const values = addSecretForm.values
+
+    if (values.label.length < 1) {
+      return
+    }
+
     const secret: TSecret = {
       id: uuid(),
       lastUpdated: Date.now(),
@@ -139,6 +147,7 @@ export const Secrets = () => {
             label={'Label'}
             value={addSecretForm.values.label}
             onChange={(event) => addSecretForm.setFieldValue('label', event.currentTarget.value)}
+            error={addSecretForm.errors.label && t(addSecretForm.errors.label.toString())}
           />
           <TextInput
             label={'Username'}
@@ -184,6 +193,9 @@ export const Secrets = () => {
           </Button>
           <Button
             onClick={() => {
+              if (addSecretForm.validate().hasErrors) {
+                return
+              }
               addSecret()
               closeAddModal()
               addSecretForm.reset()
