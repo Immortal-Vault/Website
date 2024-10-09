@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuth, useEnvVars } from './'
 import { getGoogleDriveState } from '../api'
 import { GoogleOAuthProvider } from '@react-oauth/google'
+import { EAuthState } from '../types'
 
 export interface GoogleDriveContextType {
   googleDriveState: boolean
@@ -37,7 +38,7 @@ export const GoogleDriveProvider = ({ children }: GoogleDriveProviderProps) => {
   const [googleDriveState, setGoogleDriveState] = useState(false)
 
   useEffect(() => {
-    if (!envs) {
+    if (!envs || authContext.authState != EAuthState.Authorized) {
       return
     }
 
@@ -48,7 +49,7 @@ export const GoogleDriveProvider = ({ children }: GoogleDriveProviderProps) => {
       }
       setGoogleDriveState(state)
     })
-  }, [envs])
+  }, [envs, authContext.authState])
 
   const contextValue = useMemo(
     () => ({
