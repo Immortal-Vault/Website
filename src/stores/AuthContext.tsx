@@ -45,11 +45,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   ] = useDisclosure(false)
   const [passwordInput, setPasswordInput] = useState('')
   const [secretPassword, setSecretPassword] = useState('')
+  const [authEmail, setAuthEmail] = useState('')
   const authPingInterval = useInterval(() => authPing(), 10000)
   const [authState, setAuthState] = useState<EAuthState>(
     (localStorage.getItem(LOCAL_STORAGE.AUTH_STATE) as EAuthState) ?? EAuthState.Deauthorized,
   )
-  const [authEmail, setAuthEmail] = useState('')
 
   const setAuthSignIn = (email: string): void => {
     setAuthState(EAuthState.Authorized)
@@ -64,6 +64,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     await signOut(envs, t)
     setAuthState(EAuthState.Deauthorized)
     setAuthEmail('')
+    setSecretPassword('')
     localStorage.removeItem(LOCAL_STORAGE.USER_LOCALE)
     i18n.changeLanguage(undefined)
 
