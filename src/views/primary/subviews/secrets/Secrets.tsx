@@ -11,7 +11,7 @@ import {
   Textarea,
   TextInput,
 } from '@mantine/core'
-import { TSecret } from '../../../../types'
+import { TSecret, TSecretFile } from '../../../../types'
 import { Secret } from '../../../../components'
 import { useAuth, useEnvVars } from '../../../../stores'
 import { useTranslation } from 'react-i18next'
@@ -61,7 +61,7 @@ export const Secrets = () => {
       }
 
       const decryptedSecretFile = await decrypt(secretFileResponse, authContext.secretPassword)
-      const secretFileInfo = JSON.parse(decryptedSecretFile)
+      const secretFileInfo = JSON.parse(decryptedSecretFile) as TSecretFile
       const secrets = secretFileInfo.secrets
       setSecrets(secrets ?? [])
 
@@ -77,14 +77,12 @@ export const Secrets = () => {
   const saveSecrets = async (secrets: TSecret[]) => {
     const notificationId = toast.loading('Updating secrets...')
 
+    const secretFile: TSecretFile = {
+      version: '0.0.1',
+      secrets,
+    }
     const result = await uploadSecretFile(
-      await encrypt(
-        JSON.stringify({
-          version: '0.0.1',
-          secrets,
-        }),
-        authContext.secretPassword,
-      ),
+      await encrypt(JSON.stringify(secretFile), authContext.secretPassword),
       envs,
       t,
       authContext,

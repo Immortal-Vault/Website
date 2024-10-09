@@ -9,15 +9,15 @@ export async function getGoogleDriveState(
   envs: TEnvVars | undefined,
   t: TFunction,
   context: AuthContextType,
-): Promise<boolean | null> {
+): Promise<string | null> {
   const response = await customFetch(`${envs?.API_SERVER_URL}/auth/google`, null, 'GET', t)
 
   if (!response) {
-    return false
+    return null
   }
 
   if (response.ok) {
-    return true
+    return (await response.json()).email
   }
 
   if (!(await ensureAuthorized(response, context))) {
@@ -26,11 +26,11 @@ export async function getGoogleDriveState(
 
   switch (response.status) {
     case 404: {
-      return false
+      return null
     }
     default: {
       sendErrorNotification(t('notifications:failedError'))
-      return false
+      return null
     }
   }
 }

@@ -10,7 +10,7 @@
   },
   "vault": {
     "states": {
-      "connected": "Connected",
+      "connected": "Connected {{email}}",
       "disconnected": "Disconnected"
     },
     "google": {

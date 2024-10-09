@@ -17,6 +17,7 @@ import { signInGoogle, signOutGoogle, uploadSecretFile } from '../../../../api'
 import { useAuth, useEnvVars, useGoogleDrive } from '../../../../stores'
 import { encrypt } from '../../../../shared'
 import { useState } from 'react'
+import { TSecretFile } from '../../../../types'
 
 export const Vault = (): JSX.Element => {
   const [loaderVisible, setLoaderState] = useDisclosure(false)
@@ -25,16 +26,18 @@ export const Vault = (): JSX.Element => {
     secretPasswordModalState,
     { open: openSecretPasswordModel, close: closeSecretPasswordModal },
   ] = useDisclosure(false)
+  const [keepDataModalState, { open: openKeepDataModal, close: closeKeepDataModal }] =
+    useDisclosure(false)
   const { t } = useTranslation('settings')
   const isMobile = useMediaQuery('(max-width: 768px)')
   const { envs } = useEnvVars()
   const authContext = useAuth()
-  const { googleDriveState, setGoogleDriveState } = useGoogleDrive()
+  const { googleDriveState, googleDriveEmail, setGoogleDriveState } = useGoogleDrive()
 
-  const signOutGoogleButton = async () => {
+  const signOutGoogleButton = async (keepData: boolean) => {
     setLoaderState.open()
 
-    const response = await signOutGoogle(envs, t, authContext)
+    const response = await signOutGoogle(keepData, envs, t, authContext)
     if (!response) {
       setLoaderState.close()
       return
@@ -58,22 +61,24 @@ export const Vault = (): JSX.Element => {
         return
       }
 
-      const result = await uploadSecretFile(
-        await encrypt(
-          JSON.stringify({
-            version: '0.0.1',
-            secrets: [],
-          }),
-          secretPassword,
-        ),
-        envs,
-        t,
-        authContext,
-      )
+      const hasSecretFile = (await response.json()).hasSecretFile
 
-      if (!result) {
-        setLoaderState.close()
-        return
+      if (!hasSecretFile) {
+        const secretFile: TSecretFile = {
+          version: '0.0.1',
+          secrets: [],
+        }
+        const result = await uploadSecretFile(
+          await encrypt(JSON.stringify(secretFile), secretPassword),
+          envs,
+          t,
+          authContext,
+        )
+
+        if (!result) {
+          setLoaderState.close()
+          return
+        }
       }
 
       setGoogleDriveState(true)
@@ -87,7 +92,7 @@ export const Vault = (): JSX.Element => {
 
   const getGoogleStateButton = (state: boolean) => {
     return state ? (
-      <Button onClick={signOutGoogleButton}>{t('vault.google.signOut')}</Button>
+      <Button onClick={openKeepDataModal}>{t('vault.google.signOut')}</Button>
     ) : (
       <Button onClick={openSecretPasswordModel}>{t('vault.google.signIn')}</Button>
     )
@@ -103,7 +108,9 @@ export const Vault = (): JSX.Element => {
         <Flex direction={'row'} align={'center'} justify={'center'} mb='md'>
           <Title order={3}>{t('Google disk')}:&nbsp;</Title>
           <Badge color={googleDriveState ? 'green' : 'red'}>
-            {googleDriveState ? t('vault.states.connected') : t('vault.states.disconnected')}
+            {googleDriveState
+              ? t('vault.states.connected', { email: googleDriveEmail })
+              : t('vault.states.disconnected')}
           </Badge>
         </Flex>
         {getGoogleStateButton(googleDriveState)}
@@ -120,7 +127,9 @@ export const Vault = (): JSX.Element => {
       <Flex direction={'row'} mb='md' align={'center'} gap={'xs'}>
         <Title order={3}>{t('Google disk')}:&nbsp;</Title>
         <Badge color={googleDriveState ? 'green' : 'red'}>
-          {googleDriveState ? t('vault.states.connected') : t('vault.states.disconnected')}
+          {googleDriveState
+            ? t('vault.states.connected', { email: googleDriveEmail })
+            : t('vault.states.disconnected')}
         </Badge>
         {getGoogleStateButton(googleDriveState)}
       </Flex>
@@ -135,6 +144,36 @@ export const Vault = (): JSX.Element => {
         overlayProps={{ radius: 'sm', blur: 2 }}
         loaderProps={{ color: 'blue' }}
       />
+      <Modal
+        centered={true}
+        opened={keepDataModalState}
+        onClose={closeKeepDataModal}
+        size='auto'
+        title={'Do you want to keep or remove data?'}
+        overlayProps={{
+          backgroundOpacity: 0.55,
+          blur: 3,
+        }}
+      >
+        <Group mt='xl' justify={'end'}>
+          <Button
+            onClick={() => {
+              signOutGoogleButton(false)
+              closeKeepDataModal()
+            }}
+          >
+            Remove
+          </Button>
+          <Button
+            onClick={() => {
+              signOutGoogleButton(true)
+              closeKeepDataModal()
+            }}
+          >
+            Keep
+          </Button>
+        </Group>
+      </Modal>
       <Modal
         centered={true}
         opened={secretPasswordModalState}

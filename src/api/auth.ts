@@ -122,11 +122,17 @@ export async function signInGoogle(
 }
 
 export async function signOutGoogle(
+  keepData: boolean,
   envs: TEnvVars | undefined,
   t: TFunction,
   context: AuthContextType,
 ): Promise<Response | null> {
-  const response = await customFetch(`${envs?.API_SERVER_URL}/auth/signOut/google`, null, 'POST', t)
+  const response = await customFetch(
+    `${envs?.API_SERVER_URL}/auth/signOut/google`,
+    JSON.stringify({ keepData }),
+    'POST',
+    t,
+  )
 
   if (!response) {
     return null

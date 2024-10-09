@@ -16,11 +16,13 @@ import { EAuthState } from '../types'
 
 export interface GoogleDriveContextType {
   googleDriveState: boolean
+  googleDriveEmail: string
   setGoogleDriveState: Dispatch<SetStateAction<boolean>>
 }
 
 const GoogleDriveContext = createContext<GoogleDriveContextType>({
   googleDriveState: false,
+  googleDriveEmail: '',
   setGoogleDriveState: function (): void {
     throw new Error('Function is not implemented.')
   },
@@ -36,27 +38,33 @@ export const GoogleDriveProvider = ({ children }: GoogleDriveProviderProps) => {
   const authContext = useAuth()
 
   const [googleDriveState, setGoogleDriveState] = useState(false)
+  const [googleDriveEmail, setGoogleDriveEmail] = useState('')
+
+  const fetchGoogleDriveState = async () => {
+    const googleDriveEmail = await getGoogleDriveState(envs, t, authContext)
+    if (!googleDriveEmail) {
+      setGoogleDriveState(false)
+      return
+    }
+    setGoogleDriveState(true)
+    setGoogleDriveEmail(googleDriveEmail)
+  }
 
   useEffect(() => {
     if (!envs || authContext.authState != EAuthState.Authorized) {
       return
     }
 
-    getGoogleDriveState(envs, t, authContext).then((state) => {
-      if (!state) {
-        setGoogleDriveState(false)
-        return
-      }
-      setGoogleDriveState(state)
-    })
+    fetchGoogleDriveState()
   }, [envs, authContext.authState])
 
   const contextValue = useMemo(
     () => ({
       googleDriveState,
+      googleDriveEmail,
       setGoogleDriveState,
     }),
-    [googleDriveState],
+    [googleDriveState, googleDriveEmail],
   )
 
   return (
