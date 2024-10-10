@@ -128,7 +128,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         opened={secretPasswordModalState}
         onClose={closeSecretPasswordModal}
         size='auto'
-        title='Enter master password'
+        title={t('settings:vault.modals.masterPassword.title')}
         closeOnClickOutside={false}
         closeOnEscape={false}
         withCloseButton={false}
@@ -146,7 +146,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
               closeSecretPasswordModal()
             }}
           >
-            Cancel
+            {t('settings:vault.modals.masterPassword.buttons.cancel')}
           </Button>
           <Button
             onClick={() => {
@@ -154,7 +154,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
               closeSecretPasswordModal()
             }}
           >
-            Submit
+            {t('settings:vault.modals.masterPassword.buttons.submit')}
           </Button>
         </Group>
       </Modal>
