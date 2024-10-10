@@ -9,6 +9,21 @@
     }
   },
   "vault": {
+    "modals": {
+      "keepData": {
+        "title": "Вы хотите оставить или удалить данные навсегда?",
+        "buttons": {
+          "keep": "Оставить",
+          "remove": "Удалить"
+        }
+      },
+      "masterPassword": {
+        "title": "Введите секретный мастер пароль",
+        "buttons": {
+          "submit": "Подтвердить"
+        }
+      }
+    },
     "states": {
       "connected": "Подключен {{email}}",
       "disconnected": "Не подключен"

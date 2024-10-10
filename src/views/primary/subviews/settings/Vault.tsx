@@ -149,7 +149,7 @@ export const Vault = (): JSX.Element => {
         opened={keepDataModalState}
         onClose={closeKeepDataModal}
         size='auto'
-        title={'Do you want to keep or remove data?'}
+        title={t('vault.modals.keepData.title')}
         overlayProps={{
           backgroundOpacity: 0.55,
           blur: 3,
@@ -162,7 +162,7 @@ export const Vault = (): JSX.Element => {
               closeKeepDataModal()
             }}
           >
-            Remove
+            {t('vault.modals.keepData.buttons.remove')}
           </Button>
           <Button
             onClick={() => {
@@ -170,7 +170,7 @@ export const Vault = (): JSX.Element => {
               closeKeepDataModal()
             }}
           >
-            Keep
+            {t('vault.modals.keepData.buttons.keep')}
           </Button>
         </Group>
       </Modal>
@@ -179,7 +179,7 @@ export const Vault = (): JSX.Element => {
         opened={secretPasswordModalState}
         onClose={closeSecretPasswordModal}
         size='auto'
-        title='Enter your secure master password'
+        title={t('vault.modals.masterPassword.title')}
         overlayProps={{
           backgroundOpacity: 0.55,
           blur: 3,
@@ -193,7 +193,7 @@ export const Vault = (): JSX.Element => {
               googleLogin()
             }}
           >
-            Submit
+            {t('vault.modals.masterPassword.buttons.submit')}
           </Button>
         </Group>
       </Modal>

@@ -9,6 +9,21 @@
     }
   },
   "vault": {
+    "modals": {
+      "keepData": {
+        "title": "Do you want to keep or remove data?",
+        "buttons": {
+          "keep": "Keep",
+          "remove": "Remove"
+        }
+      },
+      "masterPassword": {
+        "title": "Enter your secure master password",
+        "buttons": {
+          "submit": "Submit"
+        }
+      }
+    },
     "states": {
       "connected": "Connected {{email}}",
       "disconnected": "Disconnected"
