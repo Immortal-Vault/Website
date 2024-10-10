@@ -25,7 +25,7 @@ import { useForm } from '@mantine/form'
 export const Secrets = () => {
   const isMobile = useMediaQuery('(max-width: 768px)')
   const { envs } = useEnvVars()
-  const { t } = useTranslation()
+  const { t } = useTranslation('secrets')
   const authContext = useAuth()
   const [secrets, setSecrets] = useState<TSecret[]>([])
   const [selectedSecret, setSelectedSecret] = useState<TSecret | null>(null)
@@ -42,12 +42,12 @@ export const Secrets = () => {
       notes: '',
     },
     validate: {
-      label: (val) => (val.length < 1 ? 'label tooLittle' : null),
+      label: (val) => (val.length < 1 ? 'fields.label.canNotBeEmpty' : null),
     },
   })
 
   const fetchSecrets = async () => {
-    const notificationId = toast.loading('Fetching secrets...')
+    const notificationId = toast.loading(t('data.fetch.inProgress'))
     try {
       const response = await customFetch(
         `${envs?.API_SERVER_URL}/googleDrive/secretFile`,
@@ -57,6 +57,8 @@ export const Secrets = () => {
       )
       const secretFileResponse = await response?.text()
       if (!secretFileResponse) {
+        toast.error(t('data.fetch.failed'))
+        toast.dismiss(notificationId)
         return
       }
 
@@ -69,13 +71,13 @@ export const Secrets = () => {
     } catch (error) {
       authContext.openSecretPasswordModel()
       console.error(error)
-      toast.error('Failed to decrypt secrets')
+      toast.error(t('incorrectMasterPassword'))
       toast.dismiss(notificationId)
     }
   }
 
   const saveSecrets = async (secrets: TSecret[]) => {
-    const notificationId = toast.loading('Updating secrets...')
+    const notificationId = toast.loading(t('data.updating'))
 
     const secretFile: TSecretFile = {
       version: '0.0.1',
@@ -89,11 +91,12 @@ export const Secrets = () => {
     )
 
     if (!result) {
-      console.error('failed')
+      toast.error(t('data.failed'))
       toast.dismiss(notificationId)
+      return
     }
 
-    console.log('status: ', result)
+    toast.success(t('data.updated'))
     toast.dismiss(notificationId)
   }
 
@@ -131,7 +134,7 @@ export const Secrets = () => {
         opened={addModalState}
         onClose={closeAddModal}
         size='auto'
-        title='Add new secret'
+        title={t('modals.addSecret.title')}
         closeOnClickOutside={false}
         closeOnEscape={false}
         withCloseButton={false}
@@ -142,39 +145,40 @@ export const Secrets = () => {
       >
         <Flex direction={'column'} gap={'md'}>
           <TextInput
-            label={'Label'}
+            label={t('fields.label.title')}
             value={addSecretForm.values.label}
             onChange={(event) => addSecretForm.setFieldValue('label', event.currentTarget.value)}
             error={addSecretForm.errors.label && t(addSecretForm.errors.label.toString())}
           />
           <TextInput
-            label={'Username'}
+            label={t('fields.username.title')}
             value={addSecretForm.values.username}
             onChange={(event) => addSecretForm.setFieldValue('username', event.currentTarget.value)}
           />
           <TextInput
-            label={'Email'}
+            label={t('fields.email.title')}
             value={addSecretForm.values.email}
             onChange={(event) => addSecretForm.setFieldValue('email', event.currentTarget.value)}
           />
           <TextInput
-            label={'Password'}
+            label={t('fields.password.title')}
             type={'password'}
             value={addSecretForm.values.password}
             onChange={(event) => addSecretForm.setFieldValue('password', event.currentTarget.value)}
           />
           <TextInput
-            label={'Website'}
+            label={t('fields.website.title')}
             value={addSecretForm.values.website}
             onChange={(event) => addSecretForm.setFieldValue('website', event.currentTarget.value)}
           />
           <TextInput
-            label={'Phone'}
+            label={t('fields.phone.title')}
+            type={'phone'}
             value={addSecretForm.values.phone}
             onChange={(event) => addSecretForm.setFieldValue('phone', event.currentTarget.value)}
           />
           <Textarea
-            label={'Notes'}
+            label={t('fields.notes.title')}
             value={addSecretForm.values.notes}
             onChange={(event) => addSecretForm.setFieldValue('notes', event.currentTarget.value)}
           />
@@ -187,19 +191,20 @@ export const Secrets = () => {
               addSecretForm.reset()
             }}
           >
-            Cancel
+            {t('modals.addSecret.buttons.cancel')}
           </Button>
           <Button
             onClick={() => {
               if (addSecretForm.validate().hasErrors) {
                 return
               }
+
               addSecret()
               closeAddModal()
               addSecretForm.reset()
             }}
           >
-            Submit
+            {t('modals.addSecret.buttons.submit')}
           </Button>
         </Group>
       </Modal>
@@ -207,12 +212,12 @@ export const Secrets = () => {
         <Grid.Col span={3} style={{ height: '100vh', paddingRight: '20px' }}>
           <Flex gap={'md'}>
             <Button mb={'md'} fullWidth={isMobile} onClick={openAddModal}>
-              Add
+              {t('buttons.add')}
             </Button>
           </Flex>
-          <Input placeholder='Search' mb={'md'} />
+          <Input placeholder={t('search.placeholder')} mb={'md'} />
           <Text size='lg' c='gray' mb='md'>
-            Elements
+            {t('elements')}
           </Text>
           <List spacing='md'>
             {secrets.map((secret) => (
@@ -244,7 +249,7 @@ export const Secrets = () => {
           {selectedSecret ? (
             <Secret secret={selectedSecret} />
           ) : (
-            <Text c='gray'>Select an element to view details</Text>
+            <Text c='gray'>{t('unselectedSecretPlaceholder')}</Text>
           )}
         </Grid.Col>
       </Grid>
