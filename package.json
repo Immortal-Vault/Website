@@ -10,9 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@mantine/core": "^7.10.2",
-    "@mantine/form": "^7.10.2",
-    "@mantine/hooks": "^7.10.2",
+    "@mantine/core": "^7.13.2",
+    "@mantine/form": "^7.13.2",
+    "@mantine/hooks": "^7.13.2",
     "@react-oauth/google": "^0.12.1",
     "eslint-config-next": "^14.2.4",
     "eslint-config-prettier": "^9.1.0",
