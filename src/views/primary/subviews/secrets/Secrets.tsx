@@ -83,7 +83,7 @@ export const Secrets = () => {
       const secretFileInfo = JSON.parse(decryptedSecretFile) as TSecretFile
       const secrets = secretFileInfo.secrets
       setSecrets(secrets ?? [])
-      handleSearch(searchQuery)
+      setFilteredSecrets(secrets ?? [])
 
       toast.dismiss(notificationId)
     } catch (error) {
@@ -134,7 +134,7 @@ export const Secrets = () => {
 
     const newSecrets = [secret, ...secrets]
     setSecrets(newSecrets)
-    handleSearch(searchQuery)
+    setFilteredSecrets(newSecrets)
     await saveSecrets(newSecrets)
   }
 
@@ -171,7 +171,7 @@ export const Secrets = () => {
 
     const newSecrets = [...importedSecrets, ...secrets]
     setSecrets(newSecrets)
-    handleSearch(searchQuery)
+    setFilteredSecrets(newSecrets)
     await saveSecrets(newSecrets)
   }
 
