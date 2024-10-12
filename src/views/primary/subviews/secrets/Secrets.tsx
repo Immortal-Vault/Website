@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import {
-  Button, Divider,
+  Button,
+  Divider,
+  Drawer,
   FileInput,
   Flex,
   Grid,
@@ -8,11 +10,18 @@ import {
   Input,
   List,
   Modal,
+  ScrollArea,
   Text,
   Textarea,
   TextInput,
 } from '@mantine/core'
-import { TSecret, TSecretFile } from '../../../../types'
+import {
+  TSecret,
+  TSecretFile,
+  TEnpassField,
+  TEnpassItem,
+  TEnpassSecretFile,
+} from '../../../../types'
 import { Secret } from '../../../../components'
 import { useAuth, useEnvVars } from '../../../../stores'
 import { useTranslation } from 'react-i18next'
@@ -22,7 +31,7 @@ import { decrypt, encrypt } from '../../../../shared'
 import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 import { v7 as uuid } from 'uuid'
 import { useForm } from '@mantine/form'
-import { TEnpassField, TEnpassItem, TEnpassSecretFile } from '../../../../types/enpass'
+import { FaLock } from 'react-icons/fa'
 
 export const Secrets = () => {
   const isMobile = useMediaQuery('(max-width: 768px)')
@@ -35,6 +44,7 @@ export const Secrets = () => {
   const [importModalState, { open: openImportModal, close: closeImportModal }] =
     useDisclosure(false)
   const [importedSecretFile, setImportedSecretFile] = useState<File | null>(null)
+  const [drawerState, { open: openDrawer, close: closeDrawer }] = useDisclosure(false)
 
   const addSecretForm = useForm({
     initialValues: {
@@ -286,7 +296,7 @@ export const Secrets = () => {
         </Group>
       </Modal>
       <Grid grow>
-        <Grid.Col span={3} style={{ height: '100vh', paddingRight: '20px' }}>
+        <Grid.Col span={3} style={{ height: '100%', paddingRight: '20px' }}>
           <Flex gap={'md'}>
             <Button mb={'md'} fullWidth={isMobile} onClick={openAddModal}>
               {t('buttons.add')}
@@ -300,42 +310,57 @@ export const Secrets = () => {
             {t('elements')}
           </Text>
           <List spacing='md'>
-            {secrets.map((secret) => (
-              <>
-                <List.Item
-                  key={secret.id}
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => {
-                    setSelectedSecret(null)
-                    setTimeout(() => {
+            <ScrollArea h={650}>
+              {secrets.map((secret) => (
+                <>
+                  <List.Item
+                    key={secret.id}
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => {
                       setSelectedSecret(secret)
-                    }, 1)
-                  }}
-                >
-                  <Group align='center' justify='space-between'>
-                    <div>
-                      <Text size='sm' c='white'>
-                        {secret.label}
-                      </Text>
-                      <Text size='xs' c='gray'>
-                        {secret?.username ?? secret?.email ?? ''}
-                      </Text>
-                    </div>
-                  </Group>
-                </List.Item>
-                <Divider my={'md'} />
-              </>
-            ))}
+                      openDrawer()
+                    }}
+                  >
+                    <Group align='center' justify='space-between'>
+                      <div>
+                        <Text size='sm' c='white'>
+                          {secret.label}
+                        </Text>
+                        <Text size='xs' c='gray'>
+                          {secret?.username ?? secret?.email ?? ''}
+                        </Text>
+                      </div>
+                    </Group>
+                  </List.Item>
+                  <Divider my={'md'} />
+                </>
+              ))}
+            </ScrollArea>
           </List>
         </Grid.Col>
-        <Grid.Col span={9} style={{ backgroundColor: '#2D2D2D', padding: '20px' }}>
-          {selectedSecret ? (
-            <Secret secret={selectedSecret} />
-          ) : (
-            <Text c='gray'>{t('unselectedSecretPlaceholder')}</Text>
-          )}
-        </Grid.Col>
+        {!isMobile && (
+          <Grid.Col span={4}>
+            <Flex h={'100%'} justify={'center'} align={'center'}>
+              <FaLock size={'25em'} />
+            </Flex>
+          </Grid.Col>
+        )}
       </Grid>
+      <Drawer
+        opened={drawerState}
+        onClose={() => {
+          closeDrawer()
+          setSelectedSecret(null)
+        }}
+        position={'right'}
+        size={isMobile ? '100%' : 'md'}
+      >
+        {selectedSecret ? (
+          <Secret secret={selectedSecret} />
+        ) : (
+          <Text c='gray'>{t('unselectedSecretPlaceholder')}</Text>
+        )}
+      </Drawer>
     </>
   )
 }
