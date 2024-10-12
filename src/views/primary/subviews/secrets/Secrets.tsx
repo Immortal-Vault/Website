@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import {
   Button,
+  FileInput,
   Flex,
   Grid,
   Group,
@@ -21,6 +22,7 @@ import { decrypt, encrypt } from '../../../../shared'
 import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 import { v7 as uuid } from 'uuid'
 import { useForm } from '@mantine/form'
+import { TEnpassField, TEnpassItem, TEnpassSecretFile } from '../../../../types/enpass'
 
 export const Secrets = () => {
   const isMobile = useMediaQuery('(max-width: 768px)')
@@ -30,6 +32,9 @@ export const Secrets = () => {
   const [secrets, setSecrets] = useState<TSecret[]>([])
   const [selectedSecret, setSelectedSecret] = useState<TSecret | null>(null)
   const [addModalState, { open: openAddModal, close: closeAddModal }] = useDisclosure(false)
+  const [importModalState, { open: openImportModal, close: closeImportModal }] =
+    useDisclosure(false)
+  const [importedSecretFile, setImportedSecretFile] = useState<File | null>(null)
 
   const addSecretForm = useForm({
     initialValues: {
@@ -115,6 +120,36 @@ export const Secrets = () => {
     }
 
     const newSecrets = [secret, ...secrets]
+    setSecrets(newSecrets)
+    await saveSecrets(newSecrets)
+  }
+
+  const importSecrets = async () => {
+    if (importedSecretFile?.type != 'application/json') {
+      return
+    }
+
+    const fileContent = JSON.parse(await importedSecretFile?.text()) as TEnpassSecretFile
+    const importedSecrets: TSecret[] = []
+
+    fileContent.items.map((item: TEnpassItem) => {
+      const fields = item.fields
+      console.log('fields: ', fields)
+      importedSecrets.push({
+        id: item.uuid,
+        label: item.title,
+        username: fields.find((f: TEnpassField) => f.type === 'username')?.value,
+        email: fields.find((f: TEnpassField) => f.type === 'email')?.value,
+        password: fields.find((f: TEnpassField) => f.type === 'password')?.value,
+        website: fields.find((f: TEnpassField) => f.type === 'url')?.value,
+        phone: fields.find((f: TEnpassField) => f.type === 'phone')?.value,
+        // notes - empty
+        lastUpdated: item.updated_at,
+        created: item.createdAt,
+      })
+    })
+
+    const newSecrets = [...importedSecrets, ...secrets]
     setSecrets(newSecrets)
     await saveSecrets(newSecrets)
   }
@@ -208,11 +243,56 @@ export const Secrets = () => {
           </Button>
         </Group>
       </Modal>
+      <Modal
+        centered={true}
+        opened={importModalState}
+        onClose={closeImportModal}
+        size='auto'
+        title={t('modals.importSecrets.title')}
+        closeOnClickOutside={false}
+        closeOnEscape={false}
+        withCloseButton={false}
+        overlayProps={{
+          backgroundOpacity: 0.55,
+          blur: 3,
+        }}
+      >
+        <Flex direction={'column'} gap={'md'}>
+          <FileInput
+            label={t('modals.importSecrets.fileInput.label')}
+            placeholder={t('modals.importSecrets.fileInput.placeholder')}
+            multiple={false}
+            value={importedSecretFile}
+            onChange={setImportedSecretFile}
+          />
+        </Flex>
+
+        <Group mt='xl' justify={'end'}>
+          <Button
+            onClick={() => {
+              closeImportModal()
+            }}
+          >
+            {t('modals.importSecrets.buttons.cancel')}
+          </Button>
+          <Button
+            onClick={() => {
+              importSecrets()
+              closeImportModal()
+            }}
+          >
+            {t('modals.importSecrets.buttons.submit')}
+          </Button>
+        </Group>
+      </Modal>
       <Grid grow>
         <Grid.Col span={3} style={{ height: '100vh', paddingRight: '20px' }}>
           <Flex gap={'md'}>
             <Button mb={'md'} fullWidth={isMobile} onClick={openAddModal}>
               {t('buttons.add')}
+            </Button>
+            <Button mb={'md'} fullWidth={isMobile} onClick={openImportModal}>
+              {t('buttons.import')}
             </Button>
           </Flex>
           <Input placeholder={t('search.placeholder')} mb={'md'} />
