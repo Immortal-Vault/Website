@@ -138,6 +138,13 @@ export const Secrets = () => {
     await saveSecrets(newSecrets)
   }
 
+  const deleteSecret = async (secret: TSecret) => {
+    const newSecrets = secrets.filter((s) => s.id !== secret.id)
+    setSecrets(newSecrets)
+    setFilteredSecrets(newSecrets)
+    await saveSecrets(newSecrets)
+  }
+
   const importSecrets = async () => {
     if (importedSecretFile?.type != 'application/json') {
       return
@@ -386,7 +393,14 @@ export const Secrets = () => {
         size={isMobile ? '100%' : 'md'}
       >
         {selectedSecret ? (
-          <Secret secret={selectedSecret} />
+          <Secret
+            secret={selectedSecret}
+            delete={() => {
+              closeDrawer()
+              setSelectedSecret(null)
+              deleteSecret(selectedSecret)
+            }}
+          ></Secret>
         ) : (
           <Text c='gray'>{t('unselectedSecretPlaceholder')}</Text>
         )}
