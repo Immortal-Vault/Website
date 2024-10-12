@@ -39,7 +39,9 @@ export const Secrets = () => {
   const { t } = useTranslation('secrets')
   const authContext = useAuth()
   const [secrets, setSecrets] = useState<TSecret[]>([])
+  const [filteredSecrets, setFilteredSecrets] = useState<TSecret[]>([])
   const [selectedSecret, setSelectedSecret] = useState<TSecret | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
   const [addModalState, { open: openAddModal, close: closeAddModal }] = useDisclosure(false)
   const [importModalState, { open: openImportModal, close: closeImportModal }] =
     useDisclosure(false)
@@ -81,6 +83,7 @@ export const Secrets = () => {
       const secretFileInfo = JSON.parse(decryptedSecretFile) as TSecretFile
       const secrets = secretFileInfo.secrets
       setSecrets(secrets ?? [])
+      handleSearch(searchQuery)
 
       toast.dismiss(notificationId)
     } catch (error) {
@@ -131,6 +134,7 @@ export const Secrets = () => {
 
     const newSecrets = [secret, ...secrets]
     setSecrets(newSecrets)
+    handleSearch(searchQuery)
     await saveSecrets(newSecrets)
   }
 
@@ -143,8 +147,10 @@ export const Secrets = () => {
     const importedSecrets: TSecret[] = []
 
     fileContent.items.map((item: TEnpassItem) => {
+      if (secrets.find((s) => s.id === item.uuid)) {
+        return
+      }
       const fields = item.fields
-      console.log('fields: ', fields)
       importedSecrets.push({
         id: item.uuid,
         label: item.title,
@@ -159,9 +165,26 @@ export const Secrets = () => {
       })
     })
 
+    if (importedSecrets.length < 1) {
+      return
+    }
+
     const newSecrets = [...importedSecrets, ...secrets]
     setSecrets(newSecrets)
+    handleSearch(searchQuery)
     await saveSecrets(newSecrets)
+  }
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query)
+    if (query.trim() === '') {
+      setFilteredSecrets(secrets)
+    } else {
+      const filtered = secrets.filter((secret) =>
+        secret.label.toLowerCase().includes(query.toLowerCase()),
+      )
+      setFilteredSecrets(filtered)
+    }
   }
 
   useEffect(() => {
@@ -281,6 +304,7 @@ export const Secrets = () => {
           <Button
             onClick={() => {
               closeImportModal()
+              setImportedSecretFile(null)
             }}
           >
             {t('modals.importSecrets.buttons.cancel')}
@@ -289,6 +313,7 @@ export const Secrets = () => {
             onClick={() => {
               importSecrets()
               closeImportModal()
+              setImportedSecretFile(null)
             }}
           >
             {t('modals.importSecrets.buttons.submit')}
@@ -305,13 +330,18 @@ export const Secrets = () => {
               {t('buttons.import')}
             </Button>
           </Flex>
-          <Input placeholder={t('search.placeholder')} mb={'md'} />
+          <Input
+            placeholder={t('search.placeholder')}
+            mb={'md'}
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.currentTarget.value)}
+          />
           <Text size='lg' c='gray' mb='md'>
             {t('elements')}
           </Text>
           <List spacing='md'>
             <ScrollArea h={650}>
-              {secrets.map((secret) => (
+              {filteredSecrets.map((secret) => (
                 <>
                   <List.Item
                     key={secret.id}
