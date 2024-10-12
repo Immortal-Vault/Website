@@ -1,4 +1,4 @@
-import { Anchor, Button, Flex, Group, Text, Title } from '@mantine/core'
+import { Anchor, Button, CopyButton, Flex, Group, Text, Title } from '@mantine/core'
 import { FaExternalLinkAlt, FaUserAlt, FaLock, FaAddressCard, FaClock } from 'react-icons/fa'
 import { TSecret } from '../types'
 import { useEffect, useState } from 'react'
@@ -22,14 +22,24 @@ export const Secret = (props: { secret: TSecret }) => {
           <Text c='gray'>Username:</Text>
           <Text c='white'>{props.secret.username}</Text>
         </Group>
-        <Group>
-          <FaLock />
-          <Text c='gray'>Password:</Text>
-          {showPassword && props.secret.password}
-          <Button size='xs' onClick={() => setShowPassword(!showPassword)}>
-            {showPassword ? 'Hide' : 'Show'}
-          </Button>
-        </Group>
+        {props.secret.password && (
+          <Group>
+            <FaLock />
+            <Text c='gray'>Password:</Text>
+            {showPassword && props.secret.password}
+
+            <Button size={'xs'} onClick={() => setShowPassword(!showPassword)}>
+              {showPassword ? 'Hide' : 'Show'}
+            </Button>
+            <CopyButton value={props.secret.password}>
+              {({ copied, copy }) => (
+                <Button size={'xs'} color={copied ? 'teal' : 'blue'} onClick={copy}>
+                  {copied ? 'Password copied' : 'Copy password'}
+                </Button>
+              )}
+            </CopyButton>
+          </Group>
+        )}
         {props.secret.website && (
           <Group>
             <FaExternalLinkAlt />

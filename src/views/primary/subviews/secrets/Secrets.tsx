@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import {
-  Button,
+  Button, Divider,
   FileInput,
   Flex,
   Grid,
@@ -301,27 +301,30 @@ export const Secrets = () => {
           </Text>
           <List spacing='md'>
             {secrets.map((secret) => (
-              <List.Item
-                key={secret.id}
-                style={{ cursor: 'pointer' }}
-                onClick={() => {
-                  setSelectedSecret(null)
-                  setTimeout(() => {
-                    setSelectedSecret(secret)
-                  }, 1)
-                }}
-              >
-                <Group align='center' justify='space-between'>
-                  <div>
-                    <Text size='sm' c='white'>
-                      {secret.label}
-                    </Text>
-                    <Text size='xs' c='gray'>
-                      {secret?.username ?? secret?.email ?? ''}
-                    </Text>
-                  </div>
-                </Group>
-              </List.Item>
+              <>
+                <List.Item
+                  key={secret.id}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    setSelectedSecret(null)
+                    setTimeout(() => {
+                      setSelectedSecret(secret)
+                    }, 1)
+                  }}
+                >
+                  <Group align='center' justify='space-between'>
+                    <div>
+                      <Text size='sm' c='white'>
+                        {secret.label}
+                      </Text>
+                      <Text size='xs' c='gray'>
+                        {secret?.username ?? secret?.email ?? ''}
+                      </Text>
+                    </div>
+                  </Group>
+                </List.Item>
+                <Divider my={'md'} />
+              </>
             ))}
           </List>
         </Grid.Col>
