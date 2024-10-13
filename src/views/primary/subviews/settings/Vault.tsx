@@ -32,7 +32,8 @@ export const Vault = (): JSX.Element => {
   const isMobile = useMediaQuery('(max-width: 768px)')
   const { envs } = useEnvVars()
   const authContext = useAuth()
-  const { googleDriveState, googleDriveEmail, setGoogleDriveState } = useGoogleDrive()
+  const { googleDriveState, googleDriveEmail, setGoogleDriveState, setGoogleDriveEmail } =
+    useGoogleDrive()
 
   const signOutGoogleButton = async (keepData: boolean) => {
     setLoaderState.open()
@@ -55,13 +56,15 @@ export const Vault = (): JSX.Element => {
     onSuccess: async (codeResponse) => {
       setLoaderState.open()
 
-      const response = await signInGoogle(codeResponse.code, envs, t, authContext)
-      if (!response) {
+      const signInResponse = await signInGoogle(codeResponse.code, envs, t, authContext)
+      if (!signInResponse) {
         setLoaderState.close()
         return
       }
 
-      const hasSecretFile = (await response.json()).hasSecretFile
+      const jsonSignInResponse = await signInResponse.json()
+      const hasSecretFile = jsonSignInResponse.hasSecretFile
+      const googleDriveEmail = jsonSignInResponse.email
 
       if (!hasSecretFile) {
         const secretFile: TSecretFile = {
@@ -82,6 +85,7 @@ export const Vault = (): JSX.Element => {
       }
 
       setGoogleDriveState(true)
+      setGoogleDriveEmail(googleDriveEmail)
       setLoaderState.close()
     },
     onError: (errorResponse) => {
