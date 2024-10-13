@@ -1,5 +1,13 @@
 import { Anchor, Button, CopyButton, Flex, Group, Modal, Text, Title } from '@mantine/core'
-import { FaExternalLinkAlt, FaUserAlt, FaLock, FaAddressCard, FaClock } from 'react-icons/fa'
+import {
+  FaAddressCard,
+  FaClock,
+  FaExternalLinkAlt,
+  FaLock,
+  FaPhoneAlt,
+  FaStickyNote,
+  FaUserAlt,
+} from 'react-icons/fa'
 import { TSecret } from '../types'
 import { useEffect, useState } from 'react'
 import { useDisclosure } from '@mantine/hooks'
@@ -52,11 +60,20 @@ export const Secret = (props: { secret: TSecret; delete: () => void }) => {
         <Title order={3}>{props.secret.label}</Title>
       </Group>
       <Flex direction='column' mb={'md'}>
-        <Group>
-          <FaUserAlt />
-          <Text c='gray'>Username:</Text>
-          <Text c='white'>{props.secret.username}</Text>
-        </Group>
+        {props.secret.username && (
+          <Group>
+            <FaUserAlt />
+            <Text c='gray'>Username:</Text>
+            <Text c='white'>{props.secret.username}</Text>
+          </Group>
+        )}
+        {props.secret.email && (
+          <Group>
+            <FaUserAlt />
+            <Text c='gray'>Email:</Text>
+            <Text c='white'>{props.secret.email}</Text>
+          </Group>
+        )}
         {props.secret.password && (
           <Group>
             <FaLock />
@@ -90,6 +107,20 @@ export const Secret = (props: { secret: TSecret; delete: () => void }) => {
             >
               {props.secret.website}
             </Anchor>
+          </Group>
+        )}
+        {props.secret.phone && (
+          <Group>
+            <FaPhoneAlt />
+            <Text c='gray'>Phone:</Text>
+            <Text c='white'>{props.secret.phone}</Text>
+          </Group>
+        )}
+        {props.secret.notes && (
+          <Group>
+            <FaStickyNote />
+            <Text c='gray'>Notes:</Text>
+            <Text c='white'>{props.secret.notes}</Text>
           </Group>
         )}
       </Flex>
