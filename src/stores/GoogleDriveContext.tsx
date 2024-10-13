@@ -18,12 +18,16 @@ export interface GoogleDriveContextType {
   googleDriveState: boolean
   googleDriveEmail: string
   setGoogleDriveState: Dispatch<SetStateAction<boolean>>
+  setGoogleDriveEmail: Dispatch<SetStateAction<string>>
 }
 
 const GoogleDriveContext = createContext<GoogleDriveContextType>({
   googleDriveState: false,
   googleDriveEmail: '',
   setGoogleDriveState: function (): void {
+    throw new Error('Function is not implemented.')
+  },
+  setGoogleDriveEmail: function (): void {
     throw new Error('Function is not implemented.')
   },
 })
@@ -63,6 +67,7 @@ export const GoogleDriveProvider = ({ children }: GoogleDriveProviderProps) => {
       googleDriveState,
       googleDriveEmail,
       setGoogleDriveState,
+      setGoogleDriveEmail,
     }),
     [googleDriveState, googleDriveEmail],
   )
