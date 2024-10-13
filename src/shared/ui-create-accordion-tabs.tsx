@@ -13,7 +13,7 @@ export const createTab = (tab: TPrimaryViewTab, index: number, t: TFunction) => 
             <Accordion.Panel>
               <Flex direction='column' gap={'1rem'} mt={'0.5rem'}>
                 {tab.sections?.map((section, i: number) => (
-                  <Button onClick={section.click} key={i}>
+                  <Button color={tab.color} onClick={section.click} key={i}>
                     {t(section.title)}
                   </Button>
                 ))}
@@ -26,7 +26,7 @@ export const createTab = (tab: TPrimaryViewTab, index: number, t: TFunction) => 
     }
     case EPrimaryViewTabType.Button: {
       component = (
-        <Button fullWidth mt={'0.5rem'} mb={'0.5rem'} onClick={tab.onClick}>
+        <Button color={tab.color} fullWidth mt={'0.5rem'} mb={'0.5rem'} onClick={tab.onClick}>
           {t(tab.name)}
         </Button>
       )

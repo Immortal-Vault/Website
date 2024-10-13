@@ -67,6 +67,7 @@ export default function Primary() {
     {
       type: EPrimaryViewTabType.Button,
       name: t('auth:signOut:title'),
+      color: 'red',
       onClick: () => {
         authSignOut(false)
         sendSuccessNotification(t('auth:signOut:successful'))

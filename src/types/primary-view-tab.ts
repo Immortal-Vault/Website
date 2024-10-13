@@ -5,4 +5,5 @@ export type TPrimaryViewTab = {
   name: string
   sections?: { title: string; click: () => void }[]
   onClick?: () => void
+  color?: string
 }
