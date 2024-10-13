@@ -9,6 +9,7 @@ import { ErrorBoundary, ErrorBoundaryError, NonAuthorizedRoute, ProtectedRoute }
 import { useMediaQuery } from '@mantine/hooks'
 import { EnvVarsProvider, AuthProvider, GoogleDriveProvider, MenuProvider } from './stores'
 import ApproveSignIn from './views/auth/ApproveSignIn.tsx'
+import { SecretsProvider } from './stores/SecretsContext.tsx'
 
 const theme = createTheme({})
 
@@ -79,7 +80,9 @@ export default function App() {
           <MenuProvider>
             <AuthProvider>
               <GoogleDriveProvider>
-                <RouterProvider router={router} />
+                <SecretsProvider>
+                  <RouterProvider router={router} />
+                </SecretsProvider>
               </GoogleDriveProvider>
             </AuthProvider>
           </MenuProvider>

@@ -23,7 +23,7 @@ import {
   TEnpassSecretFile,
 } from '../../../../types'
 import { Secret } from '../../../../components'
-import { useAuth, useEnvVars } from '../../../../stores'
+import { useAuth, useEnvVars, useSecrets } from '../../../../stores'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
 import { customFetch, uploadSecretFile } from '../../../../api'
@@ -37,8 +37,8 @@ export const Secrets = () => {
   const isMobile = useMediaQuery('(max-width: 768px)')
   const { envs } = useEnvVars()
   const { t } = useTranslation('secrets')
+  const { secrets, setSecrets } = useSecrets()
   const authContext = useAuth()
-  const [secrets, setSecrets] = useState<TSecret[]>([])
   const [filteredSecrets, setFilteredSecrets] = useState<TSecret[]>([])
   const [selectedSecret, setSelectedSecret] = useState<TSecret | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -62,6 +62,10 @@ export const Secrets = () => {
       label: (val) => (val.length < 1 ? 'fields.label.canNotBeEmpty' : null),
     },
   })
+
+  useEffect(() => {
+    handleSearch(searchQuery)
+  }, [secrets])
 
   const fetchSecrets = async () => {
     const notificationId = toast.loading(t('data.fetch.inProgress'))
@@ -167,8 +171,8 @@ export const Secrets = () => {
         website: fields.find((f: TEnpassField) => f.type === 'url')?.value,
         phone: fields.find((f: TEnpassField) => f.type === 'phone')?.value,
         // notes - empty
-        lastUpdated: item.updated_at,
-        created: item.createdAt,
+        lastUpdated: item.updated_at * 1000,
+        created: item.createdAt * 1000,
       })
     })
 
@@ -197,7 +201,7 @@ export const Secrets = () => {
   useEffect(() => {
     if (!authContext.secretPassword) {
       authContext.openSecretPasswordModel()
-    } else {
+    } else if (secrets.length < 1) {
       fetchSecrets()
     }
   }, [authContext.secretPassword])
@@ -390,7 +394,7 @@ export const Secrets = () => {
           setSelectedSecret(null)
         }}
         position={'right'}
-        size={isMobile ? '100%' : 'md'}
+        size={isMobile ? '100%' : 'xl'}
       >
         {selectedSecret ? (
           <Secret
