@@ -21,6 +21,8 @@ import {
   TEnpassField,
   TEnpassItem,
   TEnpassSecretFile,
+  TFolder,
+  TEnpassFolder,
 } from '../../../../types'
 import { Secret } from '../../../../components'
 import { useAuth, useEnvVars, useSecrets } from '../../../../stores'
@@ -37,7 +39,7 @@ export const Secrets = () => {
   const isMobile = useMediaQuery('(max-width: 768px)')
   const { envs } = useEnvVars()
   const { t } = useTranslation('secrets')
-  const { secrets, setSecrets } = useSecrets()
+  const { secrets, folders, setSecrets, setFolders } = useSecrets()
   const authContext = useAuth()
   const [filteredSecrets, setFilteredSecrets] = useState<TSecret[]>([])
   const [selectedSecret, setSelectedSecret] = useState<TSecret | null>(null)
@@ -85,9 +87,12 @@ export const Secrets = () => {
 
       const decryptedSecretFile = await decrypt(secretFileResponse, authContext.secretPassword)
       const secretFileInfo = JSON.parse(decryptedSecretFile) as TSecretFile
+      console.log(JSON.stringify(secretFileInfo, null, 2))
       const secrets = secretFileInfo.secrets
+      const folders = secretFileInfo.folders
       setSecrets(secrets ?? [])
       setFilteredSecrets(secrets ?? [])
+      setFolders(folders ?? [])
 
       toast.dismiss(notificationId)
     } catch (error) {
@@ -98,11 +103,12 @@ export const Secrets = () => {
     }
   }
 
-  const saveSecrets = async (secrets: TSecret[]) => {
+  const saveSecrets = async (secrets: TSecret[], folders: TFolder[]) => {
     const notificationId = toast.loading(t('data.updating'))
 
     const secretFile: TSecretFile = {
       version: '0.0.1',
+      folders,
       secrets,
     }
     const result = await uploadSecretFile(
@@ -131,6 +137,7 @@ export const Secrets = () => {
 
     const secret: TSecret = {
       id: uuid(),
+      folders: [], // TODO: folders integration
       lastUpdated: Date.now(),
       created: Date.now(),
       ...values,
@@ -139,14 +146,14 @@ export const Secrets = () => {
     const newSecrets = [secret, ...secrets]
     setSecrets(newSecrets)
     setFilteredSecrets(newSecrets)
-    await saveSecrets(newSecrets)
+    await saveSecrets(newSecrets, folders)
   }
 
   const deleteSecret = async (secret: TSecret) => {
     const newSecrets = secrets.filter((s) => s.id !== secret.id)
     setSecrets(newSecrets)
     setFilteredSecrets(newSecrets)
-    await saveSecrets(newSecrets)
+    await saveSecrets(newSecrets, folders)
   }
 
   const importSecrets = async () => {
@@ -156,23 +163,38 @@ export const Secrets = () => {
 
     const fileContent = JSON.parse(await importedSecretFile?.text()) as TEnpassSecretFile
     const importedSecrets: TSecret[] = []
+    const importedFolders: TFolder[] = []
 
     fileContent.items.map((item: TEnpassItem) => {
       if (secrets.find((s) => s.id === item.uuid)) {
         return
       }
+
       const fields = item.fields
       importedSecrets.push({
         id: item.uuid,
+        folders: item.folders,
         label: item.title,
         username: fields.find((f: TEnpassField) => f.type === 'username')?.value,
         email: fields.find((f: TEnpassField) => f.type === 'email')?.value,
         password: fields.find((f: TEnpassField) => f.type === 'password')?.value,
         website: fields.find((f: TEnpassField) => f.type === 'url')?.value,
         phone: fields.find((f: TEnpassField) => f.type === 'phone')?.value,
-        // notes - empty
+        notes: item.note,
         lastUpdated: item.updated_at * 1000,
         created: item.createdAt * 1000,
+      })
+    })
+
+    fileContent.folders.map((folder: TEnpassFolder) => {
+      if (folders.find((f) => f.id === folder.uuid)) {
+        return
+      }
+
+      importedFolders.push({
+        id: folder.uuid,
+        label: folder.title,
+        lastUpdated: folder.updated_at * 1000,
       })
     })
 
@@ -183,7 +205,11 @@ export const Secrets = () => {
     const newSecrets = [...importedSecrets, ...secrets]
     setSecrets(newSecrets)
     setFilteredSecrets(newSecrets)
-    await saveSecrets(newSecrets)
+
+    const newFolders = [...importedFolders, ...folders]
+    setFolders(newFolders)
+
+    await saveSecrets(newSecrets, newFolders)
   }
 
   const handleSearch = (query: string) => {

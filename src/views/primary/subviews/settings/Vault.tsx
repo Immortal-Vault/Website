@@ -69,6 +69,7 @@ export const Vault = (): JSX.Element => {
       if (!hasSecretFile) {
         const secretFile: TSecretFile = {
           version: '0.0.1',
+          folders: [],
           secrets: [],
         }
         const result = await uploadSecretFile(

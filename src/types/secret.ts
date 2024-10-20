@@ -1,5 +1,6 @@
 export type TSecret = {
   id: string
+  folders: string[]
   label: string
   username?: string
   email?: string

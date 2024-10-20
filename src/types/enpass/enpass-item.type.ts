@@ -10,6 +10,7 @@ export type TEnpassItem = {
   favorite: number
   field_updated_at: number
   fields: TEnpassField[]
+  folders: string[]
   icon: TEnpassIcon
   note: string
   subtitle: string
