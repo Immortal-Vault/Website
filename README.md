@@ -1,6 +1,6 @@
 # Immortal Vault - Password Manager
 
-**Immortal Vault** is a secure and efficient password manager designed to safely store and organize your passwords. Currently, the project is in active development, with the goal of providing users with a reliable solution to manage their credentials effortlessly.
+**Immortal Vault** is a secure and efficient credentials manager designed to safely store and organize your credentials. Currently, the project is in active development, with the goal of providing users with a reliable solution to manage their credentials effortlessly.
 
 ## 🚧 Project Status: In Development
 Immortal Vault is still under construction, and we're working hard to bring you the best experience. Features such as secure password storage, synchronization with Google Drive, and multi-language support are on the way.
