@@ -8,7 +8,7 @@ import {
 } from '../../types'
 import { useDisclosure } from '@mantine/hooks'
 import { createTab, LOCAL_STORAGE, sendSuccessNotification } from '../../shared'
-import { Profile, Secrets, Settings } from './subviews'
+import { Secrets, Settings } from './subviews'
 import { useTranslation } from 'react-i18next'
 import { useAuth, useMenu } from '../../stores'
 
@@ -26,14 +26,6 @@ export default function Primary() {
   }, [])
 
   const mainViewTabs: TPrimaryViewTab[] = [
-    {
-      type: EPrimaryViewTabType.Button,
-      name: t('profile.name'),
-      onClick: () => {
-        setCurrentPage(EPrimaryViewPage.Profile)
-        closeBurger()
-      },
-    },
     {
       type: EPrimaryViewTabType.Button,
       name: t('secrets.name'),
@@ -99,7 +91,6 @@ export default function Primary() {
           backgroundColor: 'rgb(36, 36, 36)',
         }}
       >
-        {currentPage === EPrimaryViewPage.Profile && <Profile />}
         {currentPage === EPrimaryViewPage.Secrets && <Secrets />}
         {currentPage === EPrimaryViewPage.Settings && <Settings currentPage={settingsPage} />}
       </AppShell.Main>
