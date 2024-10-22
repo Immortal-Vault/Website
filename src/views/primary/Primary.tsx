@@ -11,6 +11,7 @@ import { createTab, LOCAL_STORAGE, sendSuccessNotification } from '../../shared'
 import { Secrets, Settings } from './subviews'
 import { useTranslation } from 'react-i18next'
 import { useAuth, useMenu } from '../../stores'
+import { ProfileAvatarWithMenu } from '../../components'
 
 export default function Primary() {
   const { t, i18n } = useTranslation('views')
@@ -74,10 +75,15 @@ export default function Primary() {
       padding='md'
     >
       <AppShell.Header>
-        <Group h='100%' px='md'>
-          <Burger opened={burgerState} onClick={toggle} hiddenFrom='sm' size='sm' />
-          <Image src={'/logo.svg'} w={'2.5rem'} alt={'Immortal Vault'} />
-          <Title order={2}>Immortal Vault</Title>
+        <Group justify={'space-between'} h={'100%'}>
+          <Group h={'100%'} px='md'>
+            <Burger opened={burgerState} onClick={toggle} hiddenFrom='sm' size='sm' />
+            <Image src={'/logo.svg'} w={'2.5rem'} alt={'Immortal Vault'} />
+            <Title order={2}>Immortal Vault</Title>
+          </Group>
+          <Group px='md'>
+            <ProfileAvatarWithMenu />
+          </Group>
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p='md'>
