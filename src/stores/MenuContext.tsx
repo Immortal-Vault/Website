@@ -17,7 +17,7 @@ export interface MenuContextType {
 }
 
 const MenuContext = createContext<MenuContextType>({
-  currentPage: EPrimaryViewPage.Profile,
+  currentPage: EPrimaryViewPage.None,
   settingsPage: ESettingsViewPage.Vault,
   setCurrentPage: function (): void {
     throw new Error('Function is not implemented.')
@@ -32,7 +32,7 @@ interface MenuProps {
 }
 
 export const MenuProvider = ({ children }: MenuProps) => {
-  const [currentPage, setCurrentPage] = useState(EPrimaryViewPage.Profile)
+  const [currentPage, setCurrentPage] = useState(EPrimaryViewPage.None)
   const [settingsPage, setSettingsPage] = useState(ESettingsViewPage.Main)
 
   const contextValue = useMemo(

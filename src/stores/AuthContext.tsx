@@ -142,7 +142,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         <Group mt='xl' justify={'end'}>
           <Button
             onClick={() => {
-              setCurrentPage(EPrimaryViewPage.Profile)
+              setCurrentPage(EPrimaryViewPage.None)
               closeSecretPasswordModal()
             }}
           >
