@@ -7,9 +7,15 @@ import { ToastContainer, Zoom } from 'react-toastify'
 import Primary from './views/primary/Primary.tsx'
 import { ErrorBoundary, ErrorBoundaryError, NonAuthorizedRoute, ProtectedRoute } from './components'
 import { useMediaQuery } from '@mantine/hooks'
-import { EnvVarsProvider, AuthProvider, GoogleDriveProvider, MenuProvider } from './stores'
+import {
+  EnvVarsProvider,
+  AuthProvider,
+  GoogleDriveProvider,
+  MenuProvider,
+  SecretsProvider,
+} from './stores'
 import ApproveSignIn from './views/auth/ApproveSignIn.tsx'
-import { SecretsProvider } from './stores/SecretsContext.tsx'
+import Root from './views/root/Root.tsx'
 
 const theme = createTheme({})
 
@@ -18,7 +24,7 @@ const router = createBrowserRouter([
     path: ROUTER_PATH.ROOT,
     element: (
       <NonAuthorizedRoute>
-        <SignIn />
+        <Root />
       </NonAuthorizedRoute>
     ),
   },

@@ -114,6 +114,7 @@ export default function SignUp() {
         w='auto'
         fit='contain'
         alt={'Immortal Vault'}
+        onClick={() => navigate(ROUTER_PATH.ROOT)}
       />
       <Title order={1} ta='center' size={isMobile ? 'h3' : 'h1'}>
         {t('signUp.title')}
