@@ -1,4 +1,4 @@
-import { Anchor, Container, Group, Image } from '@mantine/core'
+import { Anchor, Container, Group, Text } from '@mantine/core'
 import classes from './RootFooter.module.css'
 
 const links = [
@@ -24,7 +24,16 @@ export function RootFooter() {
   return (
     <div className={classes.footer}>
       <Container className={classes.inner}>
-        <Image src={'/logo.svg'} h={60} w={'fit-content'} fit='contain' alt={'Immortal Vault'} />
+        <Anchor<'a'>
+          c='dimmed'
+          underline={'never'}
+          key={'https://github.com/litolax'}
+          href={'https://github.com/litolax'}
+        >
+          <Text>
+            Made with ❤️ by <Anchor<'a'> underline={'never'}>{'litolax'}</Anchor>
+          </Text>
+        </Anchor>
         <Group className={classes.links}>{items}</Group>
       </Container>
     </div>

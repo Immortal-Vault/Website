@@ -1,7 +1,7 @@
 .wrapper {
     position: relative;
-    padding-top: rem(60px);
-    padding-bottom: rem(120px);
+    padding-top: calc(var(--mantine-spacing-xl));
+    padding-bottom: calc(var(--mantine-spacing-xl) * 2);
 
     @media (max-width: $mantine-breakpoint-sm) {
         padding-top: rem(80px);

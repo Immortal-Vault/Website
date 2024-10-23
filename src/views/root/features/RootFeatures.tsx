@@ -45,7 +45,7 @@ export function RootFeature() {
         Our benefits
       </Title>
 
-      <SimpleGrid cols={{ base: 1, md: 3 }} spacing='xl' mt={50}>
+      <SimpleGrid cols={{ base: 1, md: 3 }} spacing='xl' mt={'xl'}>
         {features}
       </SimpleGrid>
     </Container>

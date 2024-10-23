@@ -17,7 +17,7 @@ export function RootFeedback() {
   })
 
   return (
-    <Container size='sm'>
+    <Container size='sm' mt={'xl'} mb={'xl'}>
       <form
         onSubmit={form.onSubmit(() => {
           //

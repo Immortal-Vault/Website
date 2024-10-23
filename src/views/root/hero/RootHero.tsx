@@ -4,14 +4,12 @@ import classes from './RootHero.module.css'
 
 export function RootHero() {
   return (
-    <Container className={classes.wrapper} size={1400}>
-      <Dots className={classes.dots} style={{ left: 0, top: 0 }} />
-      <Dots className={classes.dots} style={{ left: 60, top: 0 }} />
-      <Dots className={classes.dots} style={{ left: 0, top: 140 }} />
-      <Dots className={classes.dots} style={{ right: 0, top: 60 }} />
+    <Container className={classes.wrapper} size={1400} mb={'xl'}>
+      <Dots className={classes.dots} style={{ left: 0, top: 45 }} />
+      <Dots className={classes.dots} style={{ right: 0, top: 45 }} />
 
       <div className={classes.inner}>
-        <Title className={classes.title}>
+        <Title className={classes.title} mt={'lg'} mb={'md'}>
           Free{' '}
           <Text component='span' className={classes.highlight} inherit>
             password manager
