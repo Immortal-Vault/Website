@@ -46,6 +46,7 @@ export function RootFeedback() {
             placeholder='Your email'
             name='email'
             variant='filled'
+            type={'email'}
             {...form.getInputProps('email')}
           />
         </SimpleGrid>

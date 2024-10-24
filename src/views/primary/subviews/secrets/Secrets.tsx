@@ -264,6 +264,7 @@ export const Secrets = () => {
             label={t('fields.email.title')}
             value={addSecretForm.values.email}
             onChange={(event) => addSecretForm.setFieldValue('email', event.currentTarget.value)}
+            type={'email'}
           />
           <TextInput
             label={t('fields.password.title')}
