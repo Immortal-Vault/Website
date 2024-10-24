@@ -1,8 +1,11 @@
 import { Container, Text, Title } from '@mantine/core'
 import { Dots } from './Dots'
 import classes from './RootHero.module.css'
+import { useTranslation } from 'react-i18next'
 
 export function RootHero() {
+  const { t } = useTranslation('root')
+
   return (
     <Container className={classes.wrapper} size={1400} mb={'xl'}>
       <Dots className={classes.dots} style={{ left: 0, top: 45 }} />
@@ -10,16 +13,16 @@ export function RootHero() {
 
       <div className={classes.inner}>
         <Title className={classes.title} mt={'lg'} mb={'md'}>
-          Free{' '}
+          {t('hero.title.1')}{' '}
           <Text component='span' className={classes.highlight} inherit>
-            Password Manager
+            {t('hero.title.2')}
           </Text>{' '}
-          For Any Device
+          {t('hero.title.3')}
         </Title>
 
         <Container p={0} size={600}>
           <Text size='lg' c='dimmed' className={classes.description}>
-            Our mission is to create a simple but reliable tool to manage your passwords.
+            {t('hero.description')}
           </Text>
         </Container>
       </div>

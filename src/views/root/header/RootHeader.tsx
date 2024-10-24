@@ -14,11 +14,13 @@ import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 import classes from './RootHeader.module.css'
 import { useNavigate } from 'react-router-dom'
 import { ROUTER_PATH } from '../../../shared'
+import { useTranslation } from 'react-i18next'
 
 export function RootHeader() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false)
   const isMobile = useMediaQuery('(max-width: 768px)')
   const navigate = useNavigate()
+  const { t } = useTranslation('root')
 
   return (
     <Box pb={40}>
@@ -37,9 +39,9 @@ export function RootHeader() {
 
             <Group visibleFrom='sm'>
               <Button variant='default' onClick={() => navigate(ROUTER_PATH.SIGN_IN)}>
-                Log in
+                {t('header.signIn')}
               </Button>
-              <Button onClick={() => navigate(ROUTER_PATH.SIGN_UP)}>Sign up</Button>
+              <Button onClick={() => navigate(ROUTER_PATH.SIGN_UP)}>{t('header.signUp')}</Button>
             </Group>
 
             <Burger opened={drawerOpened} onClick={toggleDrawer} hiddenFrom='sm' />
@@ -61,9 +63,9 @@ export function RootHeader() {
 
           <Group justify='center' grow pb='xl' px='md'>
             <Button variant='default' onClick={() => navigate(ROUTER_PATH.SIGN_IN)}>
-              Log in
+              {t('header.signIn')}
             </Button>
-            <Button onClick={() => navigate(ROUTER_PATH.SIGN_UP)}>Sign up</Button>
+            <Button onClick={() => navigate(ROUTER_PATH.SIGN_UP)}>{t('header.signUp')}</Button>
           </Group>
         </ScrollArea>
       </Drawer>

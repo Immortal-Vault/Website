@@ -2,6 +2,7 @@ import { Anchor, Container, Group, rem, Text } from '@mantine/core'
 import classes from './RootFooter.module.css'
 import { FaLinkedin, FaTelegramPlane } from 'react-icons/fa'
 import { IoLogoGithub } from 'react-icons/io'
+import { useTranslation } from 'react-i18next'
 
 const links = [
   {
@@ -40,6 +41,8 @@ const links = [
 ]
 
 export function RootFooter() {
+  const { t } = useTranslation('root')
+
   const items = links.map((e) => (
     <Anchor<'a'>
       c='dimmed'
@@ -63,7 +66,7 @@ export function RootFooter() {
           href={'https://github.com/litolax'}
         >
           <Text>
-            Made with ❤️ by <Anchor<'a'> underline={'never'}>{'litolax'}</Anchor>
+            {t('footer.text')} <Anchor<'a'> underline={'never'}>{'litolax'}</Anchor>
           </Text>
         </Anchor>
         <Group pt={'10px'}>{items}</Group>

@@ -1,6 +1,6 @@
 .wrapper {
     padding-top: calc(var(--mantine-spacing-xl));
-    min-height: rem(405px);
+    min-height: calc(var(--mantine-spacing-xl));
 }
 
 .title {

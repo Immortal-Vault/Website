@@ -22,7 +22,7 @@ export function RootFeedback() {
     },
   })
   const { envs } = useEnvVars()
-  const { t } = useTranslation()
+  const { t } = useTranslation('root')
 
   return (
     <Container size='sm' mt={'xl'} mb={'xl'}>
@@ -47,30 +47,30 @@ export function RootFeedback() {
           )
 
           if (!response || !response.ok) {
-            sendErrorNotification('Error on sending feedback')
+            sendErrorNotification(t('feedback.send.error'))
             console.error(response?.statusText)
             return
           }
 
-          sendSuccessNotification('Feedback sent successfully')
+          sendSuccessNotification(t('feedback.send.successfully'))
           form.reset()
         })}
       >
         <Title order={1} ta='center'>
-          Contact Us
+          {t('feedback.title')}
         </Title>
 
         <SimpleGrid cols={{ base: 1, sm: 2 }} mt='xl'>
           <TextInput
-            label='Name'
-            placeholder='Your name'
+            label={t('feedback.fields.name.label')}
+            placeholder={t('feedback.fields.name.placeholder')}
             name='name'
             variant='filled'
             {...form.getInputProps('name')}
           />
           <TextInput
-            label='Email'
-            placeholder='Your email'
+            label={t('feedback.fields.email.label')}
+            placeholder={t('feedback.fields.email.placeholder')}
             name='email'
             variant='filled'
             type={'email'}
@@ -79,28 +79,28 @@ export function RootFeedback() {
         </SimpleGrid>
 
         <TextInput
-          label='Subject'
-          placeholder='Subject'
+          label={t('feedback.fields.subject.label')}
+          placeholder={t('feedback.fields.subject.placeholder')}
           mt='md'
           name='subject'
           variant='filled'
           {...form.getInputProps('subject')}
         />
         <Textarea
-          mt='md'
-          label='Message'
-          placeholder='Your message'
+          label={t('feedback.fields.message.label')}
+          placeholder={t('feedback.fields.message.placeholder')}
           maxRows={10}
           minRows={5}
           autosize
           name='message'
           variant='filled'
           {...form.getInputProps('message')}
+          mt='md'
         />
 
         <Group justify='center' mt='xl'>
-          <Button type='submit' size='md'>
-            Send message
+          <Button type='submit' size={'sm'}>
+            {t('feedback.send.button')}
           </Button>
         </Group>
       </form>

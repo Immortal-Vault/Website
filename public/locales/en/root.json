@@ -1,0 +1,81 @@
+{
+  "header": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up"
+  },
+  "hero": {
+    "title": {
+      "1": "Free",
+      "2": "Password Manager",
+      "3": "For Any Device"
+    },
+    "description": "Our mission is to create a simple but reliable tool to manage your passwords"
+  },
+  "features": {
+    "title": "Out Benefits",
+    "elements": {
+      "1": {
+        "title": "Privacy focused",
+        "description": "All data processing happens on the client, so user passwords and logins are stored in encrypted form in vaults on their end"
+      },
+      "2": {
+        "title": "Ease of use",
+        "description": "Our product is available on any device. We have tried to provide full adaptability for easy use from anywhere"
+      },
+      "3": {
+        "title": "Multilanguage support",
+        "description": "Our users are located in different parts of the world, so we support such languages as: English, Russian, the list will be replenished..."
+      }
+    }
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "elements": {
+      "1": {
+        "question": "How secure is Immortal Vault for storing my passwords?",
+        "answer": "Immortal Vault uses strong encryption standards to ensure your passwords and personal data are kept secure and private."
+      },
+      "2": {
+        "question": "Can I access my saved credentials on multiple devices?",
+        "answer": "Yes, Immortal Vault supports synchronization across multiple devices, allowing you to access your passwords anywhere."
+      },
+      "3": {
+        "question": "What happens if I forget my master password?",
+        "answer": "For security reasons, the master password is not recoverable. However, you can change it in account settings"
+      },
+      "4": {
+        "question": "Does Immortal Vault support autofill for secrets?",
+        "answer": "At the moment this feature is under development, we realize how convenient and necessary it is for our users."
+      }
+    }
+  },
+  "feedback": {
+    "title": "Contact Us",
+    "fields": {
+      "name": {
+        "label": "Name",
+        "placeholder": "Your name"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "Your email"
+      },
+      "subject": {
+        "label": "Subject",
+        "placeholder": ""
+      },
+      "message": {
+        "label": "Message",
+        "placeholder": ""
+      }
+    },
+    "send": {
+      "error": "Error on sending feedback",
+      "successfully": "Feedback sent successfully",
+      "button": "Send message"
+    }
+  },
+  "footer": {
+    "text": "Made with ❤\uFE0F by"
+  }
+}
