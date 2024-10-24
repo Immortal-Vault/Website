@@ -67,10 +67,6 @@ export default function SignUp() {
   const isMobile = useMediaQuery('(max-width: 768px)')
 
   const signUpUser = async () => {
-    // TODO: turn on sign up
-    sendErrorNotification('Sign up temporary turned off')
-    return
-
     if (form.validate().hasErrors) {
       return
     }
@@ -191,7 +187,16 @@ export default function SignUp() {
               {t('signIn.title')}
             </Anchor>
           </Anchor>
-          <Button type='submit' radius='xl' onClick={signUpUser}>
+          <Button
+            type='submit'
+            radius='xl'
+            onClick={async () => {
+              // TODO: turn on sign up
+              sendErrorNotification('Sign up temporary turned off')
+              return
+              await signUpUser()
+            }}
+          >
             {t('signUp.title')}
           </Button>
         </Group>
