@@ -12,9 +12,9 @@ export function RootHero() {
         <Title className={classes.title} mt={'lg'} mb={'md'}>
           Free{' '}
           <Text component='span' className={classes.highlight} inherit>
-            password manager
+            Password Manager
           </Text>{' '}
-          for any device
+          For Any Device
         </Title>
 
         <Container p={0} size={600}>

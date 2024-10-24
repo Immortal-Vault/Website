@@ -12,10 +12,13 @@ import {
 } from '@mantine/core'
 import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 import classes from './RootHeader.module.css'
+import { useNavigate } from 'react-router-dom'
+import { ROUTER_PATH } from '../../../shared'
 
 export function RootHeader() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false)
   const isMobile = useMediaQuery('(max-width: 768px)')
+  const navigate = useNavigate()
 
   return (
     <Box pb={40}>
@@ -33,8 +36,10 @@ export function RootHeader() {
             </Group>
 
             <Group visibleFrom='sm'>
-              <Button variant='default'>Log in</Button>
-              <Button>Sign up</Button>
+              <Button variant='default' onClick={() => navigate(ROUTER_PATH.SIGN_IN)}>
+                Log in
+              </Button>
+              <Button onClick={() => navigate(ROUTER_PATH.SIGN_UP)}>Sign up</Button>
             </Group>
 
             <Burger opened={drawerOpened} onClick={toggleDrawer} hiddenFrom='sm' />
@@ -55,8 +60,10 @@ export function RootHeader() {
           <Divider mb={'lg'} />
 
           <Group justify='center' grow pb='xl' px='md'>
-            <Button variant='default'>Log in</Button>
-            <Button>Sign up</Button>
+            <Button variant='default' onClick={() => navigate(ROUTER_PATH.SIGN_IN)}>
+              Log in
+            </Button>
+            <Button onClick={() => navigate(ROUTER_PATH.SIGN_UP)}>Sign up</Button>
           </Group>
         </ScrollArea>
       </Drawer>

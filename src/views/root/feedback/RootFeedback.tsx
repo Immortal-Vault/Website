@@ -1,5 +1,10 @@
 import { Button, Container, Group, SimpleGrid, Textarea, TextInput, Title } from '@mantine/core'
 import { useForm } from '@mantine/form'
+import { customFetch } from '../../../api'
+import { useEnvVars } from '../../../stores'
+import { useTranslation } from 'react-i18next'
+import validator from 'validator'
+import { sendErrorNotification, sendSuccessNotification } from '../../../shared'
 
 export function RootFeedback() {
   const form = useForm({
@@ -11,26 +16,48 @@ export function RootFeedback() {
     },
     validate: {
       name: (value) => value.trim().length < 2,
-      email: (value) => !/^\S+@\S+$/.test(value),
+      email: (val) => !validator.isEmail(val),
       subject: (value) => value.trim().length === 0,
+      message: (value) => value.trim().length === 0,
     },
   })
+  const { envs } = useEnvVars()
+  const { t } = useTranslation()
 
   return (
     <Container size='sm' mt={'xl'} mb={'xl'}>
       <form
-        onSubmit={form.onSubmit(() => {
-          //
+        onSubmit={form.onSubmit(async () => {
+          const values = form.values
+          const email = values.email
+          const name = values.name
+          const subject = values.subject
+          const message = values.message
+
+          const response = await customFetch(
+            `${envs?.API_SERVER_URL}/email/send`,
+            JSON.stringify({
+              from: email,
+              name,
+              subject,
+              message,
+            }),
+            'POST',
+            t,
+          )
+
+          if (!response || !response.ok) {
+            sendErrorNotification('Error on sending feedback')
+            console.error(response?.statusText)
+            return
+          }
+
+          sendSuccessNotification('Feedback sent successfully')
+          form.reset()
         })}
       >
-        <Title
-          order={2}
-          size='h1'
-          style={{ fontFamily: 'Greycliff CF, var(--mantine-font-family)' }}
-          fw={900}
-          ta='center'
-        >
-          Get in touch
+        <Title order={1} ta='center'>
+          Contact Us
         </Title>
 
         <SimpleGrid cols={{ base: 1, sm: 2 }} mt='xl'>

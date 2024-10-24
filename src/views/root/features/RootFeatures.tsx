@@ -42,7 +42,7 @@ export function RootFeature() {
   return (
     <Container size='lg' py='xl'>
       <Title order={2} className={classes.title} ta='center'>
-        Our benefits
+        Our Benefits
       </Title>
 
       <SimpleGrid cols={{ base: 1, md: 3 }} spacing='xl' mt={'xl'}>

@@ -1,23 +1,55 @@
-import { Anchor, Container, Group, Text } from '@mantine/core'
+import { Anchor, Container, Group, rem, Text } from '@mantine/core'
 import classes from './RootFooter.module.css'
+import { FaLinkedin, FaTelegramPlane } from 'react-icons/fa'
+import { IoLogoGithub } from 'react-icons/io'
 
 const links = [
-  { link: '#', label: 'Contact' },
-  { link: '#', label: 'Privacy' },
-  { link: '#', label: 'Blog' },
-  { link: '#', label: 'Careers' },
+  {
+    link: 'https://t.me/immortal_vault',
+    element: (
+      <FaTelegramPlane
+        style={{
+          width: rem(24),
+          height: rem(24),
+        }}
+      />
+    ),
+  },
+  {
+    link: 'https://www.linkedin.com/company/immortal-vault/',
+    element: (
+      <FaLinkedin
+        style={{
+          width: rem(24),
+          height: rem(24),
+        }}
+      />
+    ),
+  },
+  {
+    link: 'https://github.com/Immortal-Vault',
+    element: (
+      <IoLogoGithub
+        style={{
+          width: rem(24),
+          height: rem(24),
+        }}
+      />
+    ),
+  },
 ]
 
 export function RootFooter() {
-  const items = links.map((link) => (
+  const items = links.map((e) => (
     <Anchor<'a'>
       c='dimmed'
-      key={link.label}
-      href={link.link}
-      onClick={(event) => event.preventDefault()}
-      size='sm'
+      key={e.link}
+      href={e.link}
+      style={{
+        outline: 'none',
+      }}
     >
-      {link.label}
+      {e.element}
     </Anchor>
   ))
 
@@ -34,7 +66,7 @@ export function RootFooter() {
             Made with ❤️ by <Anchor<'a'> underline={'never'}>{'litolax'}</Anchor>
           </Text>
         </Anchor>
-        <Group className={classes.links}>{items}</Group>
+        <Group pt={'10px'}>{items}</Group>
       </Container>
     </div>
   )
