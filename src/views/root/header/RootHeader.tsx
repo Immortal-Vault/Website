@@ -10,11 +10,12 @@ import {
   ScrollArea,
   Title,
 } from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
+import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 import classes from './RootHeader.module.css'
 
 export function RootHeader() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false)
+  const isMobile = useMediaQuery('(max-width: 768px)')
 
   return (
     <Box pb={40}>
@@ -22,7 +23,7 @@ export function RootHeader() {
         <Group justify='space-between' h='100%'>
           <Group>
             <Image src={'/logo.svg'} h={40} fit='contain' alt={'Immortal Vault'} />
-            <Title order={2}>Immortal Vault</Title>
+            <Title order={isMobile ? 3 : 2}>Immortal Vault</Title>
           </Group>
 
           <Group visibleFrom='sm'>
@@ -44,19 +45,7 @@ export function RootHeader() {
         zIndex={1000000}
       >
         <ScrollArea h={`calc(100vh - ${rem(80)})`} mx='-md'>
-          <Divider my='sm' />
-
-          <a href='#' className={classes.link}>
-            Home
-          </a>
-          <a href='#' className={classes.link}>
-            Learn
-          </a>
-          <a href='#' className={classes.link}>
-            Academy
-          </a>
-
-          <Divider my='sm' />
+          <Divider mb={'lg'} />
 
           <Group justify='center' grow pb='xl' px='md'>
             <Button variant='default'>Log in</Button>
