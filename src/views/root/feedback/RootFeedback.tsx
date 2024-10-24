@@ -1,10 +1,20 @@
-import { Button, Container, Group, SimpleGrid, Textarea, TextInput, Title } from '@mantine/core'
+import {
+  Button,
+  Container,
+  Group,
+  Loader,
+  SimpleGrid,
+  Textarea,
+  TextInput,
+  Title,
+} from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { customFetch } from '../../../api'
 import { useEnvVars } from '../../../stores'
 import { useTranslation } from 'react-i18next'
 import validator from 'validator'
 import { sendErrorNotification, sendSuccessNotification } from '../../../shared'
+import { useState } from 'react'
 
 export function RootFeedback() {
   const form = useForm({
@@ -23,11 +33,13 @@ export function RootFeedback() {
   })
   const { envs } = useEnvVars()
   const { t } = useTranslation('root')
+  const [loaderState, setLoaderState] = useState(false)
 
   return (
     <Container size='sm' mt={'xl'} mb={'xl'}>
       <form
         onSubmit={form.onSubmit(async () => {
+          setLoaderState(true)
           const values = form.values
           const email = values.email
           const name = values.name
@@ -49,11 +61,13 @@ export function RootFeedback() {
           if (!response || !response.ok) {
             sendErrorNotification(t('feedback.send.error'))
             console.error(response?.statusText)
+            setLoaderState(false)
             return
           }
 
           sendSuccessNotification(t('feedback.send.successfully'))
           form.reset()
+          setLoaderState(false)
         })}
       >
         <Title order={1} ta='center'>
@@ -99,9 +113,17 @@ export function RootFeedback() {
         />
 
         <Group justify='center' mt='xl'>
-          <Button type='submit' size={'sm'}>
-            {t('feedback.send.button')}
-          </Button>
+          {!loaderState ? (
+            <Button type='submit' size={'sm'}>
+              {t('feedback.send.button')}
+            </Button>
+          ) : (
+            <Button disabled={true} type='submit' size={'sm'}>
+              {t('feedback.send.button')}
+              &nbsp;&nbsp;&nbsp;
+              <Loader size={24} color={'blue'} />
+            </Button>
+          )}
         </Group>
       </form>
     </Container>
