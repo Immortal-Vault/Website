@@ -1,7 +1,9 @@
 {
   "header": {
     "signIn": "Sign In",
-    "signUp": "Sign Up"
+    "signUp": "Sign Up",
+    "profile": "Profile",
+    "navigation": "Navigation"
   },
   "hero": {
     "title": {

@@ -22,11 +22,7 @@ const theme = createTheme({})
 const router = createBrowserRouter([
   {
     path: ROUTER_PATH.ROOT,
-    element: (
-      <NonAuthorizedRoute>
-        <Root />
-      </NonAuthorizedRoute>
-    ),
+    element: <Root />,
   },
   {
     path: ROUTER_PATH.SIGN_IN,

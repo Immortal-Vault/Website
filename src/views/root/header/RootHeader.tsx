@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Box,
   Burger,
   Button,
@@ -15,12 +16,15 @@ import classes from './RootHeader.module.css'
 import { useNavigate } from 'react-router-dom'
 import { ROUTER_PATH } from '../../../shared'
 import { useTranslation } from 'react-i18next'
+import { useAuth } from '../../../stores'
+import { EAuthState } from '../../../types'
 
 export function RootHeader() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false)
   const isMobile = useMediaQuery('(max-width: 768px)')
   const navigate = useNavigate()
   const { t } = useTranslation('root')
+  const { authState } = useAuth()
 
   return (
     <Box pb={40}>
@@ -45,10 +49,25 @@ export function RootHeader() {
             </Group>
 
             <Group visibleFrom='sm'>
-              <Button variant='default' onClick={() => navigate(ROUTER_PATH.SIGN_IN)}>
-                {t('header.signIn')}
-              </Button>
-              <Button onClick={() => navigate(ROUTER_PATH.SIGN_UP)}>{t('header.signUp')}</Button>
+              {authState === EAuthState.Deauthorized && (
+                <>
+                  <Button variant='default' onClick={() => navigate(ROUTER_PATH.SIGN_IN)}>
+                    {t('header.signIn')}
+                  </Button>
+                  <Button onClick={() => navigate(ROUTER_PATH.SIGN_UP)}>
+                    {t('header.signUp')}
+                  </Button>
+                </>
+              )}
+              {authState === EAuthState.Authorized && (
+                <Avatar
+                  onClick={() => navigate(ROUTER_PATH.MAIN_MENU)}
+                  variant='transparent'
+                  radius='xl'
+                  size='lg'
+                  color='rgba(81,175, 255, 1)'
+                />
+              )}
             </Group>
 
             <Burger opened={drawerOpened} onClick={toggleDrawer} hiddenFrom='sm' />
@@ -61,7 +80,7 @@ export function RootHeader() {
         onClose={closeDrawer}
         size='100%'
         padding='md'
-        title='Navigation'
+        title={t('header.navigation')}
         hiddenFrom='sm'
         zIndex={1000000}
       >
@@ -69,10 +88,17 @@ export function RootHeader() {
           <Divider mb={'lg'} />
 
           <Group justify='center' grow pb='xl' px='md'>
-            <Button variant='default' onClick={() => navigate(ROUTER_PATH.SIGN_IN)}>
-              {t('header.signIn')}
-            </Button>
-            <Button onClick={() => navigate(ROUTER_PATH.SIGN_UP)}>{t('header.signUp')}</Button>
+            {authState === EAuthState.Deauthorized && (
+              <>
+                <Button variant='default' onClick={() => navigate(ROUTER_PATH.SIGN_IN)}>
+                  {t('header.signIn')}
+                </Button>
+                <Button onClick={() => navigate(ROUTER_PATH.SIGN_UP)}>{t('header.signUp')}</Button>
+              </>
+            )}
+            {authState === EAuthState.Authorized && (
+              <Button onClick={() => navigate(ROUTER_PATH.MAIN_MENU)}>{t('header.profile')}</Button>
+            )}
           </Group>
         </ScrollArea>
       </Drawer>

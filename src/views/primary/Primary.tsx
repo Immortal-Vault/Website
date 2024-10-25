@@ -7,17 +7,19 @@ import {
   TPrimaryViewTab,
 } from '../../types'
 import { useDisclosure } from '@mantine/hooks'
-import { createTab, LOCAL_STORAGE, sendSuccessNotification } from '../../shared'
+import { createTab, LOCAL_STORAGE, ROUTER_PATH, sendSuccessNotification } from '../../shared'
 import { Secrets, Settings } from './subviews'
 import { useTranslation } from 'react-i18next'
 import { useAuth, useMenu } from '../../stores'
 import { ProfileAvatarWithMenu } from '../../components'
+import { useNavigate } from 'react-router-dom'
 
 export default function Primary() {
   const { t, i18n } = useTranslation('views')
   const { authSignOut } = useAuth()
   const { currentPage, settingsPage, setCurrentPage, setSettingsPage } = useMenu()
   const [burgerState, { toggle, close: closeBurger }] = useDisclosure()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const userLocalization = localStorage.getItem(LOCAL_STORAGE.USER_LOCALE)
@@ -78,8 +80,21 @@ export default function Primary() {
         <Group justify={'space-between'} h={'100%'}>
           <Group h={'100%'} px='md'>
             <Burger opened={burgerState} onClick={toggle} hiddenFrom='sm' size='sm' />
-            <Image src={'/logo.svg'} w={'2.5rem'} alt={'Immortal Vault'} />
-            <Title order={2}>Immortal Vault</Title>
+            <Image
+              onClick={() => navigate(ROUTER_PATH.ROOT)}
+              src={'/logo.svg'}
+              w={'2.5rem'}
+              alt={'Immortal Vault'}
+            />
+            <Title
+              onClick={() => navigate(ROUTER_PATH.ROOT)}
+              order={2}
+              style={{
+                color: 'white',
+              }}
+            >
+              Immortal Vault
+            </Title>
           </Group>
           <Group px='md'>
             <ProfileAvatarWithMenu />
