@@ -34,7 +34,14 @@ export function RootHeader() {
                 w={isMobile ? 30 : 40}
                 alt={'Immortal Vault'}
               />
-              <Title order={isMobile ? 4 : 2}>Immortal Vault</Title>
+              <Title
+                order={isMobile ? 4 : 2}
+                style={{
+                  color: 'white',
+                }}
+              >
+                Immortal Vault
+              </Title>
             </Group>
 
             <Group visibleFrom='sm'>
