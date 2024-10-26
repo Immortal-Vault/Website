@@ -16,6 +16,7 @@ import {
 } from './stores'
 import ApproveSignIn from './views/auth/ApproveSignIn.tsx'
 import Root from './views/root/Root.tsx'
+import { PrivacyPolicy } from './views/root/privacy/PrivacyPolicy.tsx'
 
 const theme = createTheme({})
 
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: ROUTER_PATH.ROOT,
     element: <Root />,
+  },
+  {
+    path: ROUTER_PATH.PRIVACY_POLICY,
+    element: <PrivacyPolicy />,
   },
   {
     path: ROUTER_PATH.SIGN_IN,

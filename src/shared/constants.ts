@@ -1,5 +1,6 @@
 ﻿export const ROUTER_PATH = {
   ROOT: '/',
+  PRIVACY_POLICY: '/privacy-policy',
   SIGN_IN: '/auth/signIn',
   SIGN_IN_APPROVE: '/auth/signIn/approve',
   SIGN_UP: '/auth/signUp',

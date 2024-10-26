@@ -3,6 +3,7 @@ import classes from './RootFooter.module.css'
 import { FaLinkedin, FaTelegramPlane } from 'react-icons/fa'
 import { IoLogoGithub } from 'react-icons/io'
 import { useTranslation } from 'react-i18next'
+import { MdOutlinePolicy } from 'react-icons/md'
 
 const links = [
   {
@@ -31,6 +32,17 @@ const links = [
     link: 'https://github.com/Immortal-Vault',
     element: (
       <IoLogoGithub
+        style={{
+          width: rem(24),
+          height: rem(24),
+        }}
+      />
+    ),
+  },
+  {
+    link: '/privacy-policy',
+    element: (
+      <MdOutlinePolicy
         style={{
           width: rem(24),
           height: rem(24),
