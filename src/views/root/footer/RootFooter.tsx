@@ -3,7 +3,6 @@ import classes from './RootFooter.module.css'
 import { FaLinkedin, FaTelegramPlane } from 'react-icons/fa'
 import { IoLogoGithub } from 'react-icons/io'
 import { useTranslation } from 'react-i18next'
-import { MdOutlinePolicy } from 'react-icons/md'
 
 const links = [
   {
@@ -39,17 +38,6 @@ const links = [
       />
     ),
   },
-  {
-    link: '/privacy-policy',
-    element: (
-      <MdOutlinePolicy
-        style={{
-          width: rem(24),
-          height: rem(24),
-        }}
-      />
-    ),
-  },
 ]
 
 export function RootFooter() {
@@ -74,12 +62,13 @@ export function RootFooter() {
         <Anchor<'a'>
           c='dimmed'
           underline={'never'}
-          key={'https://github.com/litolax'}
-          href={'https://github.com/litolax'}
+          key={'/privacy-policy'}
+          href={'/privacy-policy'}
+          style={{
+            outline: 'none',
+          }}
         >
-          <Text>
-            {t('footer.text')} <Anchor<'a'> underline={'never'}>{'litolax'}</Anchor>
-          </Text>
+          <Text>{t('footer.privacy')}</Text>
         </Anchor>
         <Group pt={'10px'}>{items}</Group>
       </Container>
