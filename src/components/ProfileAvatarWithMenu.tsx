@@ -20,7 +20,7 @@ const ProfileButton = forwardRef<HTMLButtonElement>(({ ...others }, ref) => {
 
 const elementsData = [
   {
-    title: 'Profile',
+    title: 'header.profile',
     link: ROUTER_PATH.MENU,
     icon: (
       <BsPersonCircle
@@ -32,7 +32,7 @@ const elementsData = [
     ),
   },
   {
-    title: 'Settings',
+    title: 'header.settings',
     link: ROUTER_PATH.MENU_SETTINGS,
     icon: (
       <MdOutlineSettings
@@ -44,7 +44,7 @@ const elementsData = [
     ),
   },
   {
-    title: 'Vault',
+    title: 'header.vault',
     link: ROUTER_PATH.MENU_VAULT,
     icon: (
       <TiCloudStorage
@@ -59,7 +59,7 @@ const elementsData = [
 
 export const ProfileAvatarWithMenu: FC = () => {
   const navigate = useNavigate()
-  const { t } = useTranslation()
+  const { t } = useTranslation('root')
   const { authSignOut } = useAuth()
 
   const elements = elementsData.map((element) => (
@@ -72,7 +72,7 @@ export const ProfileAvatarWithMenu: FC = () => {
         }
       }}
     >
-      {element.title}
+      {t(element.title)}
     </Menu.Item>
   ))
 
@@ -90,7 +90,8 @@ export const ProfileAvatarWithMenu: FC = () => {
         <ProfileButton />
       </Menu.Target>
       <Menu.Dropdown>
-        <Menu.Label>{'json'}</Menu.Label>
+        {/* TODO: add username here */}
+        <Menu.Label>{'test'}</Menu.Label>
         {elements}
         <Menu.Divider />
         <Menu.Item
@@ -108,7 +109,7 @@ export const ProfileAvatarWithMenu: FC = () => {
             sendSuccessNotification(t('auth:signOut:successful'))
           }}
         >
-          {t('root:header.exit')}
+          {t('header.exit')}
         </Menu.Item>
       </Menu.Dropdown>
     </Menu>
