@@ -63,8 +63,10 @@ export default function ApproveSignIn() {
     const localization = jsonResponse.localization
     localStorage.setItem(LOCAL_STORAGE.USER_LOCALE, localization)
 
+    const username = jsonResponse.username
+
     sendSuccessNotification(t('notifications:successful'))
-    authSignIn(email)
+    authSignIn(email, username)
     setLoaderState.close()
 
     // redirect to main after sign In

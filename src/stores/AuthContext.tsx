@@ -10,20 +10,22 @@ import { Button, Group, Input, Modal } from '@mantine/core'
 export interface AuthContextType {
   authState: EAuthState
   authEmail: string
+  authUsername: string
   secretPassword: string
   openSecretPasswordModel: () => void
-  authSignIn: (email: string) => void
+  authSignIn: (email: string, username: string) => void
   authSignOut: (expired: boolean) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType>({
   authState: EAuthState.Deauthorized,
   authEmail: '',
+  authUsername: '',
   secretPassword: '',
   openSecretPasswordModel: function (): void {
     throw new Error('Function is not implemented.')
   },
-  authSignIn: function (_email: string): void {
+  authSignIn: function (_email: string, _username: string): void {
     throw new Error('Function is not implemented.')
   },
   authSignOut: async function (_expired: boolean): Promise<void> {
@@ -46,14 +48,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [passwordInput, setPasswordInput] = useState('')
   const [secretPassword, setSecretPassword] = useState('')
   const [authEmail, setAuthEmail] = useState('')
+  const [authUsername, setAuthUsername] = useState('')
   const authPingInterval = useInterval(() => authPing(), 10000)
   const [authState, setAuthState] = useState<EAuthState>(
     (localStorage.getItem(LOCAL_STORAGE.AUTH_STATE) as EAuthState) ?? EAuthState.Deauthorized,
   )
 
-  const setAuthSignIn = (email: string): void => {
+  const setAuthSignIn = (email: string, username: string): void => {
     setAuthState(EAuthState.Authorized)
     setAuthEmail(email)
+    setAuthUsername(username)
     const userLocalization = localStorage.getItem(LOCAL_STORAGE.USER_LOCALE)
     if (userLocalization && i18n.languages.includes(userLocalization)) {
       i18n.changeLanguage(userLocalization)
@@ -64,6 +68,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     await signOut(envs, t)
     setAuthState(EAuthState.Deauthorized)
     setAuthEmail('')
+    setAuthUsername('')
     setSecretPassword('')
     localStorage.removeItem(LOCAL_STORAGE.USER_LOCALE)
     i18n.changeLanguage(undefined)
@@ -113,12 +118,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     () => ({
       authState,
       authEmail,
+      authUsername,
       secretPassword,
       openSecretPasswordModel,
       authSignIn: setAuthSignIn,
       authSignOut: setAuthSignOut,
     }),
-    [authState, authEmail, secretPassword],
+    [authState, authEmail, authUsername, secretPassword],
   )
 
   return (

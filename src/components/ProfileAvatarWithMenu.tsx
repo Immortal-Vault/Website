@@ -60,7 +60,7 @@ const elementsData = [
 export const ProfileAvatarWithMenu: FC = () => {
   const navigate = useNavigate()
   const { t } = useTranslation('root')
-  const { authSignOut } = useAuth()
+  const { authUsername, authSignOut } = useAuth()
 
   const elements = elementsData.map((element) => (
     <Menu.Item
@@ -90,8 +90,7 @@ export const ProfileAvatarWithMenu: FC = () => {
         <ProfileButton />
       </Menu.Target>
       <Menu.Dropdown>
-        {/* TODO: add username here */}
-        <Menu.Label>{'test'}</Menu.Label>
+        <Menu.Label>{authUsername}</Menu.Label>
         {elements}
         <Menu.Divider />
         <Menu.Item
