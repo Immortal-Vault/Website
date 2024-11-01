@@ -4,7 +4,6 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { ROUTER_PATH } from './shared'
 import SignIn from './views/auth/SignIn.tsx'
 import { ToastContainer, Zoom } from 'react-toastify'
-import Primary from './views/primary/Primary.tsx'
 import { ErrorBoundary, ErrorBoundaryError, NonAuthorizedRoute, ProtectedRoute } from './components'
 import { useMediaQuery } from '@mantine/hooks'
 import {
@@ -17,6 +16,8 @@ import {
 import ApproveSignIn from './views/auth/ApproveSignIn.tsx'
 import Root from './views/root/Root.tsx'
 import { PrivacyPolicy } from './views/root/privacy/PrivacyPolicy.tsx'
+import { Suspense } from 'react'
+import { Vault, Settings, Primary } from './views/primary'
 
 const theme = createTheme({})
 
@@ -54,10 +55,26 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: ROUTER_PATH.MAIN_MENU,
+    path: ROUTER_PATH.MENU,
     element: (
       <ProtectedRoute>
         <Primary />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: ROUTER_PATH.MENU_SETTINGS,
+    element: (
+      <ProtectedRoute>
+        <Settings />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: ROUTER_PATH.MENU_VAULT,
+    element: (
+      <ProtectedRoute>
+        <Vault />
       </ProtectedRoute>
     ),
   },
@@ -88,7 +105,9 @@ export default function App() {
             <AuthProvider>
               <GoogleDriveProvider>
                 <SecretsProvider>
-                  <RouterProvider router={router} />
+                  <Suspense fallback={null}>
+                    <RouterProvider router={router} />
+                  </Suspense>
                 </SecretsProvider>
               </GoogleDriveProvider>
             </AuthProvider>

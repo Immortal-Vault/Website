@@ -8,7 +8,7 @@ export const NonAuthorizedRoute = (props: { children: ReactNode }) => {
   const { authState } = useAuth()
 
   if (authState === EAuthState.Authorized) {
-    return <Navigate to={ROUTER_PATH.MAIN_MENU} />
+    return <Navigate to={ROUTER_PATH.MENU} />
   }
 
   return props.children

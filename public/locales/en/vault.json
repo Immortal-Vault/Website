@@ -1,0 +1,27 @@
+{
+  "title": "Vaults",
+  "modals": {
+    "keepData": {
+      "title": "Do you want to keep or remove data?",
+      "buttons": {
+        "keep": "Keep",
+        "remove": "Remove"
+      }
+    },
+    "masterPassword": {
+      "title": "Enter your secure master password",
+      "buttons": {
+        "cancel": "Cancel",
+        "submit": "Submit"
+      }
+    }
+  },
+  "states": {
+    "connected": "Connected {{email}}",
+    "disconnected": "Disconnected"
+  },
+  "google": {
+    "signIn": "Sign In Google",
+    "signOut": "Sign Out Google"
+  }
+}

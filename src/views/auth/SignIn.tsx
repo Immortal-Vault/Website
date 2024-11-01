@@ -69,7 +69,7 @@ export default function SignIn() {
     setLoaderState.close()
 
     // redirect to main after sign In
-    navigate(ROUTER_PATH.MAIN_MENU)
+    navigate(ROUTER_PATH.MENU)
   }
 
   return (

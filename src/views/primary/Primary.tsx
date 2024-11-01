@@ -1,25 +1,15 @@
-import { AppShell, Burger, Group, Image, ScrollArea, Title } from '@mantine/core'
 import { useEffect } from 'react'
-import {
-  EPrimaryViewPage,
-  EPrimaryViewTabType,
-  ESettingsViewPage,
-  TPrimaryViewTab,
-} from '../../types'
-import { useDisclosure } from '@mantine/hooks'
-import { createTab, LOCAL_STORAGE, ROUTER_PATH, sendSuccessNotification } from '../../shared'
-import { Secrets, Settings } from './subviews'
+import { LOCAL_STORAGE } from '../../shared'
 import { useTranslation } from 'react-i18next'
-import { useAuth, useMenu } from '../../stores'
-import { ProfileAvatarWithMenu } from '../../components'
-import { useNavigate } from 'react-router-dom'
+import { Footer, PrimaryHeader } from '../../components'
+import { Container, Grid, ScrollArea, Text, Title } from '@mantine/core'
+import { Secrets } from './subviews'
+import { FaLock } from 'react-icons/fa'
+import { useMediaQuery } from '@mantine/hooks'
 
-export default function Primary() {
+export function Primary() {
+  const isMobile = useMediaQuery('(max-width: 768px)')
   const { t, i18n } = useTranslation('views')
-  const { authSignOut } = useAuth()
-  const { currentPage, settingsPage, setCurrentPage, setSettingsPage } = useMenu()
-  const [burgerState, { toggle, close: closeBurger }] = useDisclosure()
-  const navigate = useNavigate()
 
   useEffect(() => {
     const userLocalization = localStorage.getItem(LOCAL_STORAGE.USER_LOCALE)
@@ -28,94 +18,88 @@ export default function Primary() {
     }
   }, [])
 
-  const mainViewTabs: TPrimaryViewTab[] = [
-    {
-      type: EPrimaryViewTabType.Button,
-      name: t('secrets.name'),
-      onClick: () => {
-        setCurrentPage(EPrimaryViewPage.Secrets)
-        closeBurger()
-      },
-    },
-    {
-      type: EPrimaryViewTabType.Accordion,
-      name: t('settings.name'),
-      sections: [
-        {
-          title: t('settings.subviews.main.name'),
-          click: () => {
-            setSettingsPage(ESettingsViewPage.Main)
-            setCurrentPage(EPrimaryViewPage.Settings)
-            closeBurger()
-          },
-        },
-        {
-          title: t('settings.subviews.vault.name'),
-          click: () => {
-            setSettingsPage(ESettingsViewPage.Vault)
-            setCurrentPage(EPrimaryViewPage.Settings)
-            closeBurger()
-          },
-        },
-      ],
-    },
-    {
-      type: EPrimaryViewTabType.Button,
-      name: t('auth:signOut:title'),
-      color: 'red',
-      onClick: () => {
-        authSignOut(false)
-        sendSuccessNotification(t('auth:signOut:successful'))
-      },
-    },
-  ]
-
   return (
-    <AppShell
-      header={{ height: 60 }}
-      navbar={{ width: 300, breakpoint: 'sm', collapsed: { mobile: !burgerState } }}
-      padding='md'
-    >
-      <AppShell.Header>
-        <Group justify={'space-between'} h={'100%'}>
-          <Group h={'100%'} px='md'>
-            <Burger opened={burgerState} onClick={toggle} hiddenFrom='sm' size='sm' />
-            <Image
-              onClick={() => navigate(ROUTER_PATH.ROOT)}
-              src={'/logo.svg'}
-              w={'2.5rem'}
-              alt={'Immortal Vault'}
-            />
-            <Title
-              onClick={() => navigate(ROUTER_PATH.ROOT)}
-              order={2}
-              style={{
-                color: 'white',
-              }}
-            >
-              Immortal Vault
-            </Title>
-          </Group>
-          <Group px='md'>
-            <ProfileAvatarWithMenu />
-          </Group>
-        </Group>
-      </AppShell.Header>
-      <AppShell.Navbar p='md'>
-        <AppShell.Section grow component={ScrollArea}>
-          {mainViewTabs.map((tab, index) => createTab(tab, index, t))}
-        </AppShell.Section>
-      </AppShell.Navbar>
-      <AppShell.Main
-        style={{
-          height: '100vh',
-          backgroundColor: 'rgb(36, 36, 36)',
-        }}
-      >
-        {currentPage === EPrimaryViewPage.Secrets && <Secrets />}
-        {currentPage === EPrimaryViewPage.Settings && <Settings currentPage={settingsPage} />}
-      </AppShell.Main>
-      <AppShell.Footer></AppShell.Footer>
-    </AppShell>
+    <>
+      <PrimaryHeader />
+      <Container fluid mb={'xl'}>
+        <Grid>
+          <Grid.Col span={2}>
+            <ScrollArea h={'calc(100vh - 200px)'} type={'always'} scrollbars={'y'} offsetScrollbars>
+              <Title order={3}>Все элементы</Title>
+              <Text>Работа</Text>
+              <Text>Финансы</Text>
+              <Text>Путешествие</Text>
+              <Text>Удостоверение</Text>
+              <Text>Заметка</Text>
+              <Text>Компьютер</Text>
+              <Text>Семья</Text>
+              <Text>Разное</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+              <Text>Элемент X</Text>
+            </ScrollArea>
+          </Grid.Col>
+
+          <Grid.Col span={3}>
+            <ScrollArea h={'calc(100vh - 200px)'} type={'always'} scrollbars={'y'} offsetScrollbars>
+              <Secrets />
+            </ScrollArea>
+          </Grid.Col>
+
+          <Grid.Col
+            span={7}
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <ScrollArea h={'calc(100vh - 200px)'} type={'always'} scrollbars={'y'}>
+              {!isMobile && (
+                <FaLock
+                  size={'14rem'}
+                  style={{
+                    marginTop: '100%',
+                  }}
+                />
+              )}
+            </ScrollArea>
+          </Grid.Col>
+        </Grid>
+      </Container>
+      <Footer />
+    </>
   )
 }

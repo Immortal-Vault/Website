@@ -10,7 +10,6 @@ import {
   Input,
   List,
   Modal,
-  ScrollArea,
   Text,
   Textarea,
   TextInput,
@@ -33,7 +32,6 @@ import { decrypt, encrypt } from '../../../../shared'
 import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 import { v7 as uuid } from 'uuid'
 import { useForm } from '@mantine/form'
-import { FaLock } from 'react-icons/fa'
 
 export const Secrets = () => {
   const isMobile = useMediaQuery('(max-width: 768px)')
@@ -87,7 +85,7 @@ export const Secrets = () => {
 
       const decryptedSecretFile = await decrypt(secretFileResponse, authContext.secretPassword)
       const secretFileInfo = JSON.parse(decryptedSecretFile) as TSecretFile
-      console.log(JSON.stringify(secretFileInfo, null, 2))
+
       const secrets = secretFileInfo.secrets
       const folders = secretFileInfo.folders
       setSecrets(secrets ?? [])
@@ -226,9 +224,115 @@ export const Secrets = () => {
 
   useEffect(() => {
     if (!authContext.secretPassword) {
-      authContext.openSecretPasswordModel()
+      // authContext.openSecretPasswordModel()
+      setSecrets([
+        {
+          id: '',
+          label: 'Secret',
+          username: 'json',
+          folders: [],
+          lastUpdated: 0,
+          created: 0,
+        },
+        {
+          id: '',
+          label: 'Secret',
+          username: 'json',
+          folders: [],
+          lastUpdated: 0,
+          created: 0,
+        },
+        {
+          id: '',
+          label: 'Secret',
+          username: 'json',
+          folders: [],
+          lastUpdated: 0,
+          created: 0,
+        },
+        {
+          id: '',
+          label: 'Secret',
+          username: 'json',
+          folders: [],
+          lastUpdated: 0,
+          created: 0,
+        },
+        {
+          id: '',
+          label: 'Secret',
+          username: 'json',
+          folders: [],
+          lastUpdated: 0,
+          created: 0,
+        },
+        {
+          id: '',
+          label: 'Secret',
+          username: 'json',
+          folders: [],
+          lastUpdated: 0,
+          created: 0,
+        },
+        {
+          id: '',
+          label: 'Secret',
+          username: 'json',
+          folders: [],
+          lastUpdated: 0,
+          created: 0,
+        },
+        {
+          id: '',
+          label: 'Secret',
+          username: 'json',
+          folders: [],
+          lastUpdated: 0,
+          created: 0,
+        },
+        {
+          id: '',
+          label: 'Secret',
+          username: 'json',
+          folders: [],
+          lastUpdated: 0,
+          created: 0,
+        },
+        {
+          id: '',
+          label: 'Secret',
+          username: 'json',
+          folders: [],
+          lastUpdated: 0,
+          created: 0,
+        },
+        {
+          id: '',
+          label: 'Secret',
+          username: 'json',
+          folders: [],
+          lastUpdated: 0,
+          created: 0,
+        },
+        {
+          id: '',
+          label: 'Secret',
+          username: 'json',
+          folders: [],
+          lastUpdated: 0,
+          created: 0,
+        },
+        {
+          id: '',
+          label: 'Secret',
+          username: 'json',
+          folders: [],
+          lastUpdated: 0,
+          created: 0,
+        },
+      ])
     } else if (secrets.length < 1) {
-      fetchSecrets()
+      // fetchSecrets()
     }
   }, [authContext.secretPassword])
 
@@ -378,41 +482,32 @@ export const Secrets = () => {
             {t('elements')}
           </Text>
           <List spacing='md'>
-            <ScrollArea h={650}>
-              {filteredSecrets.map((secret) => (
-                <>
-                  <List.Item
-                    key={secret.id}
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => {
-                      setSelectedSecret(secret)
-                      openDrawer()
-                    }}
-                  >
-                    <Group align='center' justify='space-between'>
-                      <div>
-                        <Text size='sm' c='white'>
-                          {secret.label}
-                        </Text>
-                        <Text size='xs' c='gray'>
-                          {secret?.username ?? secret?.email ?? ''}
-                        </Text>
-                      </div>
-                    </Group>
-                  </List.Item>
-                  <Divider my={'md'} />
-                </>
-              ))}
-            </ScrollArea>
+            {filteredSecrets.map((secret) => (
+              <>
+                <List.Item
+                  key={secret.id}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    setSelectedSecret(secret)
+                    openDrawer()
+                  }}
+                >
+                  <Group align='center' justify='space-between'>
+                    <div>
+                      <Text size='sm' c='white'>
+                        {secret.label}
+                      </Text>
+                      <Text size='xs' c='gray'>
+                        {secret?.username ?? secret?.email ?? ''}
+                      </Text>
+                    </div>
+                  </Group>
+                </List.Item>
+                <Divider my={'md'} />
+              </>
+            ))}
           </List>
         </Grid.Col>
-        {!isMobile && (
-          <Grid.Col span={4}>
-            <Flex h={'100%'} justify={'center'} align={'center'}>
-              <FaLock size={'25em'} />
-            </Flex>
-          </Grid.Col>
-        )}
       </Grid>
       <Drawer
         opened={drawerState}

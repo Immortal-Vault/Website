@@ -4,7 +4,9 @@
   SIGN_IN: '/auth/signIn',
   SIGN_IN_APPROVE: '/auth/signIn/approve',
   SIGN_UP: '/auth/signUp',
-  MAIN_MENU: '/menu',
+  MENU: '/menu',
+  MENU_SETTINGS: '/menu/settings',
+  MENU_VAULT: '/menu/vault',
 }
 
 export const LOCAL_STORAGE = {
