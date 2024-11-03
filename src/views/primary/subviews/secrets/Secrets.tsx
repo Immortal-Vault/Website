@@ -15,20 +15,20 @@ import {
   TextInput,
 } from '@mantine/core'
 import {
-  TSecret,
-  TSecretFile,
   TEnpassField,
+  TEnpassFolder,
   TEnpassItem,
   TEnpassSecretFile,
   TFolder,
-  TEnpassFolder,
+  TSecret,
+  TSecretFile,
 } from '../../../../types'
 import { Secret } from '../../../../components'
 import { useAuth, useEnvVars, useSecrets } from '../../../../stores'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
-import { customFetch, uploadSecretFile } from '../../../../api'
-import { decrypt, encrypt } from '../../../../shared'
+import { customFetch } from '../../../../api'
+import { decrypt } from '../../../../shared'
 import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 import { v7 as uuid } from 'uuid'
 import { useForm } from '@mantine/form'
@@ -37,7 +37,7 @@ export const Secrets = () => {
   const isMobile = useMediaQuery('(max-width: 768px)')
   const { envs } = useEnvVars()
   const { t } = useTranslation('secrets')
-  const { secrets, folders, setSecrets, setFolders } = useSecrets()
+  const { secrets, folders, setSecrets, setFolders, saveSecrets } = useSecrets()
   const authContext = useAuth()
   const [filteredSecrets, setFilteredSecrets] = useState<TSecret[]>([])
   const [selectedSecret, setSelectedSecret] = useState<TSecret | null>(null)
@@ -85,7 +85,7 @@ export const Secrets = () => {
 
       const decryptedSecretFile = await decrypt(secretFileResponse, authContext.secretPassword)
       const secretFileInfo = JSON.parse(decryptedSecretFile) as TSecretFile
-
+      console.log(secretFileInfo)
       const secrets = secretFileInfo.secrets
       const folders = secretFileInfo.folders
       setSecrets(secrets ?? [])
@@ -99,31 +99,6 @@ export const Secrets = () => {
       toast.error(t('incorrectMasterPassword'))
       toast.dismiss(notificationId)
     }
-  }
-
-  const saveSecrets = async (secrets: TSecret[], folders: TFolder[]) => {
-    const notificationId = toast.loading(t('data.updating'))
-
-    const secretFile: TSecretFile = {
-      version: '0.0.1',
-      folders,
-      secrets,
-    }
-    const result = await uploadSecretFile(
-      await encrypt(JSON.stringify(secretFile), authContext.secretPassword),
-      envs,
-      t,
-      authContext,
-    )
-
-    if (!result) {
-      toast.error(t('data.failed'))
-      toast.dismiss(notificationId)
-      return
-    }
-
-    toast.success(t('data.updated'))
-    toast.dismiss(notificationId)
   }
 
   const addSecret = async () => {
@@ -224,115 +199,9 @@ export const Secrets = () => {
 
   useEffect(() => {
     if (!authContext.secretPassword) {
-      // authContext.openSecretPasswordModel()
-      setSecrets([
-        {
-          id: '',
-          label: 'Secret',
-          username: 'json',
-          folders: [],
-          lastUpdated: 0,
-          created: 0,
-        },
-        {
-          id: '',
-          label: 'Secret',
-          username: 'json',
-          folders: [],
-          lastUpdated: 0,
-          created: 0,
-        },
-        {
-          id: '',
-          label: 'Secret',
-          username: 'json',
-          folders: [],
-          lastUpdated: 0,
-          created: 0,
-        },
-        {
-          id: '',
-          label: 'Secret',
-          username: 'json',
-          folders: [],
-          lastUpdated: 0,
-          created: 0,
-        },
-        {
-          id: '',
-          label: 'Secret',
-          username: 'json',
-          folders: [],
-          lastUpdated: 0,
-          created: 0,
-        },
-        {
-          id: '',
-          label: 'Secret',
-          username: 'json',
-          folders: [],
-          lastUpdated: 0,
-          created: 0,
-        },
-        {
-          id: '',
-          label: 'Secret',
-          username: 'json',
-          folders: [],
-          lastUpdated: 0,
-          created: 0,
-        },
-        {
-          id: '',
-          label: 'Secret',
-          username: 'json',
-          folders: [],
-          lastUpdated: 0,
-          created: 0,
-        },
-        {
-          id: '',
-          label: 'Secret',
-          username: 'json',
-          folders: [],
-          lastUpdated: 0,
-          created: 0,
-        },
-        {
-          id: '',
-          label: 'Secret',
-          username: 'json',
-          folders: [],
-          lastUpdated: 0,
-          created: 0,
-        },
-        {
-          id: '',
-          label: 'Secret',
-          username: 'json',
-          folders: [],
-          lastUpdated: 0,
-          created: 0,
-        },
-        {
-          id: '',
-          label: 'Secret',
-          username: 'json',
-          folders: [],
-          lastUpdated: 0,
-          created: 0,
-        },
-        {
-          id: '',
-          label: 'Secret',
-          username: 'json',
-          folders: [],
-          lastUpdated: 0,
-          created: 0,
-        },
-      ])
+      authContext.openSecretPasswordModel()
     } else if (secrets.length < 1) {
-      // fetchSecrets()
+      fetchSecrets()
     }
   }, [authContext.secretPassword])
 
@@ -464,6 +333,12 @@ export const Secrets = () => {
       </Modal>
       <Grid grow>
         <Grid.Col span={3} style={{ height: '100%', paddingRight: '20px' }}>
+          <Input
+            placeholder={t('search.placeholder')}
+            mb={'md'}
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.currentTarget.value)}
+          />
           <Flex gap={'md'}>
             <Button mb={'md'} fullWidth={isMobile} onClick={openAddModal}>
               {t('buttons.add')}
@@ -472,17 +347,11 @@ export const Secrets = () => {
               {t('buttons.import')}
             </Button>
           </Flex>
-          <Input
-            placeholder={t('search.placeholder')}
-            mb={'md'}
-            value={searchQuery}
-            onChange={(e) => handleSearch(e.currentTarget.value)}
-          />
           <Text size='lg' c='gray' mb='md'>
             {t('elements')}
           </Text>
           <List spacing='md'>
-            {filteredSecrets.map((secret) => (
+            {filteredSecrets.map((secret, index) => (
               <>
                 <List.Item
                   key={secret.id}
@@ -503,7 +372,7 @@ export const Secrets = () => {
                     </div>
                   </Group>
                 </List.Item>
-                <Divider my={'md'} />
+                {index != filteredSecrets.length - 1 && <Divider my={'md'} />}
               </>
             ))}
           </List>

@@ -18,7 +18,7 @@ i18next
       escapeValue: false,
     },
     fallbackLng: 'en',
-    ns: ['common', 'views', 'notifications', 'auth', 'settings', 'secrets', 'vault', 'root'],
+    ns: ['common', 'views', 'notifications', 'auth', 'settings', 'secrets', 'vault', 'root', 'folders'],
     detection: {
       order: ['navigator'],
     },
