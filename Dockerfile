@@ -8,6 +8,8 @@ RUN yarn install
 
 COPY . .
 
+RUN node generate-sitemap.js
+
 RUN yarn build
 
 FROM node:18-alpine

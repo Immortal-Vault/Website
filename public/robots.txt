@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://immortal-vault.litolax.dev/sitemap.xml
