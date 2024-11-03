@@ -17,6 +17,10 @@ export function SEO() {
       <meta name='twitter:card' content={'summary'} />
       <meta name='twitter:title' content={t('title')} />
       <meta name='twitter:description' content={t('description')} />
+      <meta
+        name='keywords'
+        content='immortal,vault,immortal-vault,password-manager,passwords,manager,secure,credentials,пароли,менеджер-паролей,данные,безопасность'
+      />
       <meta name='darkreader-lock' />
     </Helmet>
   )
