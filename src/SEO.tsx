@@ -28,7 +28,7 @@ export function SEO() {
 
       <meta
         name='keywords'
-        content='immortal,vault,immortal-vault,password-manager,passwords,manager,secure,credentials,пароли,менеджер-паролей,данные,безопасность'
+        content='immortal,vault,immortal-vault,password-manager,passwords,manager,secure,credentials,пароли,менеджер-паролей,данные,безопасность,иммортал волт,имортал,волт,имортал-волт,ваулт,имортал-ваулт'
       />
       <meta name='darkreader-lock' />
     </Helmet>
