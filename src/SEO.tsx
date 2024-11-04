@@ -8,6 +8,7 @@ export function SEO() {
   return (
     <Helmet>
       <title>{t('title')}</title>
+
       <meta property='og:locale' content={locale} />
       <meta property='og:locale:alternate' content='en_US' />
       <meta property='og:locale:alternate' content='ru_RU' />
@@ -17,6 +18,8 @@ export function SEO() {
       <meta property='og:url' content={'https://immortal-vault.litolax.dev'} />
       <meta property='og:type' content={'website'} />
       <meta property='og:image' content={'https://immortal-vault.litolax.dev/logo.svg'} />
+
+      <link rel='canonical' href={'https://immortal-vault.litolax.dev'} />
 
       <meta name='twitter:card' content={'summary'} />
       <meta name='twitter:title' content={t('title')} />
