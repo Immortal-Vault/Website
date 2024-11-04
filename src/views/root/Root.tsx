@@ -1,5 +1,4 @@
-import { RootHeader } from './header/RootHeader.tsx'
-import { RootFooter } from './footer/RootFooter.tsx'
+import { RootHeader, Footer } from '../../components'
 import { RootFeature } from './features/RootFeatures.tsx'
 import { RootFaq } from './faq/RootFaq.tsx'
 import { RootHero } from './hero/RootHero.tsx'
@@ -18,7 +17,7 @@ export default function Root() {
         <Divider />
         <RootFeedback />
       </div>
-      <RootFooter />
+      <Footer />
     </div>
   )
 }

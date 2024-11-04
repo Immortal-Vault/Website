@@ -1,5 +1,5 @@
 import { Anchor, Container, Group, rem, Text } from '@mantine/core'
-import classes from './RootFooter.module.css'
+import classes from './Footer.module.css'
 import { FaLinkedin, FaTelegramPlane } from 'react-icons/fa'
 import { IoLogoGithub } from 'react-icons/io'
 import { useTranslation } from 'react-i18next'
@@ -40,7 +40,7 @@ const links = [
   },
 ]
 
-export function RootFooter() {
+export function Footer() {
   const { t } = useTranslation('root')
 
   const items = links.map((e) => (

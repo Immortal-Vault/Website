@@ -64,12 +64,14 @@ export default function SignIn() {
     const localization = jsonResponse.localization
     localStorage.setItem(LOCAL_STORAGE.USER_LOCALE, localization)
 
+    const username = jsonResponse.username
+
     sendSuccessNotification(t('notifications:successful'))
-    authSignIn(email)
+    authSignIn(email, username)
     setLoaderState.close()
 
     // redirect to main after sign In
-    navigate(ROUTER_PATH.MAIN_MENU)
+    navigate(ROUTER_PATH.MENU)
   }
 
   return (

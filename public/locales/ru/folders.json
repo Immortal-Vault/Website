@@ -1,0 +1,24 @@
+{
+  "folders": "Папки",
+  "buttons": {
+    "add": "Добавить"
+  },
+  "search": {
+    "placeholder": "Поиск"
+  },
+  "fields": {
+    "label": {
+      "title": "Название",
+      "canNotBeEmpty": "Название не может быть пустым"
+    }
+  },
+  "modals": {
+    "addFolder": {
+      "title": "Добавить новую папку",
+      "buttons": {
+        "cancel": "Отменить",
+        "submit": "Подтвердить"
+      }
+    }
+  }
+}
