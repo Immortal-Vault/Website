@@ -14,9 +14,15 @@ export function SEO() {
       <meta property='og:title' content={t('title')} />
       <meta property='og:description' content={t('description')} />
       <meta property='og:site_name' content={'Immortal Vault'} />
+      <meta property='og:url' content={'https://immortal-vault.litolax.dev'} />
+      <meta property='og:type' content={'website'} />
+      <meta property='og:image' content={'https://immortal-vault.litolax.dev/logo.svg'} />
+
       <meta name='twitter:card' content={'summary'} />
       <meta name='twitter:title' content={t('title')} />
       <meta name='twitter:description' content={t('description')} />
+      <meta name='twitter:image' content={'https://immortal-vault.litolax.dev/logo.svg'} />
+
       <meta
         name='keywords'
         content='immortal,vault,immortal-vault,password-manager,passwords,manager,secure,credentials,пароли,менеджер-паролей,данные,безопасность'
