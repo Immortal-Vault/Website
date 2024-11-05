@@ -4,11 +4,5 @@ import './styles/globals.css'
 import '@mantine/core/styles.css'
 import 'react-toastify/dist/ReactToastify.css'
 import './locale'
-import { SEO } from './SEO.tsx'
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <>
-    <SEO />
-    <App />
-  </>,
-)
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />)
