@@ -19,19 +19,26 @@ import { useEnvVars } from './EnvVarsContext.tsx'
 
 export interface SecretsContextType {
   secrets: TSecret[]
+  selectedSecret: TSecret | null
   folders: TFolder[]
   selectedFolder: TFolder | null
   setSecrets: Dispatch<SetStateAction<TSecret[]>>
   setFolders: Dispatch<SetStateAction<TFolder[]>>
   setSelectedFolder: Dispatch<SetStateAction<TFolder | null>>
+  setSelectedSecret: Dispatch<SetStateAction<TSecret | null>>
   saveSecrets: (secrets: TSecret[], folders: TFolder[]) => Promise<void>
+  deleteSecret: (secret: TSecret) => Promise<void>
 }
 
 const SecretsContext = createContext<SecretsContextType>({
   secrets: [],
+  selectedSecret: null,
   folders: [],
   selectedFolder: null,
   setSecrets: function (): void {
+    throw new Error('Function is not implemented.')
+  },
+  setSelectedSecret: function (): void {
     throw new Error('Function is not implemented.')
   },
   setFolders: function (): void {
@@ -43,6 +50,9 @@ const SecretsContext = createContext<SecretsContextType>({
   saveSecrets: function (_secrets: TSecret[], _folders: TFolder[]): Promise<void> {
     throw new Error('Function is not implemented.')
   },
+  deleteSecret: function (_secret: TSecret): Promise<void> {
+    throw new Error('Function is not implemented.')
+  },
 })
 
 interface SecretsProps {
@@ -51,6 +61,7 @@ interface SecretsProps {
 
 export const SecretsProvider = ({ children }: SecretsProps) => {
   const [secrets, setSecrets] = useState<TSecret[]>([])
+  const [selectedSecret, setSelectedSecret] = useState<TSecret | null>(null)
   const [folders, setFolders] = useState<TFolder[]>([])
   const [selectedFolder, setSelectedFolder] = useState<TFolder | null>(null)
   const { googleDriveState } = useGoogleDrive()
@@ -83,6 +94,14 @@ export const SecretsProvider = ({ children }: SecretsProps) => {
     toast.dismiss(notificationId)
   }
 
+  const deleteSecret = async (secret: TSecret) => {
+    console.log('deleteSecret: ', secret)
+    const newSecrets = secrets.filter((s) => s.id !== secret.id)
+    setSecrets(newSecrets)
+    // setFilteredSecrets(newSecrets)
+    await saveSecrets(newSecrets, folders)
+  }
+
   useEffect(() => {
     setSecrets([])
     setFolders([])
@@ -91,14 +110,17 @@ export const SecretsProvider = ({ children }: SecretsProps) => {
   const contextValue = useMemo(
     () => ({
       secrets,
+      selectedSecret,
       folders,
       selectedFolder,
       setSelectedFolder,
+      setSelectedSecret,
       setSecrets,
       setFolders,
       saveSecrets,
+      deleteSecret,
     }),
-    [secrets, folders, selectedFolder],
+    [secrets, folders, selectedFolder, selectedSecret],
   )
 
   return <SecretsContext.Provider value={contextValue}>{children}</SecretsContext.Provider>

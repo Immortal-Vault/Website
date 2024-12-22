@@ -1,16 +1,19 @@
 import { useEffect } from 'react'
 import { LOCAL_STORAGE } from '../../shared'
 import { useTranslation } from 'react-i18next'
-import { Footer, PrimaryHeader } from '../../components'
-import { Container, Grid, ScrollArea } from '@mantine/core'
+import { Footer, PrimaryHeader, Secret } from '../../components'
+import { Container, Drawer, Grid, ScrollArea, Text } from '@mantine/core'
 import { Secrets } from './subviews'
-import { FaLock } from 'react-icons/fa'
-import { useMediaQuery } from '@mantine/hooks'
+import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 import { Folders } from './subviews/folders'
+import { useSecrets } from '../../stores'
 
 export function Primary() {
   const isMobile = useMediaQuery('(max-width: 768px)')
-  const { i18n } = useTranslation('views')
+  const { i18n, t } = useTranslation('views')
+  const { selectedSecret, setSelectedSecret, deleteSecret } = useSecrets()
+
+  const [drawerState, { open: openDrawer, close: closeDrawer }] = useDisclosure(false)
 
   useEffect(() => {
     const userLocalization = localStorage.getItem(LOCAL_STORAGE.USER_LOCALE)
@@ -18,6 +21,25 @@ export function Primary() {
       i18n.changeLanguage(userLocalization)
     }
   }, [])
+
+  const getSecretSection = () => {
+    return (
+      <>
+        {selectedSecret ? (
+          <Secret
+            secret={selectedSecret}
+            delete={async () => {
+              closeDrawer()
+              setSelectedSecret(null)
+              await deleteSecret(selectedSecret)
+            }}
+          ></Secret>
+        ) : (
+          <Text c='gray'>{t('secrets:unselectedSecretPlaceholder')}</Text>
+        )}
+      </>
+    )
+  }
 
   return (
     <>
@@ -39,20 +61,22 @@ export function Primary() {
             span={7}
             style={{
               display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
             }}
           >
-            <ScrollArea h={'calc(100vh - 200px)'} type={'always'} scrollbars={'y'}>
-              {!isMobile && (
-                <FaLock
-                  size={'14rem'}
-                  style={{
-                    marginTop: '100%',
-                  }}
-                />
-              )}
-            </ScrollArea>
+            {getSecretSection()}
+            <Drawer
+              opened={drawerState}
+              onClose={() => {
+                closeDrawer()
+                setSelectedSecret(null)
+              }}
+              position={'right'}
+              size={isMobile ? '100%' : 'xl'}
+            >
+              {getSecretSection()}
+            </Drawer>
           </Grid.Col>
         </Grid>
       </Container>

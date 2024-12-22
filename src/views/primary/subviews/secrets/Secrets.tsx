@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import {
   Button,
   Divider,
-  Drawer,
   FileInput,
   Flex,
   Grid,
@@ -23,7 +22,6 @@ import {
   TSecret,
   TSecretFile,
 } from '../../../../types'
-import { Secret } from '../../../../components'
 import { useAuth, useEnvVars, useSecrets } from '../../../../stores'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
@@ -37,16 +35,24 @@ export const Secrets = () => {
   const isMobile = useMediaQuery('(max-width: 768px)')
   const { envs } = useEnvVars()
   const { t } = useTranslation('secrets')
-  const { secrets, folders, selectedFolder, setSecrets, setFolders, saveSecrets } = useSecrets()
+  const {
+    secrets,
+    selectedSecret,
+    folders,
+    selectedFolder,
+    setSecrets,
+    setFolders,
+    saveSecrets,
+    setSelectedSecret,
+  } = useSecrets()
   const authContext = useAuth()
   const [filteredSecrets, setFilteredSecrets] = useState<TSecret[]>([])
-  const [selectedSecret, setSelectedSecret] = useState<TSecret | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [addModalState, { open: openAddModal, close: closeAddModal }] = useDisclosure(false)
   const [importModalState, { open: openImportModal, close: closeImportModal }] =
     useDisclosure(false)
   const [importedSecretFile, setImportedSecretFile] = useState<File | null>(null)
-  const [drawerState, { open: openDrawer, close: closeDrawer }] = useDisclosure(false)
+
   const secretsToRender = selectedFolder
     ? filteredSecrets.filter((s) => s.folders.includes(selectedFolder.id))
     : filteredSecrets
@@ -120,13 +126,6 @@ export const Secrets = () => {
     }
 
     const newSecrets = [secret, ...secrets]
-    setSecrets(newSecrets)
-    setFilteredSecrets(newSecrets)
-    await saveSecrets(newSecrets, folders)
-  }
-
-  const deleteSecret = async (secret: TSecret) => {
-    const newSecrets = secrets.filter((s) => s.id !== secret.id)
     setSecrets(newSecrets)
     setFilteredSecrets(newSecrets)
     await saveSecrets(newSecrets, folders)
@@ -361,12 +360,11 @@ export const Secrets = () => {
                   style={{ cursor: 'pointer' }}
                   onClick={() => {
                     setSelectedSecret(secret)
-                    openDrawer()
                   }}
                 >
                   <Group align='center' justify='space-between'>
                     <div>
-                      <Text size='sm' c='white'>
+                      <Text size='sm' c={selectedSecret?.id === secret.id ? 'blue' : 'white'}>
                         {secret.label}
                       </Text>
                       <Text size='xs' c='gray'>
@@ -381,28 +379,6 @@ export const Secrets = () => {
           </List>
         </Grid.Col>
       </Grid>
-      <Drawer
-        opened={drawerState}
-        onClose={() => {
-          closeDrawer()
-          setSelectedSecret(null)
-        }}
-        position={'right'}
-        size={isMobile ? '100%' : 'xl'}
-      >
-        {selectedSecret ? (
-          <Secret
-            secret={selectedSecret}
-            delete={() => {
-              closeDrawer()
-              setSelectedSecret(null)
-              deleteSecret(selectedSecret)
-            }}
-          ></Secret>
-        ) : (
-          <Text c='gray'>{t('unselectedSecretPlaceholder')}</Text>
-        )}
-      </Drawer>
     </>
   )
 }

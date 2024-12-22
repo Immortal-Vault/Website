@@ -12,7 +12,7 @@ import { TSecret } from '../types'
 import { useEffect, useState } from 'react'
 import { useDisclosure } from '@mantine/hooks'
 
-export const Secret = (props: { secret: TSecret; delete: () => void }) => {
+export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) => {
   const [showPassword, setShowPassword] = useState(false)
   const [submitModalState, { open: openSubmitModal, close: closeSubmitModal }] =
     useDisclosure(false)
@@ -46,9 +46,10 @@ export const Secret = (props: { secret: TSecret; delete: () => void }) => {
             Cancel
           </Button>
           <Button
-            onClick={() => {
+            onClick={async () => {
+              console.log(props.delete)
+              await props.delete()
               closeSubmitModal()
-              props.delete()
             }}
           >
             Submit
