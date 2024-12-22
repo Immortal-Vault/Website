@@ -13,7 +13,7 @@ export function Primary() {
   const { i18n, t } = useTranslation('views')
   const { selectedSecret, setSelectedSecret, deleteSecret } = useSecrets()
 
-  const [drawerState, { open: openDrawer, close: closeDrawer }] = useDisclosure(false)
+  const [drawerState, { close: closeDrawer }] = useDisclosure(false)
 
   useEffect(() => {
     const userLocalization = localStorage.getItem(LOCAL_STORAGE.USER_LOCALE)
@@ -46,17 +46,37 @@ export function Primary() {
       <PrimaryHeader />
       <Container fluid mb={'xl'}>
         <Grid>
-          <Grid.Col span={2}>
+          <Grid.Col
+            span={2}
+            style={{
+              borderRight: '1px solid #424242',
+            }}
+          >
             <ScrollArea h={'calc(100vh - 200px)'} type={'always'} scrollbars={'y'} offsetScrollbars>
               <Folders />
             </ScrollArea>
           </Grid.Col>
-          <Grid.Col span={3}>
-            <ScrollArea h={'calc(100vh - 200px)'} type={'always'} scrollbars={'y'} offsetScrollbars>
-              <Secrets />
-            </ScrollArea>
+          <Grid.Col
+            span={3}
+            style={{
+              borderRight: '1px solid #424242',
+            }}
+          >
+            <div
+              style={{
+                marginLeft: '10px',
+              }}
+            >
+              <ScrollArea
+                h={'calc(100vh - 200px)'}
+                type={'always'}
+                scrollbars={'y'}
+                offsetScrollbars
+              >
+                <Secrets />
+              </ScrollArea>
+            </div>
           </Grid.Col>
-
           <Grid.Col
             span={7}
             style={{
@@ -65,18 +85,24 @@ export function Primary() {
               alignItems: 'flex-start',
             }}
           >
-            {getSecretSection()}
-            <Drawer
-              opened={drawerState}
-              onClose={() => {
-                closeDrawer()
-                setSelectedSecret(null)
+            <div
+              style={{
+                marginLeft: '10px',
               }}
-              position={'right'}
-              size={isMobile ? '100%' : 'xl'}
             >
               {getSecretSection()}
-            </Drawer>
+              <Drawer
+                opened={drawerState}
+                onClose={() => {
+                  closeDrawer()
+                  setSelectedSecret(null)
+                }}
+                position={'right'}
+                size={isMobile ? '100%' : 'xl'}
+              >
+                {getSecretSection()}
+              </Drawer>
+            </div>
           </Grid.Col>
         </Grid>
       </Container>
