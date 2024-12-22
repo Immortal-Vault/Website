@@ -37,7 +37,7 @@ export const Secrets = () => {
   const isMobile = useMediaQuery('(max-width: 768px)')
   const { envs } = useEnvVars()
   const { t } = useTranslation('secrets')
-  const { secrets, folders, setSecrets, setFolders, saveSecrets } = useSecrets()
+  const { secrets, folders, selectedFolder, setSecrets, setFolders, saveSecrets } = useSecrets()
   const authContext = useAuth()
   const [filteredSecrets, setFilteredSecrets] = useState<TSecret[]>([])
   const [selectedSecret, setSelectedSecret] = useState<TSecret | null>(null)
@@ -47,6 +47,9 @@ export const Secrets = () => {
     useDisclosure(false)
   const [importedSecretFile, setImportedSecretFile] = useState<File | null>(null)
   const [drawerState, { open: openDrawer, close: closeDrawer }] = useDisclosure(false)
+  const secretsToRender = selectedFolder
+    ? filteredSecrets.filter((s) => s.folders.includes(selectedFolder.id))
+    : filteredSecrets
 
   const addSecretForm = useForm({
     initialValues: {
@@ -351,7 +354,7 @@ export const Secrets = () => {
             {t('elements')}
           </Text>
           <List spacing='md'>
-            {filteredSecrets.map((secret, index) => (
+            {secretsToRender.map((secret, index) => (
               <>
                 <List.Item
                   key={secret.id}
@@ -372,7 +375,7 @@ export const Secrets = () => {
                     </div>
                   </Group>
                 </List.Item>
-                {index != filteredSecrets.length - 1 && <Divider my={'md'} />}
+                {index != secretsToRender.length - 1 && <Divider my={'md'} />}
               </>
             ))}
           </List>

@@ -22,9 +22,9 @@ export const Folders = () => {
   const isMobile = useMediaQuery('(max-width: 768px)')
 
   const { t } = useTranslation('folders')
-  const { folders, secrets, setFolders, saveSecrets } = useSecrets()
+  const { folders, selectedFolder, secrets, setFolders, saveSecrets, setSelectedFolder } =
+    useSecrets()
   const [filteredFolders, setFilteredFolders] = useState<TFolder[]>([])
-  const [, setSelectedFolder] = useState<TFolder | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [addModalState, { open: openAddModal, close: closeAddModal }] = useDisclosure(false)
 
@@ -138,17 +138,35 @@ export const Folders = () => {
             {t('folders')}
           </Text>
           <List spacing='md'>
+            <List.Item
+              key={'allFolders'}
+              style={{
+                cursor: 'pointer',
+              }}
+              onClick={() => {
+                setSelectedFolder(null)
+              }}
+            >
+              <Group align='center' justify='space-between'>
+                <Text size='sm' c={!selectedFolder ? 'blue' : 'white'}>
+                  {t('allElements')}
+                </Text>
+              </Group>
+            </List.Item>
+            <Divider my={'md'} />
             {filteredFolders.map((folder, index) => (
               <>
                 <List.Item
                   key={folder.id}
-                  style={{ cursor: 'pointer' }}
+                  style={{
+                    cursor: 'pointer',
+                  }}
                   onClick={() => {
                     setSelectedFolder(folder)
                   }}
                 >
                   <Group align='center' justify='space-between'>
-                    <Text size='sm' c='white'>
+                    <Text size='sm' c={selectedFolder?.id === folder.id ? 'blue' : 'white'}>
                       {folder.label}
                     </Text>
                   </Group>

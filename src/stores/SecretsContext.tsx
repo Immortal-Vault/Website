@@ -20,18 +20,24 @@ import { useEnvVars } from './EnvVarsContext.tsx'
 export interface SecretsContextType {
   secrets: TSecret[]
   folders: TFolder[]
+  selectedFolder: TFolder | null
   setSecrets: Dispatch<SetStateAction<TSecret[]>>
   setFolders: Dispatch<SetStateAction<TFolder[]>>
+  setSelectedFolder: Dispatch<SetStateAction<TFolder | null>>
   saveSecrets: (secrets: TSecret[], folders: TFolder[]) => Promise<void>
 }
 
 const SecretsContext = createContext<SecretsContextType>({
   secrets: [],
   folders: [],
+  selectedFolder: null,
   setSecrets: function (): void {
     throw new Error('Function is not implemented.')
   },
   setFolders: function (): void {
+    throw new Error('Function is not implemented.')
+  },
+  setSelectedFolder: function (): void {
     throw new Error('Function is not implemented.')
   },
   saveSecrets: function (_secrets: TSecret[], _folders: TFolder[]): Promise<void> {
@@ -46,6 +52,7 @@ interface SecretsProps {
 export const SecretsProvider = ({ children }: SecretsProps) => {
   const [secrets, setSecrets] = useState<TSecret[]>([])
   const [folders, setFolders] = useState<TFolder[]>([])
+  const [selectedFolder, setSelectedFolder] = useState<TFolder | null>(null)
   const { googleDriveState } = useGoogleDrive()
   const { t } = useTranslation('secrets')
   const authContext = useAuth()
@@ -85,11 +92,13 @@ export const SecretsProvider = ({ children }: SecretsProps) => {
     () => ({
       secrets,
       folders,
+      selectedFolder,
+      setSelectedFolder,
       setSecrets,
       setFolders,
       saveSecrets,
     }),
-    [secrets, folders],
+    [secrets, folders, selectedFolder],
   )
 
   return <SecretsContext.Provider value={contextValue}>{children}</SecretsContext.Provider>
