@@ -1,4 +1,4 @@
-import { Anchor, Button, CopyButton, Flex, Group, Modal, Text, Title } from '@mantine/core'
+import { Anchor, Button, CopyButton, Flex, Group, Modal, Text, Title, Card } from '@mantine/core'
 import {
   FaAddressCard,
   FaClock,
@@ -24,118 +24,129 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
   return (
     <>
       <Modal
-        centered={true}
+        centered
         opened={submitModalState}
         onClose={closeSubmitModal}
-        size='auto'
-        title={'Are you sure? You can not undo this'}
-        closeOnClickOutside={false}
-        closeOnEscape={false}
+        size='sm'
+        title='Are you sure? You cannot undo this action'
         withCloseButton={false}
         overlayProps={{
           backgroundOpacity: 0.55,
           blur: 3,
         }}
       >
-        <Group mt='xl' justify={'end'}>
-          <Button
-            onClick={() => {
-              closeSubmitModal()
-            }}
-          >
+        <Group mt='lg'>
+          <Button variant='outline' onClick={closeSubmitModal}>
             Cancel
           </Button>
           <Button
+            color='red'
             onClick={async () => {
-              console.log(props.delete)
               await props.delete()
               closeSubmitModal()
             }}
           >
-            Submit
+            Delete
           </Button>
         </Group>
       </Modal>
-      <Group align='center' mb='xl'>
-        <FaAddressCard />
-        <Title order={3}>{props.secret.label}</Title>
-      </Group>
-      <Flex direction='column' mb={'md'}>
-        {props.secret.username && (
-          <Group>
-            <FaUserAlt />
-            <Text c='gray'>Username:</Text>
-            <Text c='white'>{props.secret.username}</Text>
-          </Group>
-        )}
-        {props.secret.email && (
-          <Group>
-            <FaUserAlt />
-            <Text c='gray'>Email:</Text>
-            <Text c='white'>{props.secret.email}</Text>
-          </Group>
-        )}
-        {props.secret.password && (
-          <Group>
-            <FaLock />
-            <Text c='gray'>Password:</Text>
-            {showPassword && props.secret.password}
 
-            <Button size={'xs'} onClick={() => setShowPassword(!showPassword)}>
-              {showPassword ? 'Hide' : 'Show'}
-            </Button>
-            <CopyButton value={props.secret.password}>
-              {({ copied, copy }) => (
-                <Button size={'xs'} color={copied ? 'teal' : 'blue'} onClick={copy}>
-                  {copied ? 'Password copied' : 'Copy password'}
-                </Button>
-              )}
-            </CopyButton>
-          </Group>
-        )}
-        {props.secret.website && (
-          <Group>
-            <FaExternalLinkAlt />
-            <Text c='gray'>Website:</Text>
-            <Anchor
-              href={
-                props.secret.website.startsWith('http')
-                  ? props.secret.website
-                  : `https://${props.secret.website}`
-              }
-              target='_blank'
-              underline={'never'}
-            >
-              {props.secret.website}
-            </Anchor>
-          </Group>
-        )}
-        {props.secret.phone && (
-          <Group>
-            <FaPhoneAlt />
-            <Text c='gray'>Phone:</Text>
-            <Text c='white'>{props.secret.phone}</Text>
-          </Group>
-        )}
-        {props.secret.notes && (
-          <Group>
-            <FaStickyNote />
-            <Text c='gray'>Notes:</Text>
-            <Text c='white'>{props.secret.notes}</Text>
-          </Group>
-        )}
-      </Flex>
-      <Flex direction='column'>
-        <Group>
-          <FaClock />
-          <Text c='gray'>Last Updated: {new Date(props.secret.lastUpdated).toLocaleString()}</Text>
+      <Card shadow='md' radius='md' padding='lg' withBorder w={'90%'}>
+        <Group align='center' mb='xl'>
+          <FaAddressCard size={24} />
+          <Title order={3} c='white'>
+            {props.secret.label}
+          </Title>
         </Group>
-        <Group mb={'md'}>
-          <FaClock />
-          <Text c='gray'>Created: {new Date(props.secret.lastUpdated).toLocaleString()}</Text>
+
+        <Flex direction='column' gap='sm' mb='lg'>
+          {props.secret.username && (
+            <Group>
+              <FaUserAlt size={18} />
+              <Text c='gray'>Username:</Text>
+              <Text c='white'>{props.secret.username}</Text>
+            </Group>
+          )}
+          {props.secret.email && (
+            <Group>
+              <FaUserAlt size={18} />
+              <Text c='gray'>Email:</Text>
+              <Text c='white'>{props.secret.email}</Text>
+            </Group>
+          )}
+          {props.secret.password && (
+            <Group>
+              <FaLock size={18} />
+              <Text c='gray'>Password:</Text>
+              <Text c='white'>
+                {showPassword
+                  ? props.secret.password
+                  : Array.from({ length: props.secret.password.length }).map(() => '•')}
+              </Text>
+              <Button size='xs' variant='outline' onClick={() => setShowPassword(!showPassword)}>
+                {showPassword ? 'Hide' : 'Show'}
+              </Button>
+              <CopyButton value={props.secret.password}>
+                {({ copied, copy }) => (
+                  <Button size='xs' color={copied ? 'teal' : 'blue'} onClick={copy}>
+                    {copied ? 'Copied' : 'Copy'}
+                  </Button>
+                )}
+              </CopyButton>
+            </Group>
+          )}
+          {props.secret.website && (
+            <Group>
+              <FaExternalLinkAlt size={18} />
+              <Text c='gray'>Website:</Text>
+              <Anchor
+                href={
+                  props.secret.website.startsWith('http')
+                    ? props.secret.website
+                    : `https://${props.secret.website}`
+                }
+                target='_blank'
+                underline={'always'}
+              >
+                {props.secret.website}
+              </Anchor>
+            </Group>
+          )}
+          {props.secret.phone && (
+            <Group>
+              <FaPhoneAlt size={18} />
+              <Text c='gray'>Phone:</Text>
+              <Text c='white'>{props.secret.phone}</Text>
+            </Group>
+          )}
+          {props.secret.notes && (
+            <Group>
+              <FaStickyNote size={18} />
+              <Text c='gray'>Notes:</Text>
+              <Text c='white'>{props.secret.notes}</Text>
+            </Group>
+          )}
+        </Flex>
+
+        <Flex direction='column' gap='sm'>
+          <Group>
+            <FaClock size={18} />
+            <Text c='gray'>
+              Last Updated: {new Date(props.secret.lastUpdated).toLocaleString()}
+            </Text>
+          </Group>
+          <Group>
+            <FaClock size={18} />
+            <Text c='gray'>Created: {new Date(props.secret.created).toLocaleString()}</Text>
+          </Group>
+        </Flex>
+
+        <Group mt='lg'>
+          <Button color='red' onClick={openSubmitModal}>
+            Delete
+          </Button>
         </Group>
-        <Button onClick={openSubmitModal}>Delete</Button>
-      </Flex>
+      </Card>
     </>
   )
 }
