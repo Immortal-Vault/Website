@@ -15,8 +15,8 @@ export function Primary() {
     useSecrets()
 
   const [foldersDrawerState, { close: closeFoldersDrawer, open: openFoldersDrawer }] =
-    useDisclosure(true)
-  const [secretsDrawerState, { close: closeSecretsDrawer }] = useDisclosure(true)
+    useDisclosure(false)
+  const [secretsDrawerState, { close: closeSecretsDrawer }] = useDisclosure(false)
 
   useEffect(() => {
     const userLocalization = localStorage.getItem(LOCAL_STORAGE.USER_LOCALE)
