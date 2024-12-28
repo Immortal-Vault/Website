@@ -1,8 +1,20 @@
-import { Anchor, Button, CopyButton, Flex, Group, Modal, Text, Title, Card } from '@mantine/core'
+import {
+  Anchor,
+  Button,
+  CopyButton,
+  Flex,
+  Group,
+  Modal,
+  Text,
+  Title,
+  Card,
+  MultiSelect,
+} from '@mantine/core'
 import {
   FaAddressCard,
   FaClock,
   FaExternalLinkAlt,
+  FaFolder,
   FaLock,
   FaPhoneAlt,
   FaStickyNote,
@@ -11,17 +23,35 @@ import {
 import { TSecret } from '../types'
 import { useEffect, useState } from 'react'
 import { useDisclosure, useMediaQuery } from '@mantine/hooks'
+import { useSecrets } from '../stores'
 
 export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) => {
+  const { folders, secrets, saveSecrets } = useSecrets()
+
   const [showPassword, setShowPassword] = useState(false)
   const [submitModalState, { open: openSubmitModal, close: closeSubmitModal }] =
     useDisclosure(false)
+  const [attachedFolders, setAttachedFolders] = useState<string[]>(
+    folders.filter((f) => props.secret.folders.includes(f.id)).map((f) => f.id),
+  )
 
   const isMobile = useMediaQuery('(max-width: 768px)')
 
   useEffect(() => {
     setShowPassword(false)
   }, [])
+
+  const handleFoldersChange = async (folderIds: string[]) => {
+    const secret = secrets.find((secret) => secret.id === props.secret.id)
+    if (!secret) {
+      return
+    }
+
+    setAttachedFolders(folderIds)
+    secret.folders = folderIds
+
+    await saveSecrets(secrets, folders)
+  }
 
   return (
     <>
@@ -137,6 +167,18 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
               </Text>
             </Group>
           )}
+
+          <Group>
+            <FaFolder />
+            <Text c='gray'>Folders:</Text>
+            <MultiSelect
+              data={folders.map((folder) => ({ value: folder.id, label: folder.label }))}
+              value={attachedFolders}
+              onChange={handleFoldersChange}
+              placeholder='Select folders'
+              clearable
+            />
+          </Group>
         </Flex>
 
         <Flex direction='column' gap='sm'>
