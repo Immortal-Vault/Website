@@ -45,13 +45,11 @@ export function Primary() {
   const getMobileLayout = () => (
     <>
       <ScrollArea h={'calc(100vh - 200px)'} type='always' scrollbars='y' offsetScrollbars>
-        <div
-          onClick={() => {
+        <Folders
+          allElementsButtonClick={() => {
             openFoldersDrawer()
           }}
-        >
-          <Folders />
-        </div>
+        />
       </ScrollArea>
       <Drawer
         opened={!!selectedFolder || foldersDrawerState}

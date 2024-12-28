@@ -18,7 +18,11 @@ import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 import { useForm } from '@mantine/form'
 import { v7 as uuid } from 'uuid'
 
-export const Folders = () => {
+interface FoldersProps {
+  allElementsButtonClick?: () => void
+}
+
+export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
   const isMobile = useMediaQuery('(max-width: 768px)')
 
   const { t } = useTranslation('folders')
@@ -151,6 +155,7 @@ export const Folders = () => {
                 <Text
                   size={isMobile ? 'md' : 'sm'}
                   c={!isMobile && !selectedFolder ? 'blue' : 'white'}
+                  onClick={() => allElementsButtonClick && allElementsButtonClick()}
                 >
                   {t('allElements')}
                 </Text>
