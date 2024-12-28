@@ -28,7 +28,6 @@ i18next
       'vault',
       'root',
       'folders',
-      'ceo',
     ],
     detection: {
       order: ['navigator'],
