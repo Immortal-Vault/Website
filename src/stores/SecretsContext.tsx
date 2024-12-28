@@ -177,7 +177,7 @@ export const SecretsProvider = ({ children }: SecretsProps) => {
       saveSecrets,
       deleteSecret,
     }),
-    [secrets, folders, selectedFolder, selectedSecret],
+    [secrets, filteredSecrets, folders, selectedFolder, selectedSecret],
   )
 
   return <SecretsContext.Provider value={contextValue}>{children}</SecretsContext.Provider>
