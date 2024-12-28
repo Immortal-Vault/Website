@@ -10,12 +10,14 @@ import {
 } from 'react-icons/fa'
 import { TSecret } from '../types'
 import { useEffect, useState } from 'react'
-import { useDisclosure } from '@mantine/hooks'
+import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 
 export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) => {
   const [showPassword, setShowPassword] = useState(false)
   const [submitModalState, { open: openSubmitModal, close: closeSubmitModal }] =
     useDisclosure(false)
+
+  const isMobile = useMediaQuery('(max-width: 768px)')
 
   useEffect(() => {
     setShowPassword(false)
@@ -51,7 +53,7 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
         </Group>
       </Modal>
 
-      <Card shadow='md' radius='md' padding='lg' withBorder w={'90%'}>
+      <Card shadow='md' radius='md' padding='lg' withBorder w={!isMobile ? '90%' : '100%'}>
         <Group align='center' mb='xl'>
           <FaAddressCard size={24} />
           <Title order={3} c='white'>
