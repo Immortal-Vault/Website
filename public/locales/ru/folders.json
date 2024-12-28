@@ -2,7 +2,8 @@
   "folders": "Папки",
   "allElements": "Все элементы",
   "buttons": {
-    "add": "Добавить"
+    "add": "Добавить",
+    "delete": "Удалить"
   },
   "search": {
     "placeholder": "Поиск"
@@ -16,6 +17,13 @@
   "modals": {
     "addFolder": {
       "title": "Добавить новую папку",
+      "buttons": {
+        "cancel": "Отменить",
+        "submit": "Подтвердить"
+      }
+    },
+    "deleteFolder": {
+      "title": "Удаление папки",
       "buttons": {
         "cancel": "Отменить",
         "submit": "Подтвердить"

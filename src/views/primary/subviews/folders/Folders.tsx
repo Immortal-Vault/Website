@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import {
   Button,
+  ComboboxItem,
   Divider,
   Flex,
   Grid,
@@ -8,6 +9,7 @@ import {
   Input,
   List,
   Modal,
+  Select,
   Text,
   TextInput,
 } from '@mantine/core'
@@ -17,6 +19,7 @@ import { useTranslation } from 'react-i18next'
 import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 import { useForm } from '@mantine/form'
 import { v7 as uuid } from 'uuid'
+import { sendSuccessNotification } from '../../../../shared'
 
 interface FoldersProps {
   allElementsButtonClick?: () => void
@@ -31,6 +34,9 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
   const [filteredFolders, setFilteredFolders] = useState<TFolder[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [addModalState, { open: openAddModal, close: closeAddModal }] = useDisclosure(false)
+  const [deleteModalState, { open: openDeleteModal, close: closeDeleteModal }] =
+    useDisclosure(false)
+  const [folderForDelete, setFolderForDelete] = useState<ComboboxItem | null>(null)
 
   const addFolderForm = useForm({
     initialValues: {
@@ -74,6 +80,27 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
     setFolders(newFolders)
     setFilteredFolders(newFolders)
     await saveSecrets(secrets, newFolders)
+    sendSuccessNotification(t('notifications:folder.addedSuccessfully'))
+  }
+
+  const deleteFolder = async () => {
+    if (!folderForDelete || !folderForDelete.value) {
+      return
+    }
+
+    const folder = JSON.parse(folderForDelete.value) as TFolder
+
+    const updatedSecrets = secrets.map((secret) => ({
+      ...secret,
+      folders: secret.folders.filter((f) => f !== folder.id),
+    }))
+
+    const newFolders = folders.filter((f) => f.id !== folder.id)
+
+    setFolders(newFolders)
+    setFilteredFolders(newFolders)
+    await saveSecrets(updatedSecrets, newFolders)
+    sendSuccessNotification(t('notifications:folder.deletedSuccessfully'))
   }
 
   return (
@@ -116,12 +143,58 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
                 return
               }
 
-              await addFolder()
               closeAddModal()
+              await addFolder()
               addFolderForm.reset()
             }}
           >
             {t('modals.addFolder.buttons.submit')}
+          </Button>
+        </Group>
+      </Modal>
+      <Modal
+        centered={true}
+        opened={deleteModalState}
+        onClose={closeDeleteModal}
+        size='auto'
+        title={t('modals.deleteFolder.title')}
+        closeOnClickOutside={false}
+        closeOnEscape={false}
+        withCloseButton={false}
+        overlayProps={{
+          backgroundOpacity: 0.55,
+          blur: 3,
+        }}
+      >
+        <Flex direction={'column'} gap={'md'}>
+          <Select
+            data={folders.map((folder) => ({ value: JSON.stringify(folder), label: folder.label }))}
+            value={folderForDelete ? folderForDelete.value : null}
+            onChange={(_value, option) => setFolderForDelete(option)}
+          />
+        </Flex>
+
+        <Group mt='xl' justify={'end'}>
+          <Button
+            onClick={() => {
+              closeDeleteModal()
+              setFolderForDelete(null)
+            }}
+          >
+            {t('modals.deleteFolder.buttons.cancel')}
+          </Button>
+          <Button
+            onClick={async () => {
+              if (!folderForDelete || !folderForDelete.value) {
+                return
+              }
+
+              closeDeleteModal()
+              await deleteFolder()
+              setFolderForDelete(null)
+            }}
+          >
+            {t('modals.deleteFolder.buttons.submit')}
           </Button>
         </Group>
       </Modal>
@@ -136,6 +209,9 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
           <Flex gap={'md'}>
             <Button mb={'md'} fullWidth={isMobile} onClick={openAddModal}>
               {t('buttons.add')}
+            </Button>
+            <Button mb={'md'} fullWidth={isMobile} onClick={openDeleteModal}>
+              {t('buttons.delete')}
             </Button>
           </Flex>
           <Text size='lg' c='gray' mb='md'>

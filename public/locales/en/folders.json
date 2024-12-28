@@ -2,7 +2,8 @@
   "folders": "Folders",
   "allElements": "All elements",
   "buttons": {
-    "add": "Add"
+    "add": "Add",
+    "delete": "Delete"
   },
   "search": {
     "placeholder": "Search"
@@ -16,6 +17,13 @@
   "modals": {
     "addFolder": {
       "title": "Add new element",
+      "buttons": {
+        "cancel": "Cancel",
+        "submit": "Submit"
+      }
+    },
+    "deleteFolder": {
+      "title": "Delete folder",
       "buttons": {
         "cancel": "Cancel",
         "submit": "Submit"
