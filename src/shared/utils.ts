@@ -80,3 +80,15 @@ const base64ToBuffer = (base64: string): ArrayBuffer => {
   }
   return bytes.buffer
 }
+
+export function trimText(text: string | undefined, length: number): string {
+  if (!text) {
+    return ''
+  }
+
+  if (text.length < length) {
+    return text
+  }
+
+  return text.slice(0, length) + '...'
+}
