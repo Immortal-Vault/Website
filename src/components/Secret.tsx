@@ -56,7 +56,7 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
       <Card shadow='md' radius='md' padding='lg' withBorder w={!isMobile ? '90%' : '100%'}>
         <Group align='center' mb='xl'>
           <FaAddressCard size={24} />
-          <Title order={3} c='white'>
+          <Title order={3} c='white' style={{ wordBreak: 'break-word' }}>
             {props.secret.label}
           </Title>
         </Group>
@@ -66,21 +66,25 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
             <Group>
               <FaUserAlt size={18} />
               <Text c='gray'>Username:</Text>
-              <Text c='white'>{props.secret.username}</Text>
+              <Text c='white' style={{ wordBreak: 'break-word' }}>
+                {props.secret.username}
+              </Text>
             </Group>
           )}
           {props.secret.email && (
             <Group>
               <FaUserAlt size={18} />
               <Text c='gray'>Email:</Text>
-              <Text c='white'>{props.secret.email}</Text>
+              <Text c='white' style={{ wordBreak: 'break-word' }}>
+                {props.secret.email}
+              </Text>
             </Group>
           )}
           {props.secret.password && (
             <Group>
               <FaLock size={18} />
               <Text c='gray'>Password:</Text>
-              <Text c='white'>
+              <Text c='white' style={{ wordBreak: 'break-all' }}>
                 {showPassword
                   ? props.secret.password
                   : Array.from({ length: props.secret.password.length }).map(() => '•')}
@@ -108,7 +112,8 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
                     : `https://${props.secret.website}`
                 }
                 target='_blank'
-                underline={'always'}
+                underline='always'
+                style={{ wordBreak: 'break-word' }}
               >
                 {props.secret.website}
               </Anchor>
@@ -118,14 +123,18 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
             <Group>
               <FaPhoneAlt size={18} />
               <Text c='gray'>Phone:</Text>
-              <Text c='white'>{props.secret.phone}</Text>
+              <Text c='white' style={{ wordBreak: 'break-word' }}>
+                {props.secret.phone}
+              </Text>
             </Group>
           )}
           {props.secret.notes && (
             <Group>
               <FaStickyNote size={18} />
               <Text c='gray'>Notes:</Text>
-              <Text c='white'>{props.secret.notes}</Text>
+              <Text c='white' style={{ wordBreak: 'break-word' }}>
+                {props.secret.notes}
+              </Text>
             </Group>
           )}
         </Flex>

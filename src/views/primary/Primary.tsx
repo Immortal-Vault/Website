@@ -11,9 +11,12 @@ import { useSecrets } from '../../stores'
 export function Primary() {
   const isMobile = useMediaQuery('(max-width: 768px)')
   const { i18n, t } = useTranslation('views')
-  const { selectedSecret, setSelectedSecret, deleteSecret } = useSecrets()
+  const { selectedSecret, selectedFolder, setSelectedSecret, setSelectedFolder, deleteSecret } =
+    useSecrets()
 
-  const [drawerState, { close: closeDrawer }] = useDisclosure(false)
+  const [foldersDrawerState, { close: closeFoldersDrawer, open: openFoldersDrawer }] =
+    useDisclosure(true)
+  const [secretsDrawerState, { close: closeSecretsDrawer }] = useDisclosure(true)
 
   useEffect(() => {
     const userLocalization = localStorage.getItem(LOCAL_STORAGE.USER_LOCALE)
@@ -22,88 +25,112 @@ export function Primary() {
     }
   }, [])
 
-  const getSecretSection = () => {
-    return (
-      <>
-        {selectedSecret ? (
-          <Secret
-            secret={selectedSecret}
-            delete={async () => {
-              closeDrawer()
-              setSelectedSecret(null)
-              await deleteSecret(selectedSecret)
-            }}
-          ></Secret>
-        ) : (
-          <Text c='gray'>{t('secrets:unselectedSecretPlaceholder')}</Text>
-        )}
-      </>
-    )
-  }
+  const getSecretSection = () => (
+    <>
+      {selectedSecret ? (
+        <Secret
+          secret={selectedSecret}
+          delete={async () => {
+            closeFoldersDrawer()
+            setSelectedSecret(null)
+            await deleteSecret(selectedSecret)
+          }}
+        />
+      ) : (
+        <Text c='gray'>{t('secrets:unselectedSecretPlaceholder')}</Text>
+      )}
+    </>
+  )
+
+  const getMobileLayout = () => (
+    <>
+      <ScrollArea h={'calc(100vh - 200px)'} type='always' scrollbars='y' offsetScrollbars>
+        <div
+          onClick={() => {
+            openFoldersDrawer()
+          }}
+        >
+          <Folders />
+        </div>
+      </ScrollArea>
+      <Drawer
+        opened={!!selectedFolder || foldersDrawerState}
+        onClose={() => {
+          closeFoldersDrawer()
+          setSelectedSecret(null)
+          setSelectedFolder(null)
+        }}
+        position='bottom'
+        size='100%'
+      >
+        <Secrets />
+      </Drawer>
+      <Drawer
+        opened={!!selectedSecret || secretsDrawerState}
+        onClose={() => {
+          closeSecretsDrawer()
+          setSelectedSecret(null)
+          setSelectedFolder(null)
+        }}
+        position='bottom'
+        size='100%'
+      >
+        {getSecretSection()}
+      </Drawer>
+    </>
+  )
+
+  const getPCLayout = () => (
+    <Grid>
+      <Grid.Col
+        span={2}
+        style={{
+          borderRight: '1px solid #424242',
+        }}
+      >
+        <ScrollArea h={'calc(100vh - 200px)'} type='always' scrollbars='y' offsetScrollbars>
+          <Folders />
+        </ScrollArea>
+      </Grid.Col>
+      <Grid.Col
+        span={3}
+        style={{
+          borderRight: '1px solid #424242',
+        }}
+      >
+        <div
+          style={{
+            marginLeft: '10px',
+          }}
+        >
+          <ScrollArea h={'calc(100vh - 200px)'} type='always' scrollbars='y' offsetScrollbars>
+            <Secrets />
+          </ScrollArea>
+        </div>
+      </Grid.Col>
+      <Grid.Col
+        span={7}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <div
+          style={{
+            marginLeft: '10px',
+          }}
+        >
+          {getSecretSection()}
+        </div>
+      </Grid.Col>
+    </Grid>
+  )
 
   return (
     <>
       <PrimaryHeader />
-      <Container fluid mb={'xl'}>
-        <Grid>
-          <Grid.Col
-            span={2}
-            style={{
-              borderRight: '1px solid #424242',
-            }}
-          >
-            <ScrollArea h={'calc(100vh - 200px)'} type={'always'} scrollbars={'y'} offsetScrollbars>
-              <Folders />
-            </ScrollArea>
-          </Grid.Col>
-          <Grid.Col
-            span={3}
-            style={{
-              borderRight: '1px solid #424242',
-            }}
-          >
-            <div
-              style={{
-                marginLeft: '10px',
-              }}
-            >
-              <ScrollArea
-                h={'calc(100vh - 200px)'}
-                type={'always'}
-                scrollbars={'y'}
-                offsetScrollbars
-              >
-                <Secrets />
-              </ScrollArea>
-            </div>
-          </Grid.Col>
-          <Grid.Col
-            span={7}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
-            <div
-              style={{
-                marginLeft: '10px',
-              }}
-            >
-              {getSecretSection()}
-              <Drawer
-                opened={drawerState}
-                onClose={() => {
-                  closeDrawer()
-                  setSelectedSecret(null)
-                }}
-                position={'right'}
-                size={isMobile ? '100%' : 'xl'}
-              >
-                {getSecretSection()}
-              </Drawer>
-            </div>
-          </Grid.Col>
-        </Grid>
+      <Container fluid mb='xl'>
+        {isMobile ? getMobileLayout() : getPCLayout()}
       </Container>
       <Footer />
     </>

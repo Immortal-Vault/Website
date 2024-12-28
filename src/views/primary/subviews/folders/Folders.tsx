@@ -107,12 +107,12 @@ export const Folders = () => {
             {t('modals.addFolder.buttons.cancel')}
           </Button>
           <Button
-            onClick={() => {
+            onClick={async () => {
               if (addFolderForm.validate().hasErrors) {
                 return
               }
 
-              addFolder()
+              await addFolder()
               closeAddModal()
               addFolderForm.reset()
             }}
@@ -148,7 +148,10 @@ export const Folders = () => {
               }}
             >
               <Group align='center' justify='space-between'>
-                <Text size='sm' c={!selectedFolder ? 'blue' : 'white'}>
+                <Text
+                  size={isMobile ? 'md' : 'sm'}
+                  c={!isMobile && !selectedFolder ? 'blue' : 'white'}
+                >
                   {t('allElements')}
                 </Text>
               </Group>
@@ -166,7 +169,10 @@ export const Folders = () => {
                   }}
                 >
                   <Group align='center' justify='space-between'>
-                    <Text size='sm' c={selectedFolder?.id === folder.id ? 'blue' : 'white'}>
+                    <Text
+                      size={isMobile ? 'md' : 'sm'}
+                      c={!isMobile && selectedFolder?.id === folder.id ? 'blue' : 'white'}
+                    >
                       {folder.label}
                     </Text>
                   </Group>

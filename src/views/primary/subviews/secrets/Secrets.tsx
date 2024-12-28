@@ -20,23 +20,20 @@ import {
   TEnpassSecretFile,
   TFolder,
   TSecret,
-  TSecretFile,
 } from '../../../../types'
-import { useAuth, useEnvVars, useSecrets } from '../../../../stores'
+import { useSecrets } from '../../../../stores'
 import { useTranslation } from 'react-i18next'
-import { toast } from 'react-toastify'
-import { customFetch } from '../../../../api'
-import { decrypt } from '../../../../shared'
 import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 import { v7 as uuid } from 'uuid'
 import { useForm } from '@mantine/form'
+import { trimText } from '../../../../shared'
 
 export const Secrets = () => {
   const isMobile = useMediaQuery('(max-width: 768px)')
-  const { envs } = useEnvVars()
   const { t } = useTranslation('secrets')
   const {
     secrets,
+    filteredSecrets,
     selectedSecret,
     folders,
     selectedFolder,
@@ -44,9 +41,8 @@ export const Secrets = () => {
     setFolders,
     saveSecrets,
     setSelectedSecret,
+    setFilteredSecrets,
   } = useSecrets()
-  const authContext = useAuth()
-  const [filteredSecrets, setFilteredSecrets] = useState<TSecret[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [addModalState, { open: openAddModal, close: closeAddModal }] = useDisclosure(false)
   const [importModalState, { open: openImportModal, close: closeImportModal }] =
@@ -75,40 +71,6 @@ export const Secrets = () => {
   useEffect(() => {
     handleSearch(searchQuery)
   }, [secrets])
-
-  const fetchSecrets = async () => {
-    const notificationId = toast.loading(t('data.fetch.inProgress'))
-    try {
-      const response = await customFetch(
-        `${envs?.API_SERVER_URL}/googleDrive/secretFile`,
-        null,
-        'GET',
-        t,
-      )
-      const secretFileResponse = await response?.text()
-      if (!secretFileResponse) {
-        toast.error(t('data.fetch.failed'))
-        toast.dismiss(notificationId)
-        return
-      }
-
-      const decryptedSecretFile = await decrypt(secretFileResponse, authContext.secretPassword)
-      const secretFileInfo = JSON.parse(decryptedSecretFile) as TSecretFile
-      console.log(secretFileInfo)
-      const secrets = secretFileInfo.secrets
-      const folders = secretFileInfo.folders
-      setSecrets(secrets ?? [])
-      setFilteredSecrets(secrets ?? [])
-      setFolders(folders ?? [])
-
-      toast.dismiss(notificationId)
-    } catch (error) {
-      authContext.openSecretPasswordModel()
-      console.error(error)
-      toast.error(t('incorrectMasterPassword'))
-      toast.dismiss(notificationId)
-    }
-  }
 
   const addSecret = async () => {
     const values = addSecretForm.values
@@ -198,14 +160,6 @@ export const Secrets = () => {
       setFilteredSecrets(filtered)
     }
   }
-
-  useEffect(() => {
-    if (!authContext.secretPassword) {
-      authContext.openSecretPasswordModel()
-    } else if (secrets.length < 1) {
-      fetchSecrets()
-    }
-  }, [authContext.secretPassword])
 
   return (
     <>
@@ -365,10 +319,10 @@ export const Secrets = () => {
                   <Group align='center' justify='space-between'>
                     <div>
                       <Text size='sm' c={selectedSecret?.id === secret.id ? 'blue' : 'white'}>
-                        {secret.label}
+                        {trimText(secret.label, 60)}
                       </Text>
-                      <Text size='xs' c='gray'>
-                        {secret?.username ?? secret?.email ?? ''}
+                      <Text size='xs' c={selectedSecret?.id === secret.id ? 'blue' : 'gray'}>
+                        {trimText(secret?.username ?? secret?.email ?? '', 70)}
                       </Text>
                     </div>
                   </Group>
