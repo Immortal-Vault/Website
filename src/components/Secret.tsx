@@ -24,9 +24,11 @@ import { TSecret } from '../types'
 import { useEffect, useState } from 'react'
 import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 import { useSecrets } from '../stores'
+import { useTranslation } from 'react-i18next'
 
 export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) => {
   const { folders, secrets, saveSecrets } = useSecrets()
+  const { t } = useTranslation('secrets')
 
   const [showPassword, setShowPassword] = useState(false)
   const [submitModalState, { open: openSubmitModal, close: closeSubmitModal }] =
@@ -60,7 +62,7 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
         opened={submitModalState}
         onClose={closeSubmitModal}
         size='sm'
-        title='Are you sure? You cannot undo this action'
+        title={t('modals.submitDelete.title')}
         withCloseButton={false}
         overlayProps={{
           backgroundOpacity: 0.55,
@@ -69,7 +71,7 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
       >
         <Group mt='lg'>
           <Button variant='outline' onClick={closeSubmitModal}>
-            Cancel
+            {t('modals.submitDelete.buttons.cancel')}
           </Button>
           <Button
             color='red'
@@ -78,7 +80,7 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
               closeSubmitModal()
             }}
           >
-            Delete
+            {t('modals.submitDelete.buttons.delete')}
           </Button>
         </Group>
       </Modal>
@@ -95,7 +97,7 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
           {props.secret.username && (
             <Group>
               <FaUserAlt size={18} />
-              <Text c='gray'>Username:</Text>
+              <Text c='gray'>{t('fields.username.title')}:</Text>
               <Text c='white' style={{ wordBreak: 'break-word' }}>
                 {props.secret.username}
               </Text>
@@ -104,7 +106,7 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
           {props.secret.email && (
             <Group>
               <FaUserAlt size={18} />
-              <Text c='gray'>Email:</Text>
+              <Text c='gray'>{t('fields.email.title')}:</Text>
               <Text c='white' style={{ wordBreak: 'break-word' }}>
                 {props.secret.email}
               </Text>
@@ -113,19 +115,23 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
           {props.secret.password && (
             <Group>
               <FaLock size={18} />
-              <Text c='gray'>Password:</Text>
+              <Text c='gray'>{t('fields.password.title')}:</Text>
               <Text c='white' style={{ wordBreak: 'break-all' }}>
                 {showPassword
                   ? props.secret.password
                   : Array.from({ length: props.secret.password.length }).map(() => '•')}
               </Text>
+            </Group>
+          )}
+          {props.secret.password && (
+            <Group>
               <Button size='xs' variant='outline' onClick={() => setShowPassword(!showPassword)}>
-                {showPassword ? 'Hide' : 'Show'}
+                {t(showPassword ? 'buttons.hide' : 'buttons.show')}
               </Button>
               <CopyButton value={props.secret.password}>
                 {({ copied, copy }) => (
                   <Button size='xs' color={copied ? 'teal' : 'blue'} onClick={copy}>
-                    {copied ? 'Copied' : 'Copy'}
+                    {t(copied ? 'buttons.copied' : 'buttons.copy')}
                   </Button>
                 )}
               </CopyButton>
@@ -134,7 +140,7 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
           {props.secret.website && (
             <Group>
               <FaExternalLinkAlt size={18} />
-              <Text c='gray'>Website:</Text>
+              <Text c='gray'>{t('fields.website.title')}:</Text>
               <Anchor
                 href={
                   props.secret.website.startsWith('http')
@@ -152,7 +158,7 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
           {props.secret.phone && (
             <Group>
               <FaPhoneAlt size={18} />
-              <Text c='gray'>Phone:</Text>
+              <Text c='gray'>{t('fields.phone.title')}:</Text>
               <Text c='white' style={{ wordBreak: 'break-word' }}>
                 {props.secret.phone}
               </Text>
@@ -161,7 +167,7 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
           {props.secret.notes && (
             <Group>
               <FaStickyNote size={18} />
-              <Text c='gray'>Notes:</Text>
+              <Text c='gray'>{t('fields.notes.title')}:</Text>
               <Text c='white' style={{ wordBreak: 'break-word' }}>
                 {props.secret.notes}
               </Text>
@@ -170,12 +176,14 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
 
           <Group>
             <FaFolder />
-            <Text c='gray'>Folders:</Text>
+            <Text c='gray'>{t('fields.folders.title')}:</Text>
+          </Group>
+          <Group>
             <MultiSelect
               data={folders.map((folder) => ({ value: folder.id, label: folder.label }))}
               value={attachedFolders}
               onChange={handleFoldersChange}
-              placeholder='Select folders'
+              placeholder={t('fields.folders.select.placeholder')}
               clearable
             />
           </Group>
@@ -185,18 +193,20 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
           <Group>
             <FaClock size={18} />
             <Text c='gray'>
-              Last Updated: {new Date(props.secret.lastUpdated).toLocaleString()}
+              {t('fields.lastUpdated.title')}: {new Date(props.secret.lastUpdated).toLocaleString()}
             </Text>
           </Group>
           <Group>
             <FaClock size={18} />
-            <Text c='gray'>Created: {new Date(props.secret.created).toLocaleString()}</Text>
+            <Text c='gray'>
+              {t('fields.created.title')}: {new Date(props.secret.created).toLocaleString()}
+            </Text>
           </Group>
         </Flex>
 
         <Group mt='lg'>
           <Button color='red' onClick={openSubmitModal}>
-            Delete
+            {t('buttons.delete')}
           </Button>
         </Group>
       </Card>
