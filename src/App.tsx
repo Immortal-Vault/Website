@@ -4,7 +4,6 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { ROUTER_PATH } from './shared'
 import SignIn from './views/auth/SignIn.tsx'
 import { ToastContainer, Zoom } from 'react-toastify'
-import Primary from './views/primary/Primary.tsx'
 import { ErrorBoundary, ErrorBoundaryError, NonAuthorizedRoute, ProtectedRoute } from './components'
 import { useMediaQuery } from '@mantine/hooks'
 import {
@@ -17,17 +16,27 @@ import {
 import ApproveSignIn from './views/auth/ApproveSignIn.tsx'
 import Root from './views/root/Root.tsx'
 import { PrivacyPolicy } from './views/root/privacy/PrivacyPolicy.tsx'
+import { Suspense } from 'react'
+import { Vault, Settings, Primary } from './views/primary'
 
 const theme = createTheme({})
 
 const router = createBrowserRouter([
   {
     path: ROUTER_PATH.ROOT,
-    element: <Root />,
+    element: (
+      <SecretsProvider>
+        <Root />
+      </SecretsProvider>
+    ),
   },
   {
     path: ROUTER_PATH.PRIVACY_POLICY,
-    element: <PrivacyPolicy />,
+    element: (
+      <SecretsProvider>
+        <PrivacyPolicy />
+      </SecretsProvider>
+    ),
   },
   {
     path: ROUTER_PATH.SIGN_IN,
@@ -54,10 +63,32 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: ROUTER_PATH.MAIN_MENU,
+    path: ROUTER_PATH.MENU,
     element: (
       <ProtectedRoute>
-        <Primary />
+        <SecretsProvider>
+          <Primary />
+        </SecretsProvider>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: ROUTER_PATH.MENU_SETTINGS,
+    element: (
+      <ProtectedRoute>
+        <SecretsProvider>
+          <Settings />
+        </SecretsProvider>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: ROUTER_PATH.MENU_VAULT,
+    element: (
+      <ProtectedRoute>
+        <SecretsProvider>
+          <Vault />
+        </SecretsProvider>
       </ProtectedRoute>
     ),
   },
@@ -87,9 +118,9 @@ export default function App() {
           <MenuProvider>
             <AuthProvider>
               <GoogleDriveProvider>
-                <SecretsProvider>
+                <Suspense fallback={null}>
                   <RouterProvider router={router} />
-                </SecretsProvider>
+                </Suspense>
               </GoogleDriveProvider>
             </AuthProvider>
           </MenuProvider>

@@ -1,10 +1,10 @@
 import {
-  Avatar,
   Box,
   Burger,
   Button,
   Divider,
   Drawer,
+  Flex,
   Group,
   Image,
   rem,
@@ -13,21 +13,21 @@ import {
 } from '@mantine/core'
 import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 import classes from './RootHeader.module.css'
-import { useNavigate } from 'react-router-dom'
-import { ROUTER_PATH } from '../../../shared'
 import { useTranslation } from 'react-i18next'
-import { useAuth } from '../../../stores'
-import { EAuthState } from '../../../types'
+import { ProfileAvatarWithMenu } from '../ProfileAvatarWithMenu.tsx'
+import { ROUTER_PATH, sendSuccessNotification } from '../../shared'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../stores'
 
-export function RootHeader() {
+export function PrimaryHeader() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false)
   const isMobile = useMediaQuery('(max-width: 768px)')
-  const navigate = useNavigate()
   const { t } = useTranslation('root')
-  const { authState } = useAuth()
+  const { authSignOut } = useAuth()
+  const navigate = useNavigate()
 
   return (
-    <Box pb={40}>
+    <Box mb={'xl'}>
       {!drawerOpened && (
         <header className={classes.header}>
           <Group justify='space-between' h='100%'>
@@ -37,37 +37,21 @@ export function RootHeader() {
                 h={isMobile ? 30 : 40}
                 w={isMobile ? 30 : 40}
                 alt={'Immortal Vault'}
+                onClick={() => navigate(ROUTER_PATH.ROOT)}
               />
               <Title
                 order={isMobile ? 4 : 2}
                 style={{
                   color: 'white',
                 }}
+                onClick={() => navigate(ROUTER_PATH.ROOT)}
               >
                 Immortal Vault
               </Title>
             </Group>
 
             <Group visibleFrom='sm'>
-              {authState === EAuthState.Deauthorized && (
-                <>
-                  <Button variant='default' onClick={() => navigate(ROUTER_PATH.SIGN_IN)}>
-                    {t('header.signIn')}
-                  </Button>
-                  <Button onClick={() => navigate(ROUTER_PATH.SIGN_UP)}>
-                    {t('header.signUp')}
-                  </Button>
-                </>
-              )}
-              {authState === EAuthState.Authorized && (
-                <Avatar
-                  onClick={() => navigate(ROUTER_PATH.MAIN_MENU)}
-                  variant='transparent'
-                  radius='xl'
-                  size='lg'
-                  color='rgba(81,175, 255, 1)'
-                />
-              )}
+              <ProfileAvatarWithMenu />
             </Group>
 
             <Burger opened={drawerOpened} onClick={toggleDrawer} hiddenFrom='sm' />
@@ -88,17 +72,42 @@ export function RootHeader() {
           <Divider mb={'lg'} />
 
           <Group justify='center' grow pb='xl' px='md'>
-            {authState === EAuthState.Deauthorized && (
-              <>
-                <Button variant='default' onClick={() => navigate(ROUTER_PATH.SIGN_IN)}>
-                  {t('header.signIn')}
-                </Button>
-                <Button onClick={() => navigate(ROUTER_PATH.SIGN_UP)}>{t('header.signUp')}</Button>
-              </>
-            )}
-            {authState === EAuthState.Authorized && (
-              <Button onClick={() => navigate(ROUTER_PATH.MAIN_MENU)}>{t('header.profile')}</Button>
-            )}
+            <Flex direction={'column'} gap={'md'}>
+              <Button
+                fullWidth
+                onClick={() => {
+                  navigate(ROUTER_PATH.MENU)
+                }}
+              >
+                {t('header.profile')}
+              </Button>
+              <Button
+                fullWidth
+                onClick={() => {
+                  navigate(ROUTER_PATH.MENU_SETTINGS)
+                }}
+              >
+                {t('header.settings')}
+              </Button>
+              <Button
+                fullWidth
+                onClick={() => {
+                  navigate(ROUTER_PATH.MENU_VAULT)
+                }}
+              >
+                {t('header.vault')}
+              </Button>
+              <Button
+                fullWidth
+                color={'red'}
+                onClick={() => {
+                  authSignOut(false)
+                  sendSuccessNotification(t('auth:signOut:successful'))
+                }}
+              >
+                {t('header.exit')}
+              </Button>
+            </Flex>
           </Group>
         </ScrollArea>
       </Drawer>

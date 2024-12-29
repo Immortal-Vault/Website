@@ -1,6 +1,6 @@
 import { Anchor, Container, Text } from '@mantine/core'
-import { RootHeader } from '../header/RootHeader.tsx'
-import { RootFooter } from '../footer/RootFooter.tsx'
+import { RootHeader } from '../../../components/header/RootHeader.tsx'
+import { Footer } from '../../../components/footer/Footer.tsx'
 import { v7 as uuid } from 'uuid'
 
 export function PrivacyPolicy() {
@@ -218,7 +218,7 @@ export function PrivacyPolicy() {
           }
         </Text>
       </Container>
-      <RootFooter />
+      <Footer />
     </>
   )
 }

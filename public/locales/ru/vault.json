@@ -1,0 +1,27 @@
+{
+  "title": "Хранилища",
+  "modals": {
+    "keepData": {
+      "title": "Вы хотите оставить или удалить данные навсегда?",
+      "buttons": {
+        "keep": "Оставить",
+        "remove": "Удалить"
+      }
+    },
+    "masterPassword": {
+      "title": "Введите секретный мастер пароль",
+      "buttons": {
+        "cancel": "Отменить",
+        "submit": "Подтвердить"
+      }
+    }
+  },
+  "states": {
+    "connected": "Подключен {{email}}",
+    "disconnected": "Не подключен"
+  },
+  "google": {
+    "signIn": "Войти в аккаунт Google",
+    "signOut": "Выйти из аккаунта Google"
+  }
+}

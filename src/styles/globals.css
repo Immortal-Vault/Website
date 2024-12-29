@@ -410,12 +410,14 @@ textarea {
 }
 
 ::-moz-selection {
-  background: #b3d4fc;
+  color: white;
+  background: rgba(81, 175, 255, 0.76);
   text-shadow: none;
 }
 
 ::selection {
-  background: #b3d4fc;
+  color: white;
+  background: rgba(81, 175, 255, 0.76);
   text-shadow: none;
 }
 

@@ -1,25 +1,22 @@
-import { AppShell, Burger, Group, Image, ScrollArea, Title } from '@mantine/core'
 import { useEffect } from 'react'
-import {
-  EPrimaryViewPage,
-  EPrimaryViewTabType,
-  ESettingsViewPage,
-  TPrimaryViewTab,
-} from '../../types'
-import { useDisclosure } from '@mantine/hooks'
-import { createTab, LOCAL_STORAGE, ROUTER_PATH, sendSuccessNotification } from '../../shared'
-import { Secrets, Settings } from './subviews'
+import { LOCAL_STORAGE } from '../../shared'
 import { useTranslation } from 'react-i18next'
-import { useAuth, useMenu } from '../../stores'
-import { ProfileAvatarWithMenu } from '../../components'
-import { useNavigate } from 'react-router-dom'
+import { Footer, PrimaryHeader, Secret } from '../../components'
+import { Container, Drawer, Grid, ScrollArea, Text } from '@mantine/core'
+import { Secrets } from './subviews'
+import { useDisclosure, useMediaQuery } from '@mantine/hooks'
+import { Folders } from './subviews/folders'
+import { useSecrets } from '../../stores'
 
-export default function Primary() {
-  const { t, i18n } = useTranslation('views')
-  const { authSignOut } = useAuth()
-  const { currentPage, settingsPage, setCurrentPage, setSettingsPage } = useMenu()
-  const [burgerState, { toggle, close: closeBurger }] = useDisclosure()
-  const navigate = useNavigate()
+export function Primary() {
+  const isMobile = useMediaQuery('(max-width: 768px)')
+  const { i18n, t } = useTranslation('views')
+  const { selectedSecret, selectedFolder, setSelectedSecret, setSelectedFolder, deleteSecret } =
+    useSecrets()
+
+  const [foldersDrawerState, { close: closeFoldersDrawer, open: openFoldersDrawer }] =
+    useDisclosure(false)
+  const [secretsDrawerState, { close: closeSecretsDrawer }] = useDisclosure(false)
 
   useEffect(() => {
     const userLocalization = localStorage.getItem(LOCAL_STORAGE.USER_LOCALE)
@@ -28,94 +25,112 @@ export default function Primary() {
     }
   }, [])
 
-  const mainViewTabs: TPrimaryViewTab[] = [
-    {
-      type: EPrimaryViewTabType.Button,
-      name: t('secrets.name'),
-      onClick: () => {
-        setCurrentPage(EPrimaryViewPage.Secrets)
-        closeBurger()
-      },
-    },
-    {
-      type: EPrimaryViewTabType.Accordion,
-      name: t('settings.name'),
-      sections: [
-        {
-          title: t('settings.subviews.main.name'),
-          click: () => {
-            setSettingsPage(ESettingsViewPage.Main)
-            setCurrentPage(EPrimaryViewPage.Settings)
-            closeBurger()
-          },
-        },
-        {
-          title: t('settings.subviews.vault.name'),
-          click: () => {
-            setSettingsPage(ESettingsViewPage.Vault)
-            setCurrentPage(EPrimaryViewPage.Settings)
-            closeBurger()
-          },
-        },
-      ],
-    },
-    {
-      type: EPrimaryViewTabType.Button,
-      name: t('auth:signOut:title'),
-      color: 'red',
-      onClick: () => {
-        authSignOut(false)
-        sendSuccessNotification(t('auth:signOut:successful'))
-      },
-    },
-  ]
+  const getSecretSection = () => (
+    <>
+      {selectedSecret ? (
+        <Secret
+          secret={selectedSecret}
+          delete={async () => {
+            closeFoldersDrawer()
+            setSelectedSecret(null)
+            await deleteSecret(selectedSecret)
+          }}
+        />
+      ) : (
+        <Text c='gray'>{t('secrets:unselectedSecretPlaceholder')}</Text>
+      )}
+    </>
+  )
 
-  return (
-    <AppShell
-      header={{ height: 60 }}
-      navbar={{ width: 300, breakpoint: 'sm', collapsed: { mobile: !burgerState } }}
-      padding='md'
-    >
-      <AppShell.Header>
-        <Group justify={'space-between'} h={'100%'}>
-          <Group h={'100%'} px='md'>
-            <Burger opened={burgerState} onClick={toggle} hiddenFrom='sm' size='sm' />
-            <Image
-              onClick={() => navigate(ROUTER_PATH.ROOT)}
-              src={'/logo.svg'}
-              w={'2.5rem'}
-              alt={'Immortal Vault'}
-            />
-            <Title
-              onClick={() => navigate(ROUTER_PATH.ROOT)}
-              order={2}
-              style={{
-                color: 'white',
-              }}
-            >
-              Immortal Vault
-            </Title>
-          </Group>
-          <Group px='md'>
-            <ProfileAvatarWithMenu />
-          </Group>
-        </Group>
-      </AppShell.Header>
-      <AppShell.Navbar p='md'>
-        <AppShell.Section grow component={ScrollArea}>
-          {mainViewTabs.map((tab, index) => createTab(tab, index, t))}
-        </AppShell.Section>
-      </AppShell.Navbar>
-      <AppShell.Main
+  const getMobileLayout = () => (
+    <>
+      <ScrollArea h={'calc(100vh - 200px)'} type='always' scrollbars='y' offsetScrollbars>
+        <Folders
+          allElementsButtonClick={() => {
+            openFoldersDrawer()
+          }}
+        />
+      </ScrollArea>
+      <Drawer
+        opened={!!selectedFolder || foldersDrawerState}
+        onClose={() => {
+          closeFoldersDrawer()
+          setSelectedSecret(null)
+          setSelectedFolder(null)
+        }}
+        position='bottom'
+        size='100%'
+      >
+        <Secrets />
+      </Drawer>
+      <Drawer
+        opened={!!selectedSecret || secretsDrawerState}
+        onClose={() => {
+          closeSecretsDrawer()
+          setSelectedSecret(null)
+          setSelectedFolder(null)
+        }}
+        position='bottom'
+        size='100%'
+      >
+        {getSecretSection()}
+      </Drawer>
+    </>
+  )
+
+  const getPCLayout = () => (
+    <Grid>
+      <Grid.Col
+        span={2}
         style={{
-          height: '100vh',
-          backgroundColor: 'rgb(36, 36, 36)',
+          borderRight: '1px solid #424242',
         }}
       >
-        {currentPage === EPrimaryViewPage.Secrets && <Secrets />}
-        {currentPage === EPrimaryViewPage.Settings && <Settings currentPage={settingsPage} />}
-      </AppShell.Main>
-      <AppShell.Footer></AppShell.Footer>
-    </AppShell>
+        <ScrollArea h={'calc(100vh - 200px)'} type='always' scrollbars='y' offsetScrollbars>
+          <Folders />
+        </ScrollArea>
+      </Grid.Col>
+      <Grid.Col
+        span={3}
+        style={{
+          borderRight: '1px solid #424242',
+        }}
+      >
+        <div
+          style={{
+            marginLeft: '10px',
+          }}
+        >
+          <ScrollArea h={'calc(100vh - 200px)'} type='always' scrollbars='y' offsetScrollbars>
+            <Secrets />
+          </ScrollArea>
+        </div>
+      </Grid.Col>
+      <Grid.Col
+        span={7}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <div
+          style={{
+            marginLeft: '10px',
+          }}
+        >
+          {getSecretSection()}
+        </div>
+      </Grid.Col>
+    </Grid>
+  )
+
+  return (
+    <>
+      <PrimaryHeader />
+      <Container fluid mb='xl'>
+        {isMobile ? getMobileLayout() : getPCLayout()}
+      </Container>
+      <Footer />
+    </>
   )
 }

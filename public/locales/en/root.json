@@ -3,6 +3,9 @@
     "signIn": "Sign In",
     "signUp": "Sign Up",
     "profile": "Profile",
+    "settings": "Settings",
+    "vault": "Vault",
+    "exit": "Exit",
     "navigation": "Navigation"
   },
   "hero": {

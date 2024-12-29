@@ -7,5 +7,9 @@
   "passwordsDoNotMatch": "Пароли не совпадают",
   "userAlreadyExists": "Пользователь с такой почтой или именем уже существует",
   "languageChanged": "Язык успешно изменён на {{language}}",
-  "sessionExpired": "Ваша сессия истекла, необходима авторизация"
+  "sessionExpired": "Ваша сессия истекла, необходима авторизация",
+  "folder": {
+    "addedSuccessfully": "Папка успешно добавлена",
+    "deletedSuccessfully": "Папка успешно удалена"
+  }
 }

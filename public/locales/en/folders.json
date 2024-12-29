@@ -1,0 +1,33 @@
+{
+  "folders": "Folders",
+  "allElements": "All elements",
+  "buttons": {
+    "add": "Add",
+    "delete": "Delete"
+  },
+  "search": {
+    "placeholder": "Search"
+  },
+  "fields": {
+    "label": {
+      "title": "Label",
+      "canNotBeEmpty": "Label can not be empty"
+    }
+  },
+  "modals": {
+    "addFolder": {
+      "title": "Add new element",
+      "buttons": {
+        "cancel": "Cancel",
+        "submit": "Submit"
+      }
+    },
+    "deleteFolder": {
+      "title": "Delete folder",
+      "buttons": {
+        "cancel": "Cancel",
+        "submit": "Submit"
+      }
+    }
+  }
+}
