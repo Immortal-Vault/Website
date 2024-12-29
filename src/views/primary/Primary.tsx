@@ -14,7 +14,7 @@ export function Primary() {
   const { i18n, t } = useTranslation('views')
   const { selectedSecret, selectedFolder, setSelectedSecret, setSelectedFolder, deleteSecret } =
     useSecrets()
-  const { googleDriveState } = useGoogleDrive()
+  const { googleDriveState, googleDriveStateFetched } = useGoogleDrive()
   const navigate = useNavigate()
 
   const [foldersDrawerState, { close: closeFoldersDrawer, open: openFoldersDrawer }] =
@@ -26,12 +26,18 @@ export function Primary() {
     if (userLocalization && i18n.languages.includes(userLocalization)) {
       i18n.changeLanguage(userLocalization)
     }
+  }, [])
+
+  useEffect(() => {
+    if (!googleDriveStateFetched) {
+      return
+    }
 
     if (!googleDriveState) {
       navigate(ROUTER_PATH.MENU_VAULT)
       sendNotification(t('notifications:needConnectVault'))
     }
-  }, [])
+  }, [googleDriveStateFetched])
 
   const getSecretSection = () => (
     <>

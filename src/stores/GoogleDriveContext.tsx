@@ -16,6 +16,7 @@ import { EAuthState } from '../types'
 
 export interface GoogleDriveContextType {
   googleDriveState: boolean
+  googleDriveStateFetched: boolean
   googleDriveEmail: string
   setGoogleDriveState: Dispatch<SetStateAction<boolean>>
   setGoogleDriveEmail: Dispatch<SetStateAction<string>>
@@ -24,6 +25,7 @@ export interface GoogleDriveContextType {
 const GoogleDriveContext = createContext<GoogleDriveContextType>({
   googleDriveState: false,
   googleDriveEmail: '',
+  googleDriveStateFetched: false,
   setGoogleDriveState: function (): void {
     throw new Error('Function is not implemented.')
   },
@@ -42,6 +44,7 @@ export const GoogleDriveProvider = ({ children }: GoogleDriveProviderProps) => {
   const authContext = useAuth()
 
   const [googleDriveState, setGoogleDriveState] = useState(false)
+  const [googleDriveStateFetched, setGoogleDriveStateFetched] = useState(false)
   const [googleDriveEmail, setGoogleDriveEmail] = useState('')
 
   const fetchGoogleDriveState = async () => {
@@ -52,6 +55,7 @@ export const GoogleDriveProvider = ({ children }: GoogleDriveProviderProps) => {
     }
     setGoogleDriveState(true)
     setGoogleDriveEmail(googleDriveEmail)
+    setGoogleDriveStateFetched(true)
   }
 
   useEffect(() => {
@@ -65,11 +69,12 @@ export const GoogleDriveProvider = ({ children }: GoogleDriveProviderProps) => {
   const contextValue = useMemo(
     () => ({
       googleDriveState,
+      googleDriveStateFetched,
       googleDriveEmail,
       setGoogleDriveState,
       setGoogleDriveEmail,
     }),
-    [googleDriveState, googleDriveEmail],
+    [googleDriveState, googleDriveEmail, googleDriveStateFetched],
   )
 
   return (
