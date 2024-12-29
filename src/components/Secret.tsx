@@ -25,6 +25,7 @@ import { useEffect, useState } from 'react'
 import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 import { useSecrets } from '../stores'
 import { useTranslation } from 'react-i18next'
+import { MdOutlineAlternateEmail } from 'react-icons/md'
 
 export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) => {
   const { folders, secrets, saveSecrets } = useSecrets()
@@ -109,7 +110,7 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
           )}
           {props.secret.email && (
             <Group>
-              <FaUserAlt size={18} />
+              <MdOutlineAlternateEmail size={18} />
               <Text c='gray'>{t('fields.email.title')}:</Text>
               <Text c='white' style={{ wordBreak: 'break-word' }}>
                 {props.secret.email}
