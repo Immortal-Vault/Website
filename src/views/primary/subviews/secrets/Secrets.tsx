@@ -81,7 +81,7 @@ export const Secrets = () => {
 
     const secret: TSecret = {
       id: uuid(),
-      folders: [], // TODO: folders integration
+      folders: [],
       lastUpdated: Date.now(),
       created: Date.now(),
       ...values,

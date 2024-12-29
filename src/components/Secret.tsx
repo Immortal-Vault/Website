@@ -54,6 +54,7 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
 
     setAttachedFolders(folderIds)
     secret.folders = folderIds
+    secret.lastUpdated = Date.now()
 
     await saveSecrets(secrets, folders)
   }
