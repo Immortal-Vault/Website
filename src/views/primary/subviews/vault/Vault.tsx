@@ -184,13 +184,7 @@ export const Vault = (): JSX.Element => {
             <Card shadow='sm' padding='lg' radius='md' withBorder>
               <Card.Section>
                 <Center>
-                  <Image
-                    mt={'xs'}
-                    h={100}
-                    w={'fit-content'}
-                    src={'/google.svg'}
-                    alt={'Google drive'}
-                  />
+                  <Image mt={'xs'} h={100} w={100} src={'/google.svg'} alt={'Google drive'} />
                 </Center>
               </Card.Section>
 
