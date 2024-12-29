@@ -33,9 +33,12 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
   const [showPassword, setShowPassword] = useState(false)
   const [submitModalState, { open: openSubmitModal, close: closeSubmitModal }] =
     useDisclosure(false)
-  const [attachedFolders, setAttachedFolders] = useState<string[]>(
-    folders.filter((f) => props.secret.folders.includes(f.id)).map((f) => f.id),
-  )
+
+  const [attachedFolders, setAttachedFolders] = useState<string[]>([])
+
+  useEffect(() => {
+    setAttachedFolders(folders.filter((f) => props.secret.folders.includes(f.id)).map((f) => f.id))
+  }, [folders, props.secret.folders])
 
   const isMobile = useMediaQuery('(max-width: 768px)')
 
