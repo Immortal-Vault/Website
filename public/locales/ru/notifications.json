@@ -11,5 +11,6 @@
   "folder": {
     "addedSuccessfully": "Папка успешно добавлена",
     "deletedSuccessfully": "Папка успешно удалена"
-  }
+  },
+  "needConnectVault": "Вам необходимо подключить хранилище"
 }

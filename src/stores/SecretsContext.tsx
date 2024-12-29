@@ -154,7 +154,7 @@ export const SecretsProvider = ({ children }: SecretsProps) => {
   }
 
   useEffect(() => {
-    if (!location.pathname.includes(ROUTER_PATH.MENU)) {
+    if (location.pathname.includes(ROUTER_PATH.MENU + '/') || !googleDriveState) {
       return
     }
 
@@ -163,7 +163,7 @@ export const SecretsProvider = ({ children }: SecretsProps) => {
     } else if (secrets.length < 1) {
       fetchSecrets()
     }
-  }, [authContext.secretPassword, location.pathname])
+  }, [authContext.secretPassword, location.pathname, googleDriveState])
 
   const contextValue = useMemo(
     () => ({

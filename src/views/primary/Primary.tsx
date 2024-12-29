@@ -1,18 +1,21 @@
 import { useEffect } from 'react'
-import { LOCAL_STORAGE } from '../../shared'
+import { LOCAL_STORAGE, ROUTER_PATH, sendNotification } from '../../shared'
 import { useTranslation } from 'react-i18next'
 import { Footer, PrimaryHeader, Secret } from '../../components'
 import { Container, Drawer, Grid, ScrollArea, Text } from '@mantine/core'
 import { Secrets } from './subviews'
 import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 import { Folders } from './subviews/folders'
-import { useSecrets } from '../../stores'
+import { useGoogleDrive, useSecrets } from '../../stores'
+import { useNavigate } from 'react-router-dom'
 
 export function Primary() {
   const isMobile = useMediaQuery('(max-width: 768px)')
   const { i18n, t } = useTranslation('views')
   const { selectedSecret, selectedFolder, setSelectedSecret, setSelectedFolder, deleteSecret } =
     useSecrets()
+  const { googleDriveState } = useGoogleDrive()
+  const navigate = useNavigate()
 
   const [foldersDrawerState, { close: closeFoldersDrawer, open: openFoldersDrawer }] =
     useDisclosure(false)
@@ -22,6 +25,11 @@ export function Primary() {
     const userLocalization = localStorage.getItem(LOCAL_STORAGE.USER_LOCALE)
     if (userLocalization && i18n.languages.includes(userLocalization)) {
       i18n.changeLanguage(userLocalization)
+    }
+
+    if (!googleDriveState) {
+      navigate(ROUTER_PATH.MENU_VAULT)
+      sendNotification(t('notifications:needConnectVault'))
     }
   }, [])
 
