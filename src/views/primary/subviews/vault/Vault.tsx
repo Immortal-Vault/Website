@@ -17,7 +17,7 @@ import { useDisclosure } from '@mantine/hooks'
 import { useGoogleLogin } from '@react-oauth/google'
 import { signInGoogle, signOutGoogle, uploadSecretFile } from '../../../../api'
 import { useAuth, useEnvVars, useGoogleDrive } from '../../../../stores'
-import { encrypt } from '../../../../shared'
+import { encrypt, SECRET_FILE_VERSION } from '../../../../shared'
 import { useState } from 'react'
 import { TSecretFile } from '../../../../types'
 import { Footer, PrimaryHeader } from '../../../../components'
@@ -70,7 +70,7 @@ export const Vault = (): JSX.Element => {
 
       if (!hasSecretFile) {
         const secretFile: TSecretFile = {
-          version: '0.0.1',
+          version: SECRET_FILE_VERSION,
           folders: [],
           secrets: [],
         }

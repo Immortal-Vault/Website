@@ -12,11 +12,12 @@ import { TFolder, TSecret, TSecretFile } from '../types'
 import { useGoogleDrive } from './GoogleDriveContext.tsx'
 import { toast } from 'react-toastify'
 import { customFetch, uploadSecretFile } from '../api'
-import { decrypt, encrypt, ROUTER_PATH } from '../shared'
+import { decrypt, encrypt, ROUTER_PATH, SECRET_FILE_VERSION } from '../shared'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from './AuthContext.tsx'
 import { useEnvVars } from './EnvVarsContext.tsx'
 import { useLocation } from 'react-router-dom'
+import { applyMigrations } from '../migrations'
 
 export interface SecretsContextType {
   secrets: TSecret[]
@@ -83,7 +84,7 @@ export const SecretsProvider = ({ children }: SecretsProps) => {
     const notificationId = toast.loading(t('data.updating'))
 
     const secretFile: TSecretFile = {
-      version: '0.0.1',
+      version: SECRET_FILE_VERSION,
       folders,
       secrets,
     }
@@ -134,9 +135,11 @@ export const SecretsProvider = ({ children }: SecretsProps) => {
 
       const decryptedSecretFile = await decrypt(secretFileResponse, authContext.secretPassword)
       const secretFileInfo = JSON.parse(decryptedSecretFile) as TSecretFile
-      console.log(secretFileInfo)
-      const secrets = secretFileInfo.secrets
-      const folders = secretFileInfo.folders
+      const migratedSecretFile = applyMigrations(secretFileInfo)
+      console.log(migratedSecretFile) // TODO: remove debug logs
+      const secrets = migratedSecretFile.secrets
+      const folders = migratedSecretFile.folders
+
       setSecrets(secrets ?? [])
       setFilteredSecrets(secrets ?? [])
       setFolders(folders ?? [])

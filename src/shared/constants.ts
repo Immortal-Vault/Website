@@ -14,3 +14,5 @@ export const LOCAL_STORAGE = {
   USER_LOCALE: 'user_locale',
   AUTH_STATE: 'auth_state',
 }
+
+export const SECRET_FILE_VERSION = '0.0.2'
