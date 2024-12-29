@@ -191,9 +191,6 @@ export default function SignUp() {
             type='submit'
             radius='xl'
             onClick={async () => {
-              // TODO: turn on sign up
-              sendErrorNotification('Sign up temporary turned off')
-              return
               await signUpUser()
             }}
           >
