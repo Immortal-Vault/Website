@@ -17,6 +17,7 @@ const localeDirs = fs
 localeDirs.forEach((locale) => {
   const localeDir = path.join(localesDir, locale)
 
+  let mismatchCount = 0
   fs.readdirSync(baseLocaleDir).forEach((file) => {
     const baseFilePath = path.join(baseLocaleDir, file)
     const localeFilePath = path.join(localeDir, file)
@@ -33,11 +34,13 @@ localeDirs.forEach((locale) => {
         if (missingKeys.length > 0) {
           console.log('Missing keys:')
           console.log(missingKeys)
+          mismatchCount++
         }
 
         if (misplacedKeys.length > 0) {
           console.log('Incorrect key order:')
           console.log(misplacedKeys)
+          mismatchCount++
         }
         console.log('\n---------------------\n')
       } else {
@@ -47,6 +50,16 @@ localeDirs.forEach((locale) => {
       console.log(`File missing: ${locale}/${file}`)
     }
   })
+
+  console.log('\n---------------------\n')
+
+  if (mismatchCount < 1) {
+    console.log('Locale checker passed successfully')
+  } else {
+    console.error(
+      `Locale checker failed with ${mismatchCount} ${mismatchCount > 1 ? 'mismatches' : 'mismatch'}`,
+    )
+  }
 })
 
 function findMissingKeys(baseObj, compareObj, prefix) {
