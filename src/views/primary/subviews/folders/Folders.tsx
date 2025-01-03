@@ -92,7 +92,7 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
 
     const updatedSecrets = secrets.map((secret) => ({
       ...secret,
-      folders: secret.folders.filter((f) => f !== folder.id),
+      folders: secret.folders?.filter((f) => f !== folder.id) ?? [],
     }))
 
     const newFolders = folders.filter((f) => f.id !== folder.id)

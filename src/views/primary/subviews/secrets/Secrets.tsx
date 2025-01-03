@@ -102,55 +102,62 @@ export const Secrets = () => {
     const importedSecrets: TSecret[] = []
     const importedFolders: TFolder[] = []
 
-    if (!fileContent.items) {
-      return
+    if (fileContent.items) {
+      fileContent.items.map((item: TEnpassItem) => {
+        if (secrets.find((s) => s.id === item.uuid)) {
+          return
+        }
+
+        const fields = item.fields
+        importedSecrets.push({
+          id: item.uuid,
+          folders: item.folders ?? [],
+          label: item.title,
+          username: fields.find((f: TEnpassField) => f.type === 'username')?.value,
+          email: fields.find((f: TEnpassField) => f.type === 'email')?.value,
+          password: fields.find((f: TEnpassField) => f.type === 'password')?.value,
+          website: fields.find((f: TEnpassField) => f.type === 'url')?.value,
+          phone: fields.find((f: TEnpassField) => f.type === 'phone')?.value,
+          notes: item.note,
+          lastUpdated: item.updated_at * 1000,
+          created: item.createdAt * 1000,
+        })
+      })
     }
 
-    fileContent.items.map((item: TEnpassItem) => {
-      if (secrets.find((s) => s.id === item.uuid)) {
-        return
-      }
+    if (fileContent.folders) {
+      fileContent.folders.map((folder: TEnpassFolder) => {
+        if (folders.find((f) => f.id === folder.uuid)) {
+          return
+        }
 
-      const fields = item.fields
-      importedSecrets.push({
-        id: item.uuid,
-        folders: item.folders ?? [],
-        label: item.title,
-        username: fields.find((f: TEnpassField) => f.type === 'username')?.value,
-        email: fields.find((f: TEnpassField) => f.type === 'email')?.value,
-        password: fields.find((f: TEnpassField) => f.type === 'password')?.value,
-        website: fields.find((f: TEnpassField) => f.type === 'url')?.value,
-        phone: fields.find((f: TEnpassField) => f.type === 'phone')?.value,
-        notes: item.note,
-        lastUpdated: item.updated_at * 1000,
-        created: item.createdAt * 1000,
+        importedFolders.push({
+          id: folder.uuid,
+          label: folder.title,
+          lastUpdated: folder.updated_at * 1000,
+        })
       })
-    })
-
-    fileContent.folders.map((folder: TEnpassFolder) => {
-      if (folders.find((f) => f.id === folder.uuid)) {
-        return
-      }
-
-      importedFolders.push({
-        id: folder.uuid,
-        label: folder.title,
-        lastUpdated: folder.updated_at * 1000,
-      })
-    })
-
-    if (importedSecrets.length < 1) {
-      return
     }
 
     const newSecrets = [...importedSecrets, ...secrets]
-    setSecrets(newSecrets)
-    setFilteredSecrets(newSecrets)
-
     const newFolders = [...importedFolders, ...folders]
-    setFolders(newFolders)
 
-    await saveSecrets(newSecrets, newFolders)
+    let changed = false
+
+    if (importedSecrets.length > 0) {
+      setSecrets(newSecrets)
+      setFilteredSecrets(newSecrets)
+      changed = true
+    }
+
+    if (importedFolders.length > 0) {
+      setFolders(newFolders)
+      changed = true
+    }
+
+    if (changed) {
+      await saveSecrets(newSecrets, newFolders)
+    }
   }
 
   const handleSearch = (query: string) => {
