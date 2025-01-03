@@ -38,7 +38,8 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
   const [attachedFolders, setAttachedFolders] = useState<string[]>([])
 
   useEffect(() => {
-    setAttachedFolders(folders.filter((f) => props.secret.folders.includes(f.id)).map((f) => f.id))
+    const secretFolders = props.secret.folders ? props.secret.folders : []
+    setAttachedFolders(folders.filter((f) => secretFolders.includes(f.id)).map((f) => f.id))
   }, [folders, props.secret.folders])
 
   const isMobile = useMediaQuery('(max-width: 768px)')

@@ -50,7 +50,7 @@ export const Secrets = () => {
   const [importedSecretFile, setImportedSecretFile] = useState<File | null>(null)
 
   const secretsToRender = selectedFolder
-    ? filteredSecrets.filter((s) => s.folders.includes(selectedFolder.id))
+    ? filteredSecrets.filter((s) => s.folders?.includes(selectedFolder.id))
     : filteredSecrets
 
   const addSecretForm = useForm({
@@ -102,6 +102,10 @@ export const Secrets = () => {
     const importedSecrets: TSecret[] = []
     const importedFolders: TFolder[] = []
 
+    if (!fileContent.items) {
+      return
+    }
+
     fileContent.items.map((item: TEnpassItem) => {
       if (secrets.find((s) => s.id === item.uuid)) {
         return
@@ -110,7 +114,7 @@ export const Secrets = () => {
       const fields = item.fields
       importedSecrets.push({
         id: item.uuid,
-        folders: item.folders,
+        folders: item.folders ?? [],
         label: item.title,
         username: fields.find((f: TEnpassField) => f.type === 'username')?.value,
         email: fields.find((f: TEnpassField) => f.type === 'email')?.value,
