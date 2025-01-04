@@ -215,7 +215,7 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
             </Button>
           </Flex>
           <Text size='lg' c='gray' mb='md'>
-            {t('folders')}
+            {t('folders')}: {filteredFolders.length}
           </Text>
           <List spacing='md'>
             <List.Item
@@ -238,29 +238,33 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
               </Group>
             </List.Item>
             <Divider my={'md'} />
-            {filteredFolders.map((folder, index) => (
-              <>
-                <List.Item
-                  key={folder.id}
-                  style={{
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => {
-                    setSelectedFolder(folder)
-                  }}
-                >
-                  <Group align='center' justify='space-between'>
-                    <Text
-                      size={isMobile ? 'md' : 'sm'}
-                      c={!isMobile && selectedFolder?.id === folder.id ? 'blue' : 'white'}
-                    >
-                      {folder.label}
-                    </Text>
-                  </Group>
-                </List.Item>
-                {index != filteredFolders.length - 1 && <Divider my={'md'} />}
-              </>
-            ))}
+            {filteredFolders?.length > 0 ? (
+              filteredFolders.map((folder, index) => (
+                <>
+                  <List.Item
+                    key={folder.id}
+                    style={{
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                      setSelectedFolder(folder)
+                    }}
+                  >
+                    <Group align='center' justify='space-between'>
+                      <Text
+                        size={isMobile ? 'md' : 'sm'}
+                        c={!isMobile && selectedFolder?.id === folder.id ? 'blue' : 'white'}
+                      >
+                        {folder.label}
+                      </Text>
+                    </Group>
+                  </List.Item>
+                  {index != filteredFolders.length - 1 && <Divider my={'md'} />}
+                </>
+              ))
+            ) : (
+              <Text>{t('no_folders_found')}</Text>
+            )}
           </List>
         </Grid.Col>
       </Grid>

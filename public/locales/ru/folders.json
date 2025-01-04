@@ -1,5 +1,6 @@
 {
   "folders": "Папки",
+  "no_folders_found": "Папки не найдены",
   "allElements": "Все элементы",
   "buttons": {
     "add": "Добавить",
