@@ -215,7 +215,7 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
             </Button>
           </Flex>
           <Text size='lg' c='gray' mb='md'>
-            {t('folders')}: {filteredFolders.length}
+            {t('folders.title')}: {filteredFolders.length}
           </Text>
           <List spacing='md'>
             <List.Item
@@ -263,7 +263,7 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
                 </>
               ))
             ) : (
-              <Text>{t('no_folders_found')}</Text>
+              <Text>{t('folders.not_found')}</Text>
             )}
           </List>
         </Grid.Col>

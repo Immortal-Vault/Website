@@ -315,7 +315,7 @@ export const Secrets = () => {
             </Button>
           </Flex>
           <Text size='lg' c='gray' mb='md'>
-            {t('elements')}: {secretsToRender.length}
+            {t('elements.title')}: {secretsToRender.length}
           </Text>
           <List spacing='md'>
             {secretsToRender?.length > 0 ? (
@@ -343,7 +343,7 @@ export const Secrets = () => {
                 </>
               ))
             ) : (
-              <Text>{t('no_elements_found')}</Text>
+              <Text>{t('elements.not_found')}</Text>
             )}
           </List>
         </Grid.Col>
