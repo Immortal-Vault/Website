@@ -82,5 +82,14 @@
   },
   "footer": {
     "privacy": "Privacy policy"
+  },
+  "modals": {
+    "logout": {
+      "title": "Are you sure you want to log out?",
+      "buttons": {
+        "submit": "Log Out",
+        "cancel": "Cancel"
+      }
+    }
   }
 }
