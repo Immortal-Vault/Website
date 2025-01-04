@@ -106,7 +106,7 @@ export default function App() {
     <ErrorBoundary fallback={ErrorBoundaryError}>
       <MantineProvider theme={theme} defaultColorScheme={'dark'}>
         <ToastContainer
-          position={isMobile ? 'bottom-center' : 'top-right'}
+          position={isMobile ? 'bottom-center' : 'bottom-right'}
           autoClose={2500}
           limit={3}
           hideProgressBar={false}
