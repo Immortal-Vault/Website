@@ -1,6 +1,7 @@
 import { Container, Divider, Text, Title } from '@mantine/core'
 import { Footer, RootHeader } from '../../../components'
 import { useTranslation } from 'react-i18next'
+import { ScrollRestoration } from 'react-router-dom'
 
 const privacySections = [
   'general_provisions',
@@ -48,10 +49,7 @@ export function PrivacyPolicy() {
                 <ol>
                   {section.items.map((item: string, itemIndex: number) => (
                     <li key={itemIndex}>
-                      <Text size={'lg'}>
-                        {/*{sectionNumber}.{itemIndex + 1}.*/}
-                        {item}
-                      </Text>
+                      <Text size={'lg'}>{item}</Text>
                     </li>
                   ))}
                 </ol>
@@ -61,6 +59,7 @@ export function PrivacyPolicy() {
         })}
       </Container>
       <Footer />
+      <ScrollRestoration />
     </>
   )
 }
