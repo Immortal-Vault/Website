@@ -21,7 +21,10 @@
     "sourceType": "module"
   },
   "plugins": [
-    "react", "react-hooks", "@typescript-eslint", "prettier"
+    "react",
+    "react-hooks",
+    "@typescript-eslint",
+    "prettier"
   ],
   "rules": {
     "react/react-in-jsx-scope": "off",
@@ -30,7 +33,14 @@
     "no-duplicate-imports": "error",
     "@typescript-eslint/no-explicit-any": "off",
     "linebreak-style": "off",
-    "@typescript-eslint/no-non-null-assertion": "off"
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "semi": ["error", "always"],
+    "prettier/prettier": [
+      "error",
+      {
+        "semi": true
+      }
+    ]
   },
   "settings": {
     "react": {

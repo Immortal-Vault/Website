@@ -1,36 +1,36 @@
-import { TEnvVars } from '../types'
-import { TFunction } from 'i18next'
-import { customFetch } from './customFetch.ts'
-import { sendErrorNotification } from '../shared'
-import { ensureAuthorized } from './ensureAuthorized.ts'
-import { AuthContextType } from '../stores'
+import { TEnvVars } from '../types';
+import { TFunction } from 'i18next';
+import { customFetch } from './customFetch.ts';
+import { sendErrorNotification } from '../shared';
+import { ensureAuthorized } from './ensureAuthorized.ts';
+import { AuthContextType } from '../stores';
 
 export async function getGoogleDriveState(
   envs: TEnvVars | undefined,
   t: TFunction,
   context: AuthContextType,
 ): Promise<string | null> {
-  const response = await customFetch(`${envs?.API_SERVER_URL}/auth/google`, null, 'GET', t)
+  const response = await customFetch(`${envs?.API_SERVER_URL}/auth/google`, null, 'GET', t);
 
   if (!response) {
-    return null
+    return null;
   }
 
   if (response.ok) {
-    return (await response.json()).email
+    return (await response.json()).email;
   }
 
   if (!(await ensureAuthorized(response, context))) {
-    return null
+    return null;
   }
 
   switch (response.status) {
     case 404: {
-      return null
+      return null;
     }
     default: {
-      sendErrorNotification(t('notifications:failedError'))
-      return null
+      sendErrorNotification(t('notifications:failedError'));
+      return null;
     }
   }
 }
@@ -46,28 +46,28 @@ export async function uploadSecretFile(
     JSON.stringify({ content }),
     'POST',
     t,
-  )
+  );
 
   if (!response) {
-    return false
+    return false;
   }
 
   if (response.ok) {
-    return true
+    return true;
   }
 
   if (!(await ensureAuthorized(response, context))) {
-    return null
+    return null;
   }
 
   switch (response.status) {
     case 404: {
-      sendErrorNotification(t('notifications:userNotFound'))
-      return false
+      sendErrorNotification(t('notifications:userNotFound'));
+      return false;
     }
     default: {
-      sendErrorNotification(t('notifications:failedError'))
-      return false
+      sendErrorNotification(t('notifications:failedError'));
+      return false;
     }
   }
 }

@@ -7,14 +7,14 @@ import {
   Textarea,
   TextInput,
   Title,
-} from '@mantine/core'
-import { useForm } from '@mantine/form'
-import { customFetch } from '../../../api'
-import { useEnvVars } from '../../../stores'
-import { useTranslation } from 'react-i18next'
-import validator from 'validator'
-import { sendErrorNotification, sendSuccessNotification } from '../../../shared'
-import { useState } from 'react'
+} from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { customFetch } from '../../../api';
+import { useEnvVars } from '../../../stores';
+import { useTranslation } from 'react-i18next';
+import validator from 'validator';
+import { sendErrorNotification, sendSuccessNotification } from '../../../shared';
+import { useState } from 'react';
 
 export function RootFeedback() {
   const form = useForm({
@@ -30,21 +30,21 @@ export function RootFeedback() {
       subject: (value) => value.trim().length === 0,
       message: (value) => value.trim().length === 0,
     },
-  })
-  const { envs } = useEnvVars()
-  const { t } = useTranslation('root')
-  const [loaderState, setLoaderState] = useState(false)
+  });
+  const { envs } = useEnvVars();
+  const { t } = useTranslation('root');
+  const [loaderState, setLoaderState] = useState(false);
 
   return (
     <Container size='sm' mt={'xl'} mb={'xl'}>
       <form
         onSubmit={form.onSubmit(async () => {
-          setLoaderState(true)
-          const values = form.values
-          const email = values.email
-          const name = values.name
-          const subject = values.subject
-          const message = values.message
+          setLoaderState(true);
+          const values = form.values;
+          const email = values.email;
+          const name = values.name;
+          const subject = values.subject;
+          const message = values.message;
 
           const response = await customFetch(
             `${envs?.API_SERVER_URL}/email/send`,
@@ -56,18 +56,18 @@ export function RootFeedback() {
             }),
             'POST',
             t,
-          )
+          );
 
           if (!response || !response.ok) {
-            sendErrorNotification(t('feedback.send.error'))
-            console.error(response?.statusText)
-            setLoaderState(false)
-            return
+            sendErrorNotification(t('feedback.send.error'));
+            console.error(response?.statusText);
+            setLoaderState(false);
+            return;
           }
 
-          sendSuccessNotification(t('feedback.send.successfully'))
-          form.reset()
-          setLoaderState(false)
+          sendSuccessNotification(t('feedback.send.successfully'));
+          form.reset();
+          setLoaderState(false);
         })}
       >
         <Title order={1} ta='center'>
@@ -127,5 +127,5 @@ export function RootFeedback() {
         </Group>
       </form>
     </Container>
-  )
+  );
 }

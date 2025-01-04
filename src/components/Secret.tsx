@@ -9,7 +9,7 @@ import {
   Title,
   Card,
   MultiSelect,
-} from '@mantine/core'
+} from '@mantine/core';
 import {
   FaAddressCard,
   FaClock,
@@ -19,47 +19,47 @@ import {
   FaPhoneAlt,
   FaStickyNote,
   FaUserAlt,
-} from 'react-icons/fa'
-import { TSecret } from '../types'
-import { useEffect, useState } from 'react'
-import { useDisclosure, useMediaQuery } from '@mantine/hooks'
-import { useSecrets } from '../stores'
-import { useTranslation } from 'react-i18next'
-import { MdOutlineAlternateEmail } from 'react-icons/md'
+} from 'react-icons/fa';
+import { TSecret } from '../types';
+import { useEffect, useState } from 'react';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import { useSecrets } from '../stores';
+import { useTranslation } from 'react-i18next';
+import { MdOutlineAlternateEmail } from 'react-icons/md';
 
 export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) => {
-  const { folders, secrets, saveSecrets } = useSecrets()
-  const { t } = useTranslation('secrets')
+  const { folders, secrets, saveSecrets } = useSecrets();
+  const { t } = useTranslation('secrets');
 
-  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
   const [submitModalState, { open: openSubmitModal, close: closeSubmitModal }] =
-    useDisclosure(false)
+    useDisclosure(false);
 
-  const [attachedFolders, setAttachedFolders] = useState<string[]>([])
-
-  useEffect(() => {
-    const secretFolders = props.secret.folders ? props.secret.folders : []
-    setAttachedFolders(folders.filter((f) => secretFolders.includes(f.id)).map((f) => f.id))
-  }, [folders, props.secret.folders])
-
-  const isMobile = useMediaQuery('(max-width: 768px)')
+  const [attachedFolders, setAttachedFolders] = useState<string[]>([]);
 
   useEffect(() => {
-    setShowPassword(false)
-  }, [])
+    const secretFolders = props.secret.folders ? props.secret.folders : [];
+    setAttachedFolders(folders.filter((f) => secretFolders.includes(f.id)).map((f) => f.id));
+  }, [folders, props.secret.folders]);
+
+  const isMobile = useMediaQuery('(max-width: 768px)');
+
+  useEffect(() => {
+    setShowPassword(false);
+  }, []);
 
   const handleFoldersChange = async (folderIds: string[]) => {
-    const secret = secrets.find((secret) => secret.id === props.secret.id)
+    const secret = secrets.find((secret) => secret.id === props.secret.id);
     if (!secret) {
-      return
+      return;
     }
 
-    setAttachedFolders(folderIds)
-    secret.folders = folderIds
-    secret.lastUpdated = Date.now()
+    setAttachedFolders(folderIds);
+    secret.folders = folderIds;
+    secret.lastUpdated = Date.now();
 
-    await saveSecrets(secrets, folders)
-  }
+    await saveSecrets(secrets, folders);
+  };
 
   return (
     <>
@@ -82,8 +82,8 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
           <Button
             color='red'
             onClick={async () => {
-              await props.delete()
-              closeSubmitModal()
+              await props.delete();
+              closeSubmitModal();
             }}
           >
             {t('modals.submitDelete.buttons.delete')}
@@ -217,5 +217,5 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
         </Group>
       </Card>
     </>
-  )
-}
+  );
+};

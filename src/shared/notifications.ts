@@ -1,13 +1,13 @@
-﻿import { Id, toast } from 'react-toastify'
+﻿import { Id, toast } from 'react-toastify';
 
 export function sendNotification(body: string): Id {
-  return toast.info(body)
+  return toast.info(body);
 }
 
 export function sendSuccessNotification(body: string): Id {
-  return toast.success(body)
+  return toast.success(body);
 }
 
 export function sendErrorNotification(body: string): Id {
-  return toast.error(body)
+  return toast.error(body);
 }

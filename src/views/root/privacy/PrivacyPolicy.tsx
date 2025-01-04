@@ -1,7 +1,7 @@
-import { Container, Divider, Text, Title } from '@mantine/core'
-import { Footer, RootHeader } from '../../../components'
-import { useTranslation } from 'react-i18next'
-import { ScrollRestoration } from 'react-router-dom'
+import { Container, Text, Divider, Title } from '@mantine/core';
+import { Footer, RootHeader } from '../../../components';
+import { useTranslation } from 'react-i18next';
+import { ScrollRestoration } from 'react-router-dom';
 
 const privacySections = [
   'general_provisions',
@@ -18,10 +18,10 @@ const privacySections = [
   'links_to_other_websites',
   'changes_to_this_privacy_policy',
   'contact_us',
-]
+];
 
 export function PrivacyPolicy() {
-  const { t } = useTranslation('privacyPolicy')
+  const { t } = useTranslation('privacyPolicy');
 
   return (
     <>
@@ -36,8 +36,8 @@ export function PrivacyPolicy() {
         </Title>
         <Divider style={{ paddingBottom: '10px' }} />
         {privacySections.map((sectionKey, index) => {
-          const section: any = t(sectionKey, { returnObjects: true })
-          const sectionNumber = index + 1
+          const section: any = t(sectionKey, { returnObjects: true });
+          const sectionNumber = index + 1;
 
           return (
             <section key={sectionKey}>
@@ -55,11 +55,11 @@ export function PrivacyPolicy() {
                 </ol>
               )}
             </section>
-          )
+          );
         })}
       </Container>
       <Footer />
       <ScrollRestoration />
     </>
-  )
+  );
 }

@@ -1,5 +1,5 @@
-import { sendErrorNotification } from '../shared'
-import { TFunction } from 'i18next'
+import { sendErrorNotification } from '../shared';
+import { TFunction } from 'i18next';
 
 export const customFetch = async (
   url: string,
@@ -15,9 +15,9 @@ export const customFetch = async (
       credentials: 'include',
       method,
       body,
-    })
+    });
   } catch (error) {
-    sendErrorNotification(t('notifications:serverNotResponding'))
-    return null
+    sendErrorNotification(t('notifications:serverNotResponding'));
+    return null;
   }
-}
+};

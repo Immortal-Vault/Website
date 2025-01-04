@@ -1,9 +1,9 @@
-import { RootHeader, Footer } from '../../components'
-import { RootFeature } from './features/RootFeatures.tsx'
-import { RootFaq } from './faq/RootFaq.tsx'
-import { RootHero } from './hero/RootHero.tsx'
-import { RootFeedback } from './feedback/RootFeedback.tsx'
-import { Divider } from '@mantine/core'
+import { RootHeader, Footer } from '../../components';
+import { RootFeature } from './features/RootFeatures.tsx';
+import { RootFaq } from './faq/RootFaq.tsx';
+import { RootHero } from './hero/RootHero.tsx';
+import { RootFeedback } from './feedback/RootFeedback.tsx';
+import { Divider } from '@mantine/core';
 
 export default function Root() {
   return (
@@ -19,5 +19,5 @@ export default function Root() {
       </div>
       <Footer />
     </div>
-  )
+  );
 }

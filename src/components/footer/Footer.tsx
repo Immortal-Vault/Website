@@ -1,10 +1,10 @@
-import { Anchor, Container, Group, rem, Text } from '@mantine/core'
-import classes from './Footer.module.css'
-import { FaLinkedin, FaTelegramPlane } from 'react-icons/fa'
-import { IoLogoGithub } from 'react-icons/io'
-import { useTranslation } from 'react-i18next'
-import { ROUTER_PATH } from '../../shared'
-import { useNavigate } from 'react-router-dom'
+import { Anchor, Container, Group, rem, Text } from '@mantine/core';
+import classes from './Footer.module.css';
+import { FaLinkedin, FaTelegramPlane } from 'react-icons/fa';
+import { IoLogoGithub } from 'react-icons/io';
+import { useTranslation } from 'react-i18next';
+import { ROUTER_PATH } from '../../shared';
+import { useNavigate } from 'react-router-dom';
 
 const links = [
   {
@@ -40,11 +40,11 @@ const links = [
       />
     ),
   },
-]
+];
 
 export function Footer() {
-  const { t } = useTranslation('root')
-  const navigate = useNavigate()
+  const { t } = useTranslation('root');
+  const navigate = useNavigate();
 
   const items = links.map((e) => (
     <Anchor<'a'>
@@ -57,7 +57,7 @@ export function Footer() {
     >
       {e.element}
     </Anchor>
-  ))
+  ));
 
   return (
     <div className={classes.footer}>
@@ -67,7 +67,7 @@ export function Footer() {
           underline={'never'}
           key={ROUTER_PATH.PRIVACY_POLICY}
           onClick={() => {
-            navigate(ROUTER_PATH.PRIVACY_POLICY)
+            navigate(ROUTER_PATH.PRIVACY_POLICY);
           }}
           style={{
             outline: 'none',
@@ -78,5 +78,5 @@ export function Footer() {
         <Group pt={'10px'}>{items}</Group>
       </Container>
     </div>
-  )
+  );
 }

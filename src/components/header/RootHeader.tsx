@@ -10,22 +10,22 @@ import {
   rem,
   ScrollArea,
   Title,
-} from '@mantine/core'
-import { useDisclosure, useMediaQuery } from '@mantine/hooks'
-import classes from './RootHeader.module.css'
-import { useNavigate } from 'react-router-dom'
-import { ROUTER_PATH, sendSuccessNotification } from '../../shared'
-import { useTranslation } from 'react-i18next'
-import { useAuth } from '../../stores'
-import { EAuthState } from '../../types'
-import { ProfileAvatarWithMenu } from '../ProfileAvatarWithMenu.tsx'
+} from '@mantine/core';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import classes from './RootHeader.module.css';
+import { useNavigate } from 'react-router-dom';
+import { ROUTER_PATH, sendSuccessNotification } from '../../shared';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '../../stores';
+import { EAuthState } from '../../types';
+import { ProfileAvatarWithMenu } from '../ProfileAvatarWithMenu.tsx';
 
 export function RootHeader() {
-  const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false)
-  const isMobile = useMediaQuery('(max-width: 768px)')
-  const navigate = useNavigate()
-  const { t } = useTranslation('root')
-  const { authState, authSignOut } = useAuth()
+  const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  const navigate = useNavigate();
+  const { t } = useTranslation('root');
+  const { authState, authSignOut } = useAuth();
 
   return (
     <Box pb={40}>
@@ -100,8 +100,8 @@ export function RootHeader() {
                 </Button>
                 <Button
                   onClick={() => {
-                    authSignOut(false)
-                    sendSuccessNotification(t('auth:signOut:successful'))
+                    authSignOut(false);
+                    sendSuccessNotification(t('auth:signOut:successful'));
                   }}
                   color={'red'}
                 >
@@ -113,5 +113,5 @@ export function RootHeader() {
         </ScrollArea>
       </Drawer>
     </Box>
-  )
+  );
 }

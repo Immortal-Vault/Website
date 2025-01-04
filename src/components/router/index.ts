@@ -1,2 +1,2 @@
-export * from './NonAuthorizedRoute.tsx'
-export * from './ProtectedRoute.tsx'
+export * from './NonAuthorizedRoute.tsx';
+export * from './ProtectedRoute.tsx';

@@ -1,9 +1,9 @@
-import { Card, Container, rem, SimpleGrid, Text, Title, useMantineTheme } from '@mantine/core'
-import classes from './RootFeatures.module.css'
-import { FaLock } from 'react-icons/fa'
-import { GrLanguage } from 'react-icons/gr'
-import { MdOutlineDevices } from 'react-icons/md'
-import { useTranslation } from 'react-i18next'
+import { Card, Container, rem, SimpleGrid, Text, Title, useMantineTheme } from '@mantine/core';
+import classes from './RootFeatures.module.css';
+import { FaLock } from 'react-icons/fa';
+import { GrLanguage } from 'react-icons/gr';
+import { MdOutlineDevices } from 'react-icons/md';
+import { useTranslation } from 'react-i18next';
 
 const featuresData = [
   {
@@ -21,11 +21,11 @@ const featuresData = [
     description: 'features.elements.3.description',
     icon: GrLanguage,
   },
-]
+];
 
 export function RootFeature() {
-  const theme = useMantineTheme()
-  const { t } = useTranslation('root')
+  const theme = useMantineTheme();
+  const { t } = useTranslation('root');
 
   const features = featuresData.map((feature) => (
     <Card key={feature.title} shadow='md' radius='md' className={classes.card} padding='xl'>
@@ -37,7 +37,7 @@ export function RootFeature() {
         {t(feature.description)}
       </Text>
     </Card>
-  ))
+  ));
 
   return (
     <Container size='lg' py='xl'>
@@ -49,5 +49,5 @@ export function RootFeature() {
         {features}
       </SimpleGrid>
     </Container>
-  )
+  );
 }

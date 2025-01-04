@@ -1,1 +1,1 @@
-export * from './Vault.tsx'
+export * from './Vault.tsx';

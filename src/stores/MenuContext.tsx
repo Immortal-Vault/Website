@@ -1,4 +1,4 @@
-import { EPrimaryViewPage, ESettingsViewPage } from '../types'
+import { EPrimaryViewPage, ESettingsViewPage } from '../types';
 import {
   createContext,
   Dispatch,
@@ -7,33 +7,33 @@ import {
   useContext,
   useMemo,
   useState,
-} from 'react'
+} from 'react';
 
 export interface MenuContextType {
-  currentPage: EPrimaryViewPage
-  settingsPage: ESettingsViewPage
-  setCurrentPage: Dispatch<SetStateAction<EPrimaryViewPage>>
-  setSettingsPage: Dispatch<SetStateAction<ESettingsViewPage>>
+  currentPage: EPrimaryViewPage;
+  settingsPage: ESettingsViewPage;
+  setCurrentPage: Dispatch<SetStateAction<EPrimaryViewPage>>;
+  setSettingsPage: Dispatch<SetStateAction<ESettingsViewPage>>;
 }
 
 const MenuContext = createContext<MenuContextType>({
   currentPage: EPrimaryViewPage.None,
   settingsPage: ESettingsViewPage.Vault,
   setCurrentPage: function (): void {
-    throw new Error('Function is not implemented.')
+    throw new Error('Function is not implemented.');
   },
   setSettingsPage: function (): void {
-    throw new Error('Function is not implemented.')
+    throw new Error('Function is not implemented.');
   },
-})
+});
 
 interface MenuProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export const MenuProvider = ({ children }: MenuProps) => {
-  const [currentPage, setCurrentPage] = useState(EPrimaryViewPage.None)
-  const [settingsPage, setSettingsPage] = useState(ESettingsViewPage.Main)
+  const [currentPage, setCurrentPage] = useState(EPrimaryViewPage.None);
+  const [settingsPage, setSettingsPage] = useState(ESettingsViewPage.Main);
 
   const contextValue = useMemo(
     () => ({
@@ -43,11 +43,11 @@ export const MenuProvider = ({ children }: MenuProps) => {
       setSettingsPage,
     }),
     [currentPage, settingsPage],
-  )
+  );
 
-  return <MenuContext.Provider value={contextValue}>{children}</MenuContext.Provider>
-}
+  return <MenuContext.Provider value={contextValue}>{children}</MenuContext.Provider>;
+};
 
 export const useMenu = () => {
-  return useContext(MenuContext)
-}
+  return useContext(MenuContext);
+};
