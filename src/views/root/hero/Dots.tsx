@@ -1,8 +1,8 @@
-import { ComponentPropsWithoutRef } from 'react'
+import { ComponentPropsWithoutRef } from 'react';
 
 export interface DotsProps extends ComponentPropsWithoutRef<'svg'> {
-  size?: number
-  radius?: number
+  size?: number;
+  radius?: number;
 }
 
 export function Dots({ size = 185, radius = 2.5, ...others }: DotsProps) {
@@ -117,5 +117,5 @@ export function Dots({ size = 185, radius = 2.5, ...others }: DotsProps) {
       <rect width='5' height='5' x='160' y='180' rx={radius} />
       <rect width='5' height='5' x='180' y='180' rx={radius} />
     </svg>
-  )
+  );
 }

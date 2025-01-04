@@ -1,10 +1,10 @@
-import { Container, Text, Title } from '@mantine/core'
-import { Dots } from './Dots'
-import classes from './RootHero.module.css'
-import { useTranslation } from 'react-i18next'
+import { Container, Text, Title } from '@mantine/core';
+import { Dots } from './Dots';
+import classes from './RootHero.module.css';
+import { useTranslation } from 'react-i18next';
 
 export function RootHero() {
-  const { t } = useTranslation('root')
+  const { t } = useTranslation('root');
 
   return (
     <Container className={classes.wrapper} size={1400} mb={'xl'}>
@@ -27,5 +27,5 @@ export function RootHero() {
         </Container>
       </div>
     </Container>
-  )
+  );
 }

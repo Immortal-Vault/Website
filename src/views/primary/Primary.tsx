@@ -1,43 +1,43 @@
-import { useEffect } from 'react'
-import { LOCAL_STORAGE, ROUTER_PATH, sendNotification } from '../../shared'
-import { useTranslation } from 'react-i18next'
-import { Footer, PrimaryHeader, Secret } from '../../components'
-import { Container, Drawer, Grid, ScrollArea, Text } from '@mantine/core'
-import { Secrets } from './subviews'
-import { useDisclosure, useMediaQuery } from '@mantine/hooks'
-import { Folders } from './subviews/folders'
-import { useGoogleDrive, useSecrets } from '../../stores'
-import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react';
+import { LOCAL_STORAGE, ROUTER_PATH, sendNotification } from '../../shared';
+import { useTranslation } from 'react-i18next';
+import { Footer, PrimaryHeader, Secret } from '../../components';
+import { Container, Drawer, Grid, ScrollArea, Text } from '@mantine/core';
+import { Secrets } from './subviews';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import { Folders } from './subviews/folders';
+import { useGoogleDrive, useSecrets } from '../../stores';
+import { useNavigate } from 'react-router-dom';
 
 export function Primary() {
-  const isMobile = useMediaQuery('(max-width: 768px)')
-  const { i18n, t } = useTranslation('views')
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  const { i18n, t } = useTranslation('views');
   const { selectedSecret, selectedFolder, setSelectedSecret, setSelectedFolder, deleteSecret } =
-    useSecrets()
-  const { googleDriveState, googleDriveStateFetched } = useGoogleDrive()
-  const navigate = useNavigate()
+    useSecrets();
+  const { googleDriveState, googleDriveStateFetched } = useGoogleDrive();
+  const navigate = useNavigate();
 
   const [foldersDrawerState, { close: closeFoldersDrawer, open: openFoldersDrawer }] =
-    useDisclosure(false)
-  const [secretsDrawerState, { close: closeSecretsDrawer }] = useDisclosure(false)
+    useDisclosure(false);
+  const [secretsDrawerState, { close: closeSecretsDrawer }] = useDisclosure(false);
 
   useEffect(() => {
-    const userLocalization = localStorage.getItem(LOCAL_STORAGE.USER_LOCALE)
+    const userLocalization = localStorage.getItem(LOCAL_STORAGE.USER_LOCALE);
     if (userLocalization && i18n.languages.includes(userLocalization)) {
-      i18n.changeLanguage(userLocalization)
+      i18n.changeLanguage(userLocalization);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (!googleDriveStateFetched) {
-      return
+      return;
     }
 
     if (!googleDriveState) {
-      navigate(ROUTER_PATH.MENU_VAULT)
-      sendNotification(t('notifications:needConnectVault'))
+      navigate(ROUTER_PATH.MENU_VAULT);
+      sendNotification(t('notifications:needConnectVault'));
     }
-  }, [googleDriveStateFetched])
+  }, [googleDriveStateFetched]);
 
   const getSecretSection = () => (
     <>
@@ -45,32 +45,32 @@ export function Primary() {
         <Secret
           secret={selectedSecret}
           delete={async () => {
-            closeFoldersDrawer()
-            setSelectedSecret(null)
-            await deleteSecret(selectedSecret)
+            closeFoldersDrawer();
+            setSelectedSecret(null);
+            await deleteSecret(selectedSecret);
           }}
         />
       ) : (
         <Text c='gray'>{t('secrets:unselectedSecretPlaceholder')}</Text>
       )}
     </>
-  )
+  );
 
   const getMobileLayout = () => (
     <>
       <ScrollArea h={'calc(100vh - 200px)'} type='always' scrollbars='y' offsetScrollbars>
         <Folders
           allElementsButtonClick={() => {
-            openFoldersDrawer()
+            openFoldersDrawer();
           }}
         />
       </ScrollArea>
       <Drawer
         opened={!!selectedFolder || foldersDrawerState}
         onClose={() => {
-          closeFoldersDrawer()
-          setSelectedSecret(null)
-          setSelectedFolder(null)
+          closeFoldersDrawer();
+          setSelectedSecret(null);
+          setSelectedFolder(null);
         }}
         position='bottom'
         size='100%'
@@ -80,9 +80,9 @@ export function Primary() {
       <Drawer
         opened={!!selectedSecret || secretsDrawerState}
         onClose={() => {
-          closeSecretsDrawer()
-          setSelectedSecret(null)
-          setSelectedFolder(null)
+          closeSecretsDrawer();
+          setSelectedSecret(null);
+          setSelectedFolder(null);
         }}
         position='bottom'
         size='100%'
@@ -90,7 +90,7 @@ export function Primary() {
         {getSecretSection()}
       </Drawer>
     </>
-  )
+  );
 
   const getPCLayout = () => (
     <Grid>
@@ -136,7 +136,7 @@ export function Primary() {
         </div>
       </Grid.Col>
     </Grid>
-  )
+  );
 
   return (
     <>
@@ -146,5 +146,5 @@ export function Primary() {
       </Container>
       <Footer />
     </>
-  )
+  );
 }

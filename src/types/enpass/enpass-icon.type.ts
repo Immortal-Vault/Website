@@ -1,8 +1,8 @@
 export type TEnpassIcon = {
-  fav: string
+  fav: string;
   image: {
-    file: string
-  }
-  type: number
-  uuid: string
-}
+    file: string;
+  };
+  type: number;
+  uuid: string;
+};

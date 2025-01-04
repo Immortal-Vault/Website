@@ -1,2 +1,2 @@
-export * from './Footer.tsx'
-export * from './Footer.module.css'
+export * from './Footer.tsx';
+export * from './Footer.module.css';

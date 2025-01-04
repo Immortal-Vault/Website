@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 import {
   Badge,
   Button,
@@ -12,43 +12,43 @@ import {
   Modal,
   Text,
   Title,
-} from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
-import { useGoogleLogin } from '@react-oauth/google'
-import { signInGoogle, signOutGoogle, uploadSecretFile } from '../../../../api'
-import { useAuth, useEnvVars, useGoogleDrive } from '../../../../stores'
-import { encrypt, SECRET_FILE_VERSION } from '../../../../shared'
-import { useState } from 'react'
-import { TSecretFile } from '../../../../types'
-import { Footer, PrimaryHeader } from '../../../../components'
+} from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { useGoogleLogin } from '@react-oauth/google';
+import { signInGoogle, signOutGoogle, uploadSecretFile } from '../../../../api';
+import { useAuth, useEnvVars, useGoogleDrive } from '../../../../stores';
+import { encrypt, SECRET_FILE_VERSION } from '../../../../shared';
+import { useState } from 'react';
+import { TSecretFile } from '../../../../types';
+import { Footer, PrimaryHeader } from '../../../../components';
 
 export const Vault = (): JSX.Element => {
-  const [loaderVisible, setLoaderState] = useDisclosure(false)
-  const [secretPassword, setSecretPassword] = useState('')
+  const [loaderVisible, setLoaderState] = useDisclosure(false);
+  const [secretPassword, setSecretPassword] = useState('');
   const [
     secretPasswordModalState,
     { open: openSecretPasswordModel, close: closeSecretPasswordModal },
-  ] = useDisclosure(false)
+  ] = useDisclosure(false);
   const [keepDataModalState, { open: openKeepDataModal, close: closeKeepDataModal }] =
-    useDisclosure(false)
-  const { t } = useTranslation('vault')
-  const { envs } = useEnvVars()
-  const authContext = useAuth()
+    useDisclosure(false);
+  const { t } = useTranslation('vault');
+  const { envs } = useEnvVars();
+  const authContext = useAuth();
   const { googleDriveState, googleDriveEmail, setGoogleDriveState, setGoogleDriveEmail } =
-    useGoogleDrive()
+    useGoogleDrive();
 
   const signOutGoogleButton = async (keepData: boolean) => {
-    setLoaderState.open()
+    setLoaderState.open();
 
-    const response = await signOutGoogle(keepData, envs, t, authContext)
+    const response = await signOutGoogle(keepData, envs, t, authContext);
     if (!response) {
-      setLoaderState.close()
-      return
+      setLoaderState.close();
+      return;
     }
 
-    setGoogleDriveState(false)
-    setLoaderState.close()
-  }
+    setGoogleDriveState(false);
+    setLoaderState.close();
+  };
 
   const googleLogin = useGoogleLogin({
     flow: 'auth-code',
@@ -56,54 +56,54 @@ export const Vault = (): JSX.Element => {
     // eslint-disable-next-line camelcase
     redirect_uri: envs?.GOOGLE_REDIRECT_URI,
     onSuccess: async (codeResponse) => {
-      setLoaderState.open()
+      setLoaderState.open();
 
-      const signInResponse = await signInGoogle(codeResponse.code, envs, t, authContext)
+      const signInResponse = await signInGoogle(codeResponse.code, envs, t, authContext);
       if (!signInResponse) {
-        setLoaderState.close()
-        return
+        setLoaderState.close();
+        return;
       }
 
-      const jsonSignInResponse = await signInResponse.json()
-      const hasSecretFile = jsonSignInResponse.hasSecretFile
-      const googleDriveEmail = jsonSignInResponse.email
+      const jsonSignInResponse = await signInResponse.json();
+      const hasSecretFile = jsonSignInResponse.hasSecretFile;
+      const googleDriveEmail = jsonSignInResponse.email;
 
       if (!hasSecretFile) {
         const secretFile: TSecretFile = {
           version: SECRET_FILE_VERSION,
           folders: [],
           secrets: [],
-        }
+        };
         const result = await uploadSecretFile(
           await encrypt(JSON.stringify(secretFile), secretPassword),
           envs,
           t,
           authContext,
-        )
+        );
 
         if (!result) {
-          setLoaderState.close()
-          return
+          setLoaderState.close();
+          return;
         }
       }
 
-      setGoogleDriveState(true)
-      setGoogleDriveEmail(googleDriveEmail)
-      setLoaderState.close()
+      setGoogleDriveState(true);
+      setGoogleDriveEmail(googleDriveEmail);
+      setLoaderState.close();
     },
     onError: (errorResponse) => {
-      console.log(errorResponse)
-      setLoaderState.close()
+      console.log(errorResponse);
+      setLoaderState.close();
     },
-  })
+  });
 
   const getGoogleStateButton = (state: boolean) => {
     return state ? (
       <Button onClick={openKeepDataModal}>{t('google.signOut')}</Button>
     ) : (
       <Button onClick={openSecretPasswordModel}>{t('google.signIn')}</Button>
-    )
-  }
+    );
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -129,16 +129,16 @@ export const Vault = (): JSX.Element => {
           <Group mt='xl' justify={'end'}>
             <Button
               onClick={() => {
-                signOutGoogleButton(false)
-                closeKeepDataModal()
+                signOutGoogleButton(false);
+                closeKeepDataModal();
               }}
             >
               {t('modals.keepData.buttons.remove')}
             </Button>
             <Button
               onClick={() => {
-                signOutGoogleButton(true)
-                closeKeepDataModal()
+                signOutGoogleButton(true);
+                closeKeepDataModal();
               }}
             >
               {t('modals.keepData.buttons.keep')}
@@ -160,8 +160,8 @@ export const Vault = (): JSX.Element => {
           <Group mt='xl' justify={'end'}>
             <Button
               onClick={() => {
-                closeSecretPasswordModal()
-                googleLogin()
+                closeSecretPasswordModal();
+                googleLogin();
               }}
             >
               {t('modals.masterPassword.buttons.submit')}
@@ -204,5 +204,5 @@ export const Vault = (): JSX.Element => {
       </div>
       <Footer />
     </div>
-  )
-}
+  );
+};

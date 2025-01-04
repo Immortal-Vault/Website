@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC } from 'react';
 
 export const ErrorBoundaryError: FC<{ error: unknown }> = ({ error }) => (
   <div>
@@ -13,4 +13,4 @@ export const ErrorBoundaryError: FC<{ error: unknown }> = ({ error }) => (
       </code>
     </blockquote>
   </div>
-)
+);

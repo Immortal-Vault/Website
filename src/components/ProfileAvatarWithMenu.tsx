@@ -1,13 +1,13 @@
-import { FC, forwardRef } from 'react'
-import { Avatar, Menu, rem, UnstyledButton } from '@mantine/core'
-import { ROUTER_PATH, sendSuccessNotification } from '../shared'
-import { useNavigate } from 'react-router-dom'
-import { MdOutlineSettings } from 'react-icons/md'
-import { TiCloudStorage } from 'react-icons/ti'
-import { ImExit } from 'react-icons/im'
-import { BsPersonCircle } from 'react-icons/bs'
-import { useTranslation } from 'react-i18next'
-import { useAuth } from '../stores'
+import { FC, forwardRef } from 'react';
+import { Avatar, Menu, rem, UnstyledButton } from '@mantine/core';
+import { ROUTER_PATH, sendSuccessNotification } from '../shared';
+import { useNavigate } from 'react-router-dom';
+import { MdOutlineSettings } from 'react-icons/md';
+import { TiCloudStorage } from 'react-icons/ti';
+import { ImExit } from 'react-icons/im';
+import { BsPersonCircle } from 'react-icons/bs';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '../stores';
 
 // eslint-disable-next-line react/display-name
 const ProfileButton = forwardRef<HTMLButtonElement>(({ ...others }, ref) => {
@@ -15,8 +15,8 @@ const ProfileButton = forwardRef<HTMLButtonElement>(({ ...others }, ref) => {
     <UnstyledButton ref={ref} {...others}>
       <Avatar variant='transparent' radius='xl' size='lg' color='rgba(81,175, 255, 1)' />
     </UnstyledButton>
-  )
-})
+  );
+});
 
 const elementsData = [
   {
@@ -55,12 +55,12 @@ const elementsData = [
       />
     ),
   },
-]
+];
 
 export const ProfileAvatarWithMenu: FC = () => {
-  const navigate = useNavigate()
-  const { t } = useTranslation('root')
-  const { authUsername, authSignOut } = useAuth()
+  const navigate = useNavigate();
+  const { t } = useTranslation('root');
+  const { authUsername, authSignOut } = useAuth();
 
   const elements = elementsData.map((element) => (
     <Menu.Item
@@ -68,13 +68,13 @@ export const ProfileAvatarWithMenu: FC = () => {
       leftSection={element.icon}
       onClick={() => {
         if (element.link) {
-          navigate(element.link)
+          navigate(element.link);
         }
       }}
     >
       {t(element.title)}
     </Menu.Item>
-  ))
+  ));
 
   return (
     <Menu
@@ -104,13 +104,13 @@ export const ProfileAvatarWithMenu: FC = () => {
             />
           }
           onClick={() => {
-            authSignOut(false)
-            sendSuccessNotification(t('auth:signOut:successful'))
+            authSignOut(false);
+            sendSuccessNotification(t('auth:signOut:successful'));
           }}
         >
           {t('header.exit')}
         </Menu.Item>
       </Menu.Dropdown>
     </Menu>
-  )
-}
+  );
+};

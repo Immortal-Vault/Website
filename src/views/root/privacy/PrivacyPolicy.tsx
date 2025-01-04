@@ -1,7 +1,7 @@
-import { Anchor, Container, Text } from '@mantine/core'
-import { RootHeader } from '../../../components/header/RootHeader.tsx'
-import { Footer } from '../../../components/footer/Footer.tsx'
-import { v7 as uuid } from 'uuid'
+import { Anchor, Container, Text } from '@mantine/core';
+import { RootHeader } from '../../../components/header/RootHeader.tsx';
+import { Footer } from '../../../components/footer/Footer.tsx';
+import { v7 as uuid } from 'uuid';
 
 export function PrivacyPolicy() {
   return (
@@ -220,5 +220,5 @@ export function PrivacyPolicy() {
       </Container>
       <Footer />
     </>
-  )
+  );
 }

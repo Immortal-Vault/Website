@@ -7,19 +7,19 @@ import {
   useEffect,
   useMemo,
   useState,
-} from 'react'
-import { useTranslation } from 'react-i18next'
-import { useAuth, useEnvVars } from './'
-import { getGoogleDriveState } from '../api'
-import { GoogleOAuthProvider } from '@react-oauth/google'
-import { EAuthState } from '../types'
+} from 'react';
+import { useTranslation } from 'react-i18next';
+import { useAuth, useEnvVars } from './';
+import { getGoogleDriveState } from '../api';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { EAuthState } from '../types';
 
 export interface GoogleDriveContextType {
-  googleDriveState: boolean
-  googleDriveStateFetched: boolean
-  googleDriveEmail: string
-  setGoogleDriveState: Dispatch<SetStateAction<boolean>>
-  setGoogleDriveEmail: Dispatch<SetStateAction<string>>
+  googleDriveState: boolean;
+  googleDriveStateFetched: boolean;
+  googleDriveEmail: string;
+  setGoogleDriveState: Dispatch<SetStateAction<boolean>>;
+  setGoogleDriveEmail: Dispatch<SetStateAction<string>>;
 }
 
 const GoogleDriveContext = createContext<GoogleDriveContextType>({
@@ -27,44 +27,44 @@ const GoogleDriveContext = createContext<GoogleDriveContextType>({
   googleDriveEmail: '',
   googleDriveStateFetched: false,
   setGoogleDriveState: function (): void {
-    throw new Error('Function is not implemented.')
+    throw new Error('Function is not implemented.');
   },
   setGoogleDriveEmail: function (): void {
-    throw new Error('Function is not implemented.')
+    throw new Error('Function is not implemented.');
   },
-})
+});
 
 interface GoogleDriveProviderProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export const GoogleDriveProvider = ({ children }: GoogleDriveProviderProps) => {
-  const { t } = useTranslation()
-  const { envs } = useEnvVars()
-  const authContext = useAuth()
+  const { t } = useTranslation();
+  const { envs } = useEnvVars();
+  const authContext = useAuth();
 
-  const [googleDriveState, setGoogleDriveState] = useState(false)
-  const [googleDriveStateFetched, setGoogleDriveStateFetched] = useState(false)
-  const [googleDriveEmail, setGoogleDriveEmail] = useState('')
+  const [googleDriveState, setGoogleDriveState] = useState(false);
+  const [googleDriveStateFetched, setGoogleDriveStateFetched] = useState(false);
+  const [googleDriveEmail, setGoogleDriveEmail] = useState('');
 
   const fetchGoogleDriveState = async () => {
-    const googleDriveEmail = await getGoogleDriveState(envs, t, authContext)
+    const googleDriveEmail = await getGoogleDriveState(envs, t, authContext);
     if (!googleDriveEmail) {
-      setGoogleDriveState(false)
-      return
+      setGoogleDriveState(false);
+      return;
     }
-    setGoogleDriveState(true)
-    setGoogleDriveEmail(googleDriveEmail)
-    setGoogleDriveStateFetched(true)
-  }
+    setGoogleDriveState(true);
+    setGoogleDriveEmail(googleDriveEmail);
+    setGoogleDriveStateFetched(true);
+  };
 
   useEffect(() => {
     if (!envs || authContext.authState != EAuthState.Authorized) {
-      return
+      return;
     }
 
-    fetchGoogleDriveState()
-  }, [envs, authContext.authState])
+    fetchGoogleDriveState();
+  }, [envs, authContext.authState]);
 
   const contextValue = useMemo(
     () => ({
@@ -75,7 +75,7 @@ export const GoogleDriveProvider = ({ children }: GoogleDriveProviderProps) => {
       setGoogleDriveEmail,
     }),
     [googleDriveState, googleDriveEmail, googleDriveStateFetched],
-  )
+  );
 
   return (
     <GoogleDriveContext.Provider value={contextValue}>
@@ -83,11 +83,11 @@ export const GoogleDriveProvider = ({ children }: GoogleDriveProviderProps) => {
         {children}
       </GoogleOAuthProvider>
     </GoogleDriveContext.Provider>
-  )
-}
+  );
+};
 
 export const useGoogleDrive = () => {
-  return useContext(GoogleDriveContext)
-}
+  return useContext(GoogleDriveContext);
+};
 
-export default GoogleDriveProvider
+export default GoogleDriveProvider;

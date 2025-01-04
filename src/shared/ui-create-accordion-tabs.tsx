@@ -1,9 +1,9 @@
-import { EPrimaryViewTabType, TPrimaryViewTab } from '../types'
-import { Accordion, Button, Flex } from '@mantine/core'
-import { TFunction } from 'i18next'
+import { EPrimaryViewTabType, TPrimaryViewTab } from '../types';
+import { Accordion, Button, Flex } from '@mantine/core';
+import { TFunction } from 'i18next';
 
 export const createTab = (tab: TPrimaryViewTab, index: number, t: TFunction) => {
-  let component
+  let component;
   switch (tab.type) {
     case EPrimaryViewTabType.Accordion: {
       component = (
@@ -21,18 +21,18 @@ export const createTab = (tab: TPrimaryViewTab, index: number, t: TFunction) => 
             </Accordion.Panel>
           </Accordion.Item>
         </Accordion>
-      )
-      break
+      );
+      break;
     }
     case EPrimaryViewTabType.Button: {
       component = (
         <Button color={tab.color} fullWidth mt={'0.5rem'} mb={'0.5rem'} onClick={tab.onClick}>
           {t(tab.name)}
         </Button>
-      )
-      break
+      );
+      break;
     }
   }
 
-  return component
-}
+  return component;
+};

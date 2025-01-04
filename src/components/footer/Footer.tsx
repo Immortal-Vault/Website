@@ -1,8 +1,8 @@
-import { Anchor, Container, Group, rem, Text } from '@mantine/core'
-import classes from './Footer.module.css'
-import { FaLinkedin, FaTelegramPlane } from 'react-icons/fa'
-import { IoLogoGithub } from 'react-icons/io'
-import { useTranslation } from 'react-i18next'
+import { Anchor, Container, Group, rem, Text } from '@mantine/core';
+import classes from './Footer.module.css';
+import { FaLinkedin, FaTelegramPlane } from 'react-icons/fa';
+import { IoLogoGithub } from 'react-icons/io';
+import { useTranslation } from 'react-i18next';
 
 const links = [
   {
@@ -38,10 +38,10 @@ const links = [
       />
     ),
   },
-]
+];
 
 export function Footer() {
-  const { t } = useTranslation('root')
+  const { t } = useTranslation('root');
 
   const items = links.map((e) => (
     <Anchor<'a'>
@@ -54,7 +54,7 @@ export function Footer() {
     >
       {e.element}
     </Anchor>
-  ))
+  ));
 
   return (
     <div className={classes.footer}>
@@ -73,5 +73,5 @@ export function Footer() {
         <Group pt={'10px'}>{items}</Group>
       </Container>
     </div>
-  )
+  );
 }
