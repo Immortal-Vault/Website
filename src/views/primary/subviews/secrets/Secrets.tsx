@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import {
   Button,
   Divider,
@@ -12,7 +12,7 @@ import {
   Text,
   Textarea,
   TextInput,
-} from '@mantine/core'
+} from '@mantine/core';
 import {
   TEnpassField,
   TEnpassFolder,
@@ -20,17 +20,17 @@ import {
   TEnpassSecretFile,
   TFolder,
   TSecret,
-} from '../../../../types'
-import { useSecrets } from '../../../../stores'
-import { useTranslation } from 'react-i18next'
-import { useDisclosure, useMediaQuery } from '@mantine/hooks'
-import { v7 as uuid } from 'uuid'
-import { useForm } from '@mantine/form'
-import { trimText } from '../../../../shared'
+} from '../../../../types';
+import { useSecrets } from '../../../../stores';
+import { useTranslation } from 'react-i18next';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import { v7 as uuid } from 'uuid';
+import { useForm } from '@mantine/form';
+import { trimText } from '../../../../shared';
 
 export const Secrets = () => {
-  const isMobile = useMediaQuery('(max-width: 768px)')
-  const { t } = useTranslation('secrets')
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  const { t } = useTranslation('secrets');
   const {
     secrets,
     filteredSecrets,
@@ -42,16 +42,16 @@ export const Secrets = () => {
     saveSecrets,
     setSelectedSecret,
     setFilteredSecrets,
-  } = useSecrets()
-  const [searchQuery, setSearchQuery] = useState('')
-  const [addModalState, { open: openAddModal, close: closeAddModal }] = useDisclosure(false)
+  } = useSecrets();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [addModalState, { open: openAddModal, close: closeAddModal }] = useDisclosure(false);
   const [importModalState, { open: openImportModal, close: closeImportModal }] =
-    useDisclosure(false)
-  const [importedSecretFile, setImportedSecretFile] = useState<File | null>(null)
+    useDisclosure(false);
+  const [importedSecretFile, setImportedSecretFile] = useState<File | null>(null);
 
   const secretsToRender = selectedFolder
     ? filteredSecrets.filter((s) => s.folders?.includes(selectedFolder.id))
-    : filteredSecrets
+    : filteredSecrets;
 
   const addSecretForm = useForm({
     initialValues: {
@@ -66,17 +66,17 @@ export const Secrets = () => {
     validate: {
       label: (val) => (val.length < 1 ? 'fields.label.canNotBeEmpty' : null),
     },
-  })
+  });
 
   useEffect(() => {
-    handleSearch(searchQuery)
-  }, [secrets])
+    handleSearch(searchQuery);
+  }, [secrets]);
 
   const addSecret = async () => {
-    const values = addSecretForm.values
+    const values = addSecretForm.values;
 
     if (values.label.length < 1) {
-      return
+      return;
     }
 
     const secret: TSecret = {
@@ -85,30 +85,30 @@ export const Secrets = () => {
       lastUpdated: Date.now(),
       created: Date.now(),
       ...values,
-    }
+    };
 
-    const newSecrets = [secret, ...secrets]
-    setSecrets(newSecrets)
-    setFilteredSecrets(newSecrets)
-    await saveSecrets(newSecrets, folders)
-  }
+    const newSecrets = [secret, ...secrets];
+    setSecrets(newSecrets);
+    setFilteredSecrets(newSecrets);
+    await saveSecrets(newSecrets, folders);
+  };
 
   const importSecrets = async () => {
     if (importedSecretFile?.type != 'application/json') {
-      return
+      return;
     }
 
-    const fileContent = JSON.parse(await importedSecretFile?.text()) as TEnpassSecretFile
-    const importedSecrets: TSecret[] = []
-    const importedFolders: TFolder[] = []
+    const fileContent = JSON.parse(await importedSecretFile?.text()) as TEnpassSecretFile;
+    const importedSecrets: TSecret[] = [];
+    const importedFolders: TFolder[] = [];
 
     if (fileContent.items) {
       fileContent.items.map((item: TEnpassItem) => {
         if (secrets.find((s) => s.id === item.uuid)) {
-          return
+          return;
         }
 
-        const fields = item.fields
+        const fields = item.fields;
         importedSecrets.push({
           id: item.uuid,
           folders: item.folders ?? [],
@@ -121,56 +121,56 @@ export const Secrets = () => {
           notes: item.note,
           lastUpdated: item.updated_at * 1000,
           created: item.createdAt * 1000,
-        })
-      })
+        });
+      });
     }
 
     if (fileContent.folders) {
       fileContent.folders.map((folder: TEnpassFolder) => {
         if (folders.find((f) => f.id === folder.uuid)) {
-          return
+          return;
         }
 
         importedFolders.push({
           id: folder.uuid,
           label: folder.title,
           lastUpdated: folder.updated_at * 1000,
-        })
-      })
+        });
+      });
     }
 
-    const newSecrets = [...importedSecrets, ...secrets]
-    const newFolders = [...importedFolders, ...folders]
+    const newSecrets = [...importedSecrets, ...secrets];
+    const newFolders = [...importedFolders, ...folders];
 
-    let changed = false
+    let changed = false;
 
     if (importedSecrets.length > 0) {
-      setSecrets(newSecrets)
-      setFilteredSecrets(newSecrets)
-      changed = true
+      setSecrets(newSecrets);
+      setFilteredSecrets(newSecrets);
+      changed = true;
     }
 
     if (importedFolders.length > 0) {
-      setFolders(newFolders)
-      changed = true
+      setFolders(newFolders);
+      changed = true;
     }
 
     if (changed) {
-      await saveSecrets(newSecrets, newFolders)
+      await saveSecrets(newSecrets, newFolders);
     }
-  }
+  };
 
   const handleSearch = (query: string) => {
-    setSearchQuery(query)
+    setSearchQuery(query);
     if (query.trim() === '') {
-      setFilteredSecrets(secrets)
+      setFilteredSecrets(secrets);
     } else {
       const filtered = secrets.filter((secret) =>
         secret.label.toLowerCase().includes(query.toLowerCase()),
-      )
-      setFilteredSecrets(filtered)
+      );
+      setFilteredSecrets(filtered);
     }
-  }
+  };
 
   return (
     <>
@@ -233,8 +233,8 @@ export const Secrets = () => {
         <Group mt='xl' justify={'end'}>
           <Button
             onClick={() => {
-              closeAddModal()
-              addSecretForm.reset()
+              closeAddModal();
+              addSecretForm.reset();
             }}
           >
             {t('modals.addSecret.buttons.cancel')}
@@ -242,12 +242,12 @@ export const Secrets = () => {
           <Button
             onClick={() => {
               if (addSecretForm.validate().hasErrors) {
-                return
+                return;
               }
 
-              addSecret()
-              closeAddModal()
-              addSecretForm.reset()
+              addSecret();
+              closeAddModal();
+              addSecretForm.reset();
             }}
           >
             {t('modals.addSecret.buttons.submit')}
@@ -281,17 +281,17 @@ export const Secrets = () => {
         <Group mt='xl' justify={'end'}>
           <Button
             onClick={() => {
-              closeImportModal()
-              setImportedSecretFile(null)
+              closeImportModal();
+              setImportedSecretFile(null);
             }}
           >
             {t('modals.importSecrets.buttons.cancel')}
           </Button>
           <Button
             onClick={() => {
-              importSecrets()
-              closeImportModal()
-              setImportedSecretFile(null)
+              importSecrets();
+              closeImportModal();
+              setImportedSecretFile(null);
             }}
           >
             {t('modals.importSecrets.buttons.submit')}
@@ -325,7 +325,7 @@ export const Secrets = () => {
                     key={secret.id}
                     style={{ cursor: 'pointer' }}
                     onClick={() => {
-                      setSelectedSecret(secret)
+                      setSelectedSecret(secret);
                     }}
                   >
                     <Group align='center' justify='space-between'>
@@ -349,5 +349,5 @@ export const Secrets = () => {
         </Grid.Col>
       </Grid>
     </>
-  )
-}
+  );
+};

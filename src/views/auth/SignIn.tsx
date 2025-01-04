@@ -9,18 +9,18 @@
   Stack,
   TextInput,
   Title,
-} from '@mantine/core'
-import { useForm } from '@mantine/form'
-import { useDisclosure, useMediaQuery } from '@mantine/hooks'
-import { useNavigate } from 'react-router-dom'
-import { LOCAL_STORAGE, ROUTER_PATH, sendSuccessNotification } from '../../shared'
-import { useTranslation } from 'react-i18next'
-import { useAuth, useEnvVars } from '../../stores'
-import { signIn } from '../../api'
-import { useEffect } from 'react'
+} from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import { useNavigate } from 'react-router-dom';
+import { LOCAL_STORAGE, ROUTER_PATH, sendSuccessNotification } from '../../shared';
+import { useTranslation } from 'react-i18next';
+import { useAuth, useEnvVars } from '../../stores';
+import { signIn } from '../../api';
+import { useEffect } from 'react';
 
 export default function SignIn() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const form = useForm({
     initialValues: {
       email: localStorage.getItem(LOCAL_STORAGE.LAST_EMAIL) ?? '',
@@ -30,49 +30,49 @@ export default function SignIn() {
       email: (val) => (val ? null : 'signUp.fields.email.canNotBeEmpty'),
       password: (val) => (val ? null : 'signUp.fields.password.canNotBeEmpty'),
     },
-  })
-  const [loaderVisible, setLoaderState] = useDisclosure(false)
-  const { envs } = useEnvVars()
-  const { t } = useTranslation('auth')
-  const isMobile = useMediaQuery('(max-width: 768px)')
-  const { authSignIn } = useAuth()
+  });
+  const [loaderVisible, setLoaderState] = useDisclosure(false);
+  const { envs } = useEnvVars();
+  const { t } = useTranslation('auth');
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  const { authSignIn } = useAuth();
 
   useEffect(() => {
     if (form.values.email) {
-      navigate(ROUTER_PATH.SIGN_IN_APPROVE)
+      navigate(ROUTER_PATH.SIGN_IN_APPROVE);
     }
-  }, [])
+  }, []);
 
   const signInUser = async () => {
     if (form.validate().hasErrors) {
-      return
+      return;
     }
 
-    setLoaderState.open()
-    const email = form.values.email
-    const password = form.values.password
+    setLoaderState.open();
+    const email = form.values.email;
+    const password = form.values.password;
 
-    const response = await signIn(email, password, envs, t)
+    const response = await signIn(email, password, envs, t);
     if (!response) {
-      setLoaderState.close()
-      return
+      setLoaderState.close();
+      return;
     }
 
-    const jsonResponse = await response.json()
-    localStorage.setItem(LOCAL_STORAGE.LAST_EMAIL, email)
+    const jsonResponse = await response.json();
+    localStorage.setItem(LOCAL_STORAGE.LAST_EMAIL, email);
 
-    const localization = jsonResponse.localization
-    localStorage.setItem(LOCAL_STORAGE.USER_LOCALE, localization)
+    const localization = jsonResponse.localization;
+    localStorage.setItem(LOCAL_STORAGE.USER_LOCALE, localization);
 
-    const username = jsonResponse.username
+    const username = jsonResponse.username;
 
-    sendSuccessNotification(t('notifications:successful'))
-    authSignIn(email, username)
-    setLoaderState.close()
+    sendSuccessNotification(t('notifications:successful'));
+    authSignIn(email, username);
+    setLoaderState.close();
 
     // redirect to main after sign In
-    navigate(ROUTER_PATH.MENU)
-  }
+    navigate(ROUTER_PATH.MENU);
+  };
 
   return (
     <Container size={isMobile ? 'xs' : 'sm'} mt={isMobile ? '2rem' : '4rem'}>
@@ -153,5 +153,5 @@ export default function SignIn() {
         </Group>
       </Stack>
     </Container>
-  )
+  );
 }

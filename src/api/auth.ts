@@ -1,9 +1,9 @@
-import { customFetch } from './customFetch.ts'
-import { TFunction } from 'i18next'
-import { TEnvVars } from '../types'
-import { sendErrorNotification } from '../shared'
-import { ensureAuthorized } from './ensureAuthorized.ts'
-import { AuthContextType } from '../stores'
+import { customFetch } from './customFetch.ts';
+import { TFunction } from 'i18next';
+import { TEnvVars } from '../types';
+import { sendErrorNotification } from '../shared';
+import { ensureAuthorized } from './ensureAuthorized.ts';
+import { AuthContextType } from '../stores';
 
 export async function signIn(
   email: string,
@@ -16,28 +16,28 @@ export async function signIn(
     JSON.stringify({ email, password }),
     'POST',
     t,
-  )
+  );
 
   if (!response) {
-    return null
+    return null;
   }
 
   if (response.ok) {
-    return response
+    return response;
   }
 
   switch (response.status) {
     case 404: {
-      sendErrorNotification(t('notifications:userNotFound'))
-      return null
+      sendErrorNotification(t('notifications:userNotFound'));
+      return null;
     }
     case 409: {
-      sendErrorNotification(t('notifications:incorrectPassword'))
-      return null
+      sendErrorNotification(t('notifications:incorrectPassword'));
+      return null;
     }
     default: {
-      sendErrorNotification(t('notifications:failedError'))
-      return null
+      sendErrorNotification(t('notifications:failedError'));
+      return null;
     }
   }
 }
@@ -58,30 +58,30 @@ export async function signUp(
     }),
     'POST',
     t,
-  )
+  );
 
   if (!response) {
-    return null
+    return null;
   }
 
   if (response.ok) {
-    return response
+    return response;
   }
 
   switch (response.status) {
     case 303: {
-      sendErrorNotification(t('notifications:userAlreadyExists'))
-      return null
+      sendErrorNotification(t('notifications:userAlreadyExists'));
+      return null;
     }
     default: {
-      sendErrorNotification(t('notifications:failedError'))
-      return null
+      sendErrorNotification(t('notifications:failedError'));
+      return null;
     }
   }
 }
 
 export async function signOut(envs: TEnvVars | undefined, t: TFunction): Promise<Response | null> {
-  return customFetch(`${envs?.API_SERVER_URL}/auth/signOut`, null, 'POST', t)
+  return customFetch(`${envs?.API_SERVER_URL}/auth/signOut`, null, 'POST', t);
 }
 
 export async function signInGoogle(
@@ -95,28 +95,28 @@ export async function signInGoogle(
     JSON.stringify({ code }),
     'POST',
     t,
-  )
+  );
 
   if (!response) {
-    return null
+    return null;
   }
 
   if (response.ok) {
-    return response
+    return response;
   }
 
   if (!(await ensureAuthorized(response, context))) {
-    return null
+    return null;
   }
 
   switch (response.status) {
     case 404: {
-      sendErrorNotification(t('notifications:userNotFound'))
-      return null
+      sendErrorNotification(t('notifications:userNotFound'));
+      return null;
     }
     default: {
-      sendErrorNotification(t('notifications:failedError'))
-      return null
+      sendErrorNotification(t('notifications:failedError'));
+      return null;
     }
   }
 }
@@ -132,28 +132,28 @@ export async function signOutGoogle(
     JSON.stringify({ keepData }),
     'POST',
     t,
-  )
+  );
 
   if (!response) {
-    return null
+    return null;
   }
 
   if (response.ok) {
-    return response
+    return response;
   }
 
   if (!(await ensureAuthorized(response, context))) {
-    return null
+    return null;
   }
 
   switch (response.status) {
     case 404: {
-      sendErrorNotification(t('notifications:userNotFound'))
-      return null
+      sendErrorNotification(t('notifications:userNotFound'));
+      return null;
     }
     default: {
-      sendErrorNotification(t('notifications:failedError'))
-      return null
+      sendErrorNotification(t('notifications:failedError'));
+      return null;
     }
   }
 }

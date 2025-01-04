@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import {
   Button,
   ComboboxItem,
@@ -12,31 +12,31 @@ import {
   Select,
   Text,
   TextInput,
-} from '@mantine/core'
-import { TFolder } from '../../../../types'
-import { useSecrets } from '../../../../stores'
-import { useTranslation } from 'react-i18next'
-import { useDisclosure, useMediaQuery } from '@mantine/hooks'
-import { useForm } from '@mantine/form'
-import { v7 as uuid } from 'uuid'
-import { sendSuccessNotification } from '../../../../shared'
+} from '@mantine/core';
+import { TFolder } from '../../../../types';
+import { useSecrets } from '../../../../stores';
+import { useTranslation } from 'react-i18next';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import { useForm } from '@mantine/form';
+import { v7 as uuid } from 'uuid';
+import { sendSuccessNotification } from '../../../../shared';
 
 interface FoldersProps {
-  allElementsButtonClick?: () => void
+  allElementsButtonClick?: () => void;
 }
 
 export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
-  const isMobile = useMediaQuery('(max-width: 768px)')
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
-  const { t } = useTranslation('folders')
+  const { t } = useTranslation('folders');
   const { folders, selectedFolder, secrets, setFolders, saveSecrets, setSelectedFolder } =
-    useSecrets()
-  const [filteredFolders, setFilteredFolders] = useState<TFolder[]>([])
-  const [searchQuery, setSearchQuery] = useState('')
-  const [addModalState, { open: openAddModal, close: closeAddModal }] = useDisclosure(false)
+    useSecrets();
+  const [filteredFolders, setFilteredFolders] = useState<TFolder[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [addModalState, { open: openAddModal, close: closeAddModal }] = useDisclosure(false);
   const [deleteModalState, { open: openDeleteModal, close: closeDeleteModal }] =
-    useDisclosure(false)
-  const [folderForDelete, setFolderForDelete] = useState<ComboboxItem | null>(null)
+    useDisclosure(false);
+  const [folderForDelete, setFolderForDelete] = useState<ComboboxItem | null>(null);
 
   const addFolderForm = useForm({
     initialValues: {
@@ -45,63 +45,63 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
     validate: {
       label: (val) => (val.length < 1 ? 'fields.label.canNotBeEmpty' : null),
     },
-  })
+  });
 
   useEffect(() => {
-    handleSearch(searchQuery)
-  }, [folders])
+    handleSearch(searchQuery);
+  }, [folders]);
 
   const handleSearch = (query: string) => {
-    setSearchQuery(query)
+    setSearchQuery(query);
     if (query.trim() === '') {
-      setFilteredFolders(folders)
+      setFilteredFolders(folders);
     } else {
       const filtered = folders.filter((folder) =>
         folder.label.toLowerCase().includes(query.toLowerCase()),
-      )
-      setFilteredFolders(filtered)
+      );
+      setFilteredFolders(filtered);
     }
-  }
+  };
 
   const addFolder = async () => {
-    const values = addFolderForm.values
+    const values = addFolderForm.values;
 
     if (values.label.length < 1) {
-      return
+      return;
     }
 
     const folder: TFolder = {
       id: uuid(),
       lastUpdated: Date.now(),
       ...values,
-    }
+    };
 
-    const newFolders = [folder, ...folders]
-    setFolders(newFolders)
-    setFilteredFolders(newFolders)
-    await saveSecrets(secrets, newFolders)
-    sendSuccessNotification(t('notifications:folder.addedSuccessfully'))
-  }
+    const newFolders = [folder, ...folders];
+    setFolders(newFolders);
+    setFilteredFolders(newFolders);
+    await saveSecrets(secrets, newFolders);
+    sendSuccessNotification(t('notifications:folder.addedSuccessfully'));
+  };
 
   const deleteFolder = async () => {
     if (!folderForDelete || !folderForDelete.value) {
-      return
+      return;
     }
 
-    const folder = JSON.parse(folderForDelete.value) as TFolder
+    const folder = JSON.parse(folderForDelete.value) as TFolder;
 
     const updatedSecrets = secrets.map((secret) => ({
       ...secret,
       folders: secret.folders?.filter((f) => f !== folder.id) ?? [],
-    }))
+    }));
 
-    const newFolders = folders.filter((f) => f.id !== folder.id)
+    const newFolders = folders.filter((f) => f.id !== folder.id);
 
-    setFolders(newFolders)
-    setFilteredFolders(newFolders)
-    await saveSecrets(updatedSecrets, newFolders)
-    sendSuccessNotification(t('notifications:folder.deletedSuccessfully'))
-  }
+    setFolders(newFolders);
+    setFilteredFolders(newFolders);
+    await saveSecrets(updatedSecrets, newFolders);
+    sendSuccessNotification(t('notifications:folder.deletedSuccessfully'));
+  };
 
   return (
     <>
@@ -131,8 +131,8 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
         <Group mt='xl' justify={'end'}>
           <Button
             onClick={() => {
-              closeAddModal()
-              addFolderForm.reset()
+              closeAddModal();
+              addFolderForm.reset();
             }}
           >
             {t('modals.addFolder.buttons.cancel')}
@@ -140,12 +140,12 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
           <Button
             onClick={async () => {
               if (addFolderForm.validate().hasErrors) {
-                return
+                return;
               }
 
-              closeAddModal()
-              await addFolder()
-              addFolderForm.reset()
+              closeAddModal();
+              await addFolder();
+              addFolderForm.reset();
             }}
           >
             {t('modals.addFolder.buttons.submit')}
@@ -177,8 +177,8 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
         <Group mt='xl' justify={'end'}>
           <Button
             onClick={() => {
-              closeDeleteModal()
-              setFolderForDelete(null)
+              closeDeleteModal();
+              setFolderForDelete(null);
             }}
           >
             {t('modals.deleteFolder.buttons.cancel')}
@@ -186,12 +186,12 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
           <Button
             onClick={async () => {
               if (!folderForDelete || !folderForDelete.value) {
-                return
+                return;
               }
 
-              closeDeleteModal()
-              await deleteFolder()
-              setFolderForDelete(null)
+              closeDeleteModal();
+              await deleteFolder();
+              setFolderForDelete(null);
             }}
           >
             {t('modals.deleteFolder.buttons.submit')}
@@ -224,7 +224,7 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
                 cursor: 'pointer',
               }}
               onClick={() => {
-                setSelectedFolder(null)
+                setSelectedFolder(null);
               }}
             >
               <Group align='center' justify='space-between'>
@@ -247,7 +247,7 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
                       cursor: 'pointer',
                     }}
                     onClick={() => {
-                      setSelectedFolder(folder)
+                      setSelectedFolder(folder);
                     }}
                   >
                     <Group align='center' justify='space-between'>
@@ -269,5 +269,5 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
         </Grid.Col>
       </Grid>
     </>
-  )
-}
+  );
+};

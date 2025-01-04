@@ -9,20 +9,20 @@
   Stack,
   TextInput,
   Title,
-} from '@mantine/core'
-import { useForm } from '@mantine/form'
-import validator from 'validator'
-import passwordValidator from 'password-validator'
-import { useNavigate } from 'react-router-dom'
-import { ROUTER_PATH, sendErrorNotification, sendSuccessNotification } from '../../shared'
-import { useDisclosure, useMediaQuery } from '@mantine/hooks'
-import { useTranslation } from 'react-i18next'
-import { signUp } from '../../api'
-import { useEnvVars } from '../../stores'
+} from '@mantine/core';
+import { useForm } from '@mantine/form';
+import validator from 'validator';
+import passwordValidator from 'password-validator';
+import { useNavigate } from 'react-router-dom';
+import { ROUTER_PATH, sendErrorNotification, sendSuccessNotification } from '../../shared';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import { useTranslation } from 'react-i18next';
+import { signUp } from '../../api';
+import { useEnvVars } from '../../stores';
 
 export default function SignUp() {
-  const { t } = useTranslation('auth')
-  const navigate = useNavigate()
+  const { t } = useTranslation('auth');
+  const navigate = useNavigate();
   const form = useForm({
     initialValues: {
       name: '',
@@ -35,7 +35,7 @@ export default function SignUp() {
       name: (val) => (val.length < 4 ? 'signUp.fields.name.tooLittle' : null),
       email: (val) => (validator.isEmail(val) ? null : 'signUp.fields.email.invalid'),
       password: (val) => {
-        const schema = new passwordValidator()
+        const schema = new passwordValidator();
         schema
           .is()
           .min(8) // Minimum length 8
@@ -49,50 +49,50 @@ export default function SignUp() {
           .digits(2) // Must have at least 2 digits
           .has()
           .not()
-          .spaces() // Should not have spaces
+          .spaces(); // Should not have spaces
 
-        return !schema.validate(val) ? 'signUp.fields.password.invalid' : null
+        return !schema.validate(val) ? 'signUp.fields.password.invalid' : null;
       },
       confirmPassword: (val) => {
         if (val == form.values.password) {
-          return null
+          return null;
         }
 
-        return 'signUp.fields.confirmPassword.invalid'
+        return 'signUp.fields.confirmPassword.invalid';
       },
     },
-  })
-  const [loaderVisible, setLoaderState] = useDisclosure(false)
-  const { envs } = useEnvVars()
-  const isMobile = useMediaQuery('(max-width: 768px)')
+  });
+  const [loaderVisible, setLoaderState] = useDisclosure(false);
+  const { envs } = useEnvVars();
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   const signUpUser = async () => {
     if (form.validate().hasErrors) {
-      return
+      return;
     }
 
-    setLoaderState.open()
-    const formValues = form.values
-    const username = formValues.name
-    const email = formValues.email
-    const password = formValues.password
-    const confirmPassword = formValues.confirmPassword
+    setLoaderState.open();
+    const formValues = form.values;
+    const username = formValues.name;
+    const email = formValues.email;
+    const password = formValues.password;
+    const confirmPassword = formValues.confirmPassword;
 
     if (password !== confirmPassword) {
-      sendErrorNotification(t('notifications:passwordsDoNotMatch'))
-      setLoaderState.close()
-      return
+      sendErrorNotification(t('notifications:passwordsDoNotMatch'));
+      setLoaderState.close();
+      return;
     }
 
-    const response = await signUp(username, email, password, envs, t)
+    const response = await signUp(username, email, password, envs, t);
     if (!response || !response.ok) {
-      setLoaderState.close()
-      return
+      setLoaderState.close();
+      return;
     }
 
-    sendSuccessNotification(t('notifications:successful'))
-    navigate(ROUTER_PATH.SIGN_IN)
-  }
+    sendSuccessNotification(t('notifications:successful'));
+    navigate(ROUTER_PATH.SIGN_IN);
+  };
 
   return (
     <Container size={isMobile ? 'xs' : 'sm'} mt={isMobile ? '2rem' : '3.5rem'}>
@@ -191,7 +191,7 @@ export default function SignUp() {
             type='submit'
             radius='xl'
             onClick={async () => {
-              await signUpUser()
+              await signUpUser();
             }}
           >
             {t('signUp.title')}
@@ -199,5 +199,5 @@ export default function SignUp() {
         </Group>
       </Stack>
     </Container>
-  )
+  );
 }

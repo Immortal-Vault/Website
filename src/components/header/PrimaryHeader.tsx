@@ -10,21 +10,21 @@ import {
   rem,
   ScrollArea,
   Title,
-} from '@mantine/core'
-import { useDisclosure, useMediaQuery } from '@mantine/hooks'
-import classes from './RootHeader.module.css'
-import { useTranslation } from 'react-i18next'
-import { ProfileAvatarWithMenu } from '../ProfileAvatarWithMenu.tsx'
-import { ROUTER_PATH, sendSuccessNotification } from '../../shared'
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../../stores'
+} from '@mantine/core';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import classes from './RootHeader.module.css';
+import { useTranslation } from 'react-i18next';
+import { ProfileAvatarWithMenu } from '../ProfileAvatarWithMenu.tsx';
+import { ROUTER_PATH, sendSuccessNotification } from '../../shared';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../stores';
 
 export function PrimaryHeader() {
-  const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false)
-  const isMobile = useMediaQuery('(max-width: 768px)')
-  const { t } = useTranslation('root')
-  const { authSignOut } = useAuth()
-  const navigate = useNavigate()
+  const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  const { t } = useTranslation('root');
+  const { authSignOut } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <Box mb={'xl'}>
@@ -76,7 +76,7 @@ export function PrimaryHeader() {
               <Button
                 fullWidth
                 onClick={() => {
-                  navigate(ROUTER_PATH.MENU)
+                  navigate(ROUTER_PATH.MENU);
                 }}
               >
                 {t('header.profile')}
@@ -84,7 +84,7 @@ export function PrimaryHeader() {
               <Button
                 fullWidth
                 onClick={() => {
-                  navigate(ROUTER_PATH.MENU_SETTINGS)
+                  navigate(ROUTER_PATH.MENU_SETTINGS);
                 }}
               >
                 {t('header.settings')}
@@ -92,7 +92,7 @@ export function PrimaryHeader() {
               <Button
                 fullWidth
                 onClick={() => {
-                  navigate(ROUTER_PATH.MENU_VAULT)
+                  navigate(ROUTER_PATH.MENU_VAULT);
                 }}
               >
                 {t('header.vault')}
@@ -101,8 +101,8 @@ export function PrimaryHeader() {
                 fullWidth
                 color={'red'}
                 onClick={() => {
-                  authSignOut(false)
-                  sendSuccessNotification(t('auth:signOut:successful'))
+                  authSignOut(false);
+                  sendSuccessNotification(t('auth:signOut:successful'));
                 }}
               >
                 {t('header.exit')}
@@ -112,5 +112,5 @@ export function PrimaryHeader() {
         </ScrollArea>
       </Drawer>
     </Box>
-  )
+  );
 }

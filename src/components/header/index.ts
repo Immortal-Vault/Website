@@ -1,3 +1,3 @@
-export * from './RootHeader.tsx'
-export * from './RootHeader.module.css'
-export * from './PrimaryHeader.tsx'
+export * from './RootHeader.tsx';
+export * from './RootHeader.module.css';
+export * from './PrimaryHeader.tsx';

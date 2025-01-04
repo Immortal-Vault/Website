@@ -1,47 +1,47 @@
-import { useState } from 'react'
-import { ELanguage } from '../../../../types'
-import { useTranslation } from 'react-i18next'
-import { Center, Flex, LoadingOverlay, Select, Title } from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
-import { LOCAL_STORAGE, sendSuccessNotification } from '../../../../shared'
-import { changeLanguage } from '../../../../api'
-import { useAuth, useEnvVars } from '../../../../stores'
-import { Footer, PrimaryHeader } from '../../../../components'
+import { useState } from 'react';
+import { ELanguage } from '../../../../types';
+import { useTranslation } from 'react-i18next';
+import { Center, Flex, LoadingOverlay, Select, Title } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { LOCAL_STORAGE, sendSuccessNotification } from '../../../../shared';
+import { changeLanguage } from '../../../../api';
+import { useAuth, useEnvVars } from '../../../../stores';
+import { Footer, PrimaryHeader } from '../../../../components';
 
 export const Settings = (): JSX.Element => {
-  const [language, setLanguage] = useState<ELanguage | null>(null)
+  const [language, setLanguage] = useState<ELanguage | null>(null);
   const languages = [
     { value: 'ru', label: 'Русский' },
     { value: 'en', label: 'English' },
-  ]
-  const [loaderVisible, setLoaderState] = useDisclosure(false)
-  const { t, i18n } = useTranslation('settings')
-  const { envs } = useEnvVars()
-  const authContext = useAuth()
+  ];
+  const [loaderVisible, setLoaderState] = useDisclosure(false);
+  const { t, i18n } = useTranslation('settings');
+  const { envs } = useEnvVars();
+  const authContext = useAuth();
 
   const selectLanguage = async (newLanguage: string | null) => {
     if (!newLanguage) {
-      return
+      return;
     }
 
-    setLoaderState.open()
-    setLanguage(newLanguage as ELanguage)
-    await i18n.changeLanguage(newLanguage ?? 'en')
-    localStorage.setItem(LOCAL_STORAGE.USER_LOCALE, newLanguage ?? 'en')
+    setLoaderState.open();
+    setLanguage(newLanguage as ELanguage);
+    await i18n.changeLanguage(newLanguage ?? 'en');
+    localStorage.setItem(LOCAL_STORAGE.USER_LOCALE, newLanguage ?? 'en');
 
-    const response = await changeLanguage(newLanguage, envs, t, authContext)
+    const response = await changeLanguage(newLanguage, envs, t, authContext);
     if (!response) {
-      setLoaderState.close()
-      return
+      setLoaderState.close();
+      return;
     }
 
-    setLoaderState.close()
+    setLoaderState.close();
     sendSuccessNotification(
       t('notifications:languageChanged', {
         language: languages.find((lng) => lng.value === newLanguage)?.label,
       }),
-    )
-  }
+    );
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -76,5 +76,5 @@ export const Settings = (): JSX.Element => {
       </div>
       <Footer />
     </div>
-  )
-}
+  );
+};

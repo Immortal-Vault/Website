@@ -1,13 +1,13 @@
-import { TSecretFile } from '../types'
+import { TSecretFile } from '../types';
 
 export function foldersMigration(secretFile: TSecretFile): TSecretFile {
   for (const secret of secretFile.secrets) {
     if (secret.folders) {
-      continue
+      continue;
     }
 
-    secret.folders = []
+    secret.folders = [];
   }
 
-  return secretFile
+  return secretFile;
 }
