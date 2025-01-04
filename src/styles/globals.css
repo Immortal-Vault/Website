@@ -441,3 +441,11 @@ textarea {
   color: #000;
   padding: 0.2em 0;
 }
+
+enpass-inline-menu, enpass-inline-button {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+}
