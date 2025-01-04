@@ -28,6 +28,7 @@ i18next
       'vault',
       'root',
       'folders',
+      'privacyPolicy',
     ],
     detection: {
       order: ['navigator'],
