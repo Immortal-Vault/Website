@@ -48,6 +48,7 @@ localeDirs.forEach((locale) => {
       }
     } else {
       console.log(`File missing: ${locale}/${file}`)
+      mismatchCount++
     }
   })
 
@@ -56,7 +57,7 @@ localeDirs.forEach((locale) => {
   if (mismatchCount < 1) {
     console.log('Locale checker passed successfully')
   } else {
-    console.error(
+    throw Error(
       `Locale checker failed with ${mismatchCount} ${mismatchCount > 1 ? 'mismatches' : 'mismatch'}`,
     )
   }
