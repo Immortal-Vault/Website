@@ -94,9 +94,9 @@ export const ProfileAvatarWithMenu: FC = () => {
         onClose={closeExitModal}
         size='auto'
         title={t('modals.logout.title')}
-        closeOnClickOutside={false}
-        closeOnEscape={false}
-        withCloseButton={false}
+        closeOnClickOutside={true}
+        closeOnEscape={true}
+        withCloseButton={true}
         overlayProps={{
           backgroundOpacity: 0.55,
           blur: 3,
