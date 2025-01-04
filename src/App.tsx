@@ -24,7 +24,43 @@ import { PrivacyPolicy } from './views/root/privacy/PrivacyPolicy.tsx';
 import { Suspense } from 'react';
 import { Vault, Settings, Primary } from './views/primary';
 
-const theme = createTheme({});
+const theme = createTheme({
+  components: {
+    TextInput: {
+      defaultProps: {
+        autoComplete: 'off',
+        'data-1p-ignore': 'true',
+        'data-lpignore': 'true',
+        'data-protonpass-ignore': 'true',
+        'data-bwignore': 'true',
+        'data-enignore': 'true',
+        'data-enpass-ignore': 'true',
+      },
+    },
+    PasswordInput: {
+      defaultProps: {
+        autoComplete: 'off',
+        'data-1p-ignore': 'true',
+        'data-lpignore': 'true',
+        'data-protonpass-ignore': 'true',
+        'data-bwignore': 'true',
+        'data-enignore': 'true',
+        'data-enpass-ignore': 'true',
+      },
+    },
+    Select: {
+      defaultProps: {
+        autoComplete: 'off',
+        'data-1p-ignore': 'true',
+        'data-lpignore': 'true',
+        'data-protonpass-ignore': 'true',
+        'data-bwignore': 'true',
+        'data-enignore': 'true',
+        'data-enpass-ignore': 'true',
+      },
+    },
+  },
+});
 
 const router = createBrowserRouter([
   {
