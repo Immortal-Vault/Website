@@ -1,5 +1,8 @@
 {
-  "folders": "Folders",
+  "folders": {
+    "title": "Folders",
+    "not_found": "No folders found"
+  },
   "allElements": "All elements",
   "buttons": {
     "add": "Add",

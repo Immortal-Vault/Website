@@ -315,32 +315,36 @@ export const Secrets = () => {
             </Button>
           </Flex>
           <Text size='lg' c='gray' mb='md'>
-            {t('elements')}
+            {t('elements.title')}: {secretsToRender.length}
           </Text>
           <List spacing='md'>
-            {secretsToRender.map((secret, index) => (
-              <>
-                <List.Item
-                  key={secret.id}
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => {
-                    setSelectedSecret(secret);
-                  }}
-                >
-                  <Group align='center' justify='space-between'>
-                    <div>
-                      <Text size='sm' c={selectedSecret?.id === secret.id ? 'blue' : 'white'}>
-                        {trimText(secret.label, 60)}
-                      </Text>
-                      <Text size='xs' c={selectedSecret?.id === secret.id ? 'blue' : 'gray'}>
-                        {trimText(secret?.username ?? secret?.email ?? '', 70)}
-                      </Text>
-                    </div>
-                  </Group>
-                </List.Item>
-                {index != secretsToRender.length - 1 && <Divider my={'md'} />}
-              </>
-            ))}
+            {secretsToRender?.length > 0 ? (
+              secretsToRender.map((secret, index) => (
+                <>
+                  <List.Item
+                    key={secret.id}
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => {
+                      setSelectedSecret(secret);
+                    }}
+                  >
+                    <Group align='center' justify='space-between'>
+                      <div>
+                        <Text size='sm' c={selectedSecret?.id === secret.id ? 'blue' : 'white'}>
+                          {trimText(secret.label, 60)}
+                        </Text>
+                        <Text size='xs' c={selectedSecret?.id === secret.id ? 'blue' : 'gray'}>
+                          {trimText(secret?.username ?? secret?.email ?? '', 70)}
+                        </Text>
+                      </div>
+                    </Group>
+                  </List.Item>
+                  {index != secretsToRender.length - 1 && <Divider my={'md'} />}
+                </>
+              ))
+            ) : (
+              <Text>{t('elements.not_found')}</Text>
+            )}
           </List>
         </Grid.Col>
       </Grid>
