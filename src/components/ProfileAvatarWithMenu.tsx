@@ -1,5 +1,5 @@
 import { FC, forwardRef } from 'react';
-import { Avatar, Menu, rem, UnstyledButton } from '@mantine/core';
+import { Avatar, Button, Group, Menu, Modal, rem, UnstyledButton } from '@mantine/core';
 import { ROUTER_PATH, sendSuccessNotification } from '../shared';
 import { useNavigate } from 'react-router-dom';
 import { MdOutlineSettings } from 'react-icons/md';
@@ -8,6 +8,7 @@ import { ImExit } from 'react-icons/im';
 import { BsPersonCircle } from 'react-icons/bs';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../stores';
+import { useDisclosure } from '@mantine/hooks';
 
 // eslint-disable-next-line react/display-name
 const ProfileButton = forwardRef<HTMLButtonElement>(({ ...others }, ref) => {
@@ -58,6 +59,7 @@ const elementsData = [
 ];
 
 export const ProfileAvatarWithMenu: FC = () => {
+  const [exitModalState, { open: openExitModal, close: closeExitModal }] = useDisclosure(false);
   const navigate = useNavigate();
   const { t } = useTranslation('root');
   const { authUsername, authSignOut } = useAuth();
@@ -86,6 +88,41 @@ export const ProfileAvatarWithMenu: FC = () => {
       closeDelay={20}
       defaultOpened={false}
     >
+      <Modal
+        centered={true}
+        opened={exitModalState}
+        onClose={closeExitModal}
+        size='auto'
+        title={t('modals.logout.title')}
+        closeOnClickOutside={true}
+        closeOnEscape={true}
+        withCloseButton={true}
+        overlayProps={{
+          backgroundOpacity: 0.55,
+          blur: 3,
+        }}
+      >
+        <Group mt='xl' justify={'end'}>
+          <Button
+            variant={'filled'}
+            onClick={() => {
+              closeExitModal();
+            }}
+          >
+            {t('modals.logout.buttons.cancel')}
+          </Button>
+          <Button
+            variant={'outline'}
+            color={'red'}
+            onClick={async () => {
+              await authSignOut(false);
+              sendSuccessNotification(t('auth:signOut:successful'));
+            }}
+          >
+            {t('modals.logout.buttons.submit')}
+          </Button>
+        </Group>
+      </Modal>
       <Menu.Target>
         <ProfileButton />
       </Menu.Target>
@@ -104,8 +141,7 @@ export const ProfileAvatarWithMenu: FC = () => {
             />
           }
           onClick={() => {
-            authSignOut(false);
-            sendSuccessNotification(t('auth:signOut:successful'));
+            openExitModal();
           }}
         >
           {t('header.exit')}
