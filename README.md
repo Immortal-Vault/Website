@@ -22,6 +22,9 @@ Immortal Vault currently supports two languages:
 
 More languages may be added in future releases.
 
+## 🔧 Secrets Exporter
+Extract your encrypted secrets from Google Drive and convert them into a decrypted JSON file whenever needed with: [Secrets-Exporter](https://github.com/Immortal-Vault/Secrets-Exporter)
+
 ## 🚀 Getting Started
 
 Since the project is still in development, an official release is not yet available. Stay tuned for updates as we continue to enhance the platform with more features and refinements.
