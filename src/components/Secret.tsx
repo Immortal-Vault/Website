@@ -9,14 +9,18 @@ import {
   Title,
   Card,
   MultiSelect,
+  Tooltip,
 } from '@mantine/core';
 import {
   FaAddressCard,
   FaClock,
+  FaCopy,
   FaExternalLinkAlt,
   FaFolder,
   FaLock,
   FaPhoneAlt,
+  FaRegEye,
+  FaRegEyeSlash,
   FaStickyNote,
   FaUserAlt,
 } from 'react-icons/fa';
@@ -26,12 +30,16 @@ import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { useSecrets } from '../stores';
 import { useTranslation } from 'react-i18next';
 import { MdOutlineAlternateEmail } from 'react-icons/md';
+import { trimText } from '../shared';
 
 export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) => {
   const { folders, secrets, saveSecrets } = useSecrets();
   const { t } = useTranslation('secrets');
 
   const [showPassword, setShowPassword] = useState(false);
+  const [loginTooltipState, setLoginTooltipState] = useState(false);
+  const [emailTooltipState, setEmailTooltipState] = useState(false);
+  const [passwordTooltipState, setPasswordTooltipState] = useState(false);
   const [submitModalState, { open: openSubmitModal, close: closeSubmitModal }] =
     useDisclosure(false);
 
@@ -61,6 +69,42 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
     await saveSecrets(secrets, folders);
   };
 
+  function renderLoginCopyButton(copied: boolean, copy: () => void) {
+    setLoginTooltipState(copied);
+
+    return (
+      <Tooltip label={t('buttons.copied')} opened={loginTooltipState}>
+        <Button size='xs' color={copied ? 'teal' : 'blue'} onClick={copy}>
+          <FaCopy size={18} />
+        </Button>
+      </Tooltip>
+    );
+  }
+
+  function renderEmailCopyButton(copied: boolean, copy: () => void) {
+    setEmailTooltipState(copied);
+
+    return (
+      <Tooltip label={t('buttons.copied')} opened={emailTooltipState}>
+        <Button size='xs' color={copied ? 'teal' : 'blue'} onClick={copy}>
+          <FaCopy size={18} />
+        </Button>
+      </Tooltip>
+    );
+  }
+
+  function renderPasswordCopyButton(copied: boolean, copy: () => void) {
+    setPasswordTooltipState(copied);
+
+    return (
+      <Tooltip label={t('buttons.copied')} opened={passwordTooltipState}>
+        <Button size='xs' color={copied ? 'teal' : 'blue'} onClick={copy}>
+          <FaCopy size={18} />
+        </Button>
+      </Tooltip>
+    );
+  }
+
   return (
     <>
       <Modal
@@ -76,11 +120,12 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
         }}
       >
         <Group mt='lg'>
-          <Button variant='outline' onClick={closeSubmitModal}>
+          <Button variant='filled' onClick={closeSubmitModal}>
             {t('modals.submitDelete.buttons.cancel')}
           </Button>
           <Button
             color='red'
+            variant={'outline'}
             onClick={async () => {
               await props.delete();
               closeSubmitModal();
@@ -105,8 +150,12 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
               <FaUserAlt size={18} />
               <Text c='gray'>{t('fields.username.title')}:</Text>
               <Text c='white' style={{ wordBreak: 'break-word' }}>
-                {props.secret.username}
+                {trimText(props.secret.username, 30)}
               </Text>
+
+              <CopyButton value={props.secret.username}>
+                {({ copied, copy }) => renderLoginCopyButton(copied, copy)}
+              </CopyButton>
             </Group>
           )}
           {props.secret.email && (
@@ -114,33 +163,29 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
               <MdOutlineAlternateEmail size={18} />
               <Text c='gray'>{t('fields.email.title')}:</Text>
               <Text c='white' style={{ wordBreak: 'break-word' }}>
-                {props.secret.email}
+                {trimText(props.secret.email, 30)}
               </Text>
+
+              <CopyButton value={props.secret.email}>
+                {({ copied, copy }) => renderEmailCopyButton(copied, copy)}
+              </CopyButton>
             </Group>
           )}
           {props.secret.password && (
             <Group>
               <FaLock size={18} />
               <Text c='gray'>{t('fields.password.title')}:</Text>
-              <Text c='white' style={{ wordBreak: 'break-all' }}>
-                {showPassword
-                  ? props.secret.password
-                  : Array.from({ length: props.secret.password.length }).map(() => '•')}
-              </Text>
-            </Group>
-          )}
-          {props.secret.password && (
-            <Group>
-              <Button size='xs' variant='outline' onClick={() => setShowPassword(!showPassword)}>
-                {t(showPassword ? 'buttons.hide' : 'buttons.show')}
+
+              <Button size='xs' onClick={() => setShowPassword(!showPassword)}>
+                {showPassword ? <FaRegEyeSlash size={22} /> : <FaRegEye size={22} />}
               </Button>
               <CopyButton value={props.secret.password}>
-                {({ copied, copy }) => (
-                  <Button size='xs' color={copied ? 'teal' : 'blue'} onClick={copy}>
-                    {t(copied ? 'buttons.copied' : 'buttons.copy')}
-                  </Button>
-                )}
+                {({ copied, copy }) => renderPasswordCopyButton(copied, copy)}
               </CopyButton>
+
+              <Text c='white' style={{ wordBreak: 'break-all' }}>
+                {showPassword ? props.secret.password : '••••••••'}
+              </Text>
             </Group>
           )}
           {props.secret.website && (
