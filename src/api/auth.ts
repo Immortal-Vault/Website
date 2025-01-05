@@ -13,7 +13,7 @@ export async function signIn(
 ): Promise<Response | null> {
   const response = await customFetch(
     `${envs?.API_SERVER_URL}/auth/signIn`,
-    JSON.stringify({ email, password }),
+    JSON.stringify({ email: email.toLowerCase(), password }),
     'POST',
     t,
   );
@@ -53,7 +53,7 @@ export async function signUp(
     `${envs?.API_SERVER_URL}/auth/signUp`,
     JSON.stringify({
       username,
-      email,
+      email: email.toLowerCase(),
       password,
     }),
     'POST',
