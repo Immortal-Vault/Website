@@ -154,18 +154,14 @@ export const SecretsProvider = ({ children }: SecretsProps) => {
   };
 
   useEffect(() => {
-    console.log(
-      location.pathname,
-      location.pathname.includes(ROUTER_PATH.MENU + '/'),
-      !googleDriveState,
-    );
+    const pathName = location.pathname;
+    const isIncludingMenuPath = pathName.includes(ROUTER_PATH.MENU);
+
     if (
-      (location.pathname.includes(ROUTER_PATH.MENU + '/') &&
-        location.pathname.replace(ROUTER_PATH.MENU, '').length <= 1) ||
-      !location.pathname.includes(ROUTER_PATH.MENU) ||
+      (isIncludingMenuPath && pathName.replace(ROUTER_PATH.MENU, '').length > 1) ||
+      !isIncludingMenuPath ||
       !googleDriveState
     ) {
-      console.log('a');
       return;
     }
 
