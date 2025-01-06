@@ -85,7 +85,7 @@ export const Secrets = () => {
       lastUpdated: Date.now(),
       created: Date.now(),
       username: values.username,
-      email: values.email.toLowerCase(),
+      email: values.email,
       password: values.password,
       label: values.label,
     };
