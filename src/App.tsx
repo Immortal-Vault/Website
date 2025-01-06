@@ -37,6 +37,17 @@ const theme = createTheme({
         'data-enpass-ignore': 'true',
       },
     },
+    Input: {
+      defaultProps: {
+        autoComplete: 'off',
+        'data-1p-ignore': 'true',
+        'data-lpignore': 'true',
+        'data-protonpass-ignore': 'true',
+        'data-bwignore': 'true',
+        'data-enignore': 'true',
+        'data-enpass-ignore': 'true',
+      },
+    },
     PasswordInput: {
       defaultProps: {
         autoComplete: 'off',
