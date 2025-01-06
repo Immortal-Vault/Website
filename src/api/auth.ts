@@ -52,7 +52,7 @@ export async function signUp(
   const response = await customFetch(
     `${envs?.API_SERVER_URL}/auth/signUp`,
     JSON.stringify({
-      username,
+      username: username.toLowerCase(),
       email: email.toLowerCase(),
       password,
     }),
