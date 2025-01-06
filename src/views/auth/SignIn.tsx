@@ -27,7 +27,7 @@ export default function SignIn() {
       password: '',
     },
     validate: {
-      email: (val) => (val ? null : 'signUp.fields.email.canNotBeEmpty'),
+      email: (val) => (val ? null : 'signIn.fields.emailOrUsername.canNotBeEmpty'),
       password: (val) => (val ? null : 'signUp.fields.password.canNotBeEmpty'),
     },
   });
@@ -107,7 +107,7 @@ export default function SignIn() {
         <TextInput
           required
           type={'email'}
-          label={t('signIn.fields.email.title')}
+          label={t('signIn.fields.emailOrUsername.title')}
           placeholder={'JohnDoe@gmail.com'}
           value={form.values.email}
           onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
