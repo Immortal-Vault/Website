@@ -13,7 +13,7 @@ export async function signIn(
 ): Promise<Response | null> {
   const response = await customFetch(
     `${envs?.API_SERVER_URL}/auth/signIn`,
-    JSON.stringify({ email, password }),
+    JSON.stringify({ email: email.toLowerCase(), password }),
     'POST',
     t,
   );
@@ -28,11 +28,11 @@ export async function signIn(
 
   switch (response.status) {
     case 404: {
-      sendErrorNotification(t('notifications:userNotFound'));
+      sendErrorNotification(t('notifications:incorrectLoginOrPassword'));
       return null;
     }
     case 409: {
-      sendErrorNotification(t('notifications:incorrectPassword'));
+      sendErrorNotification(t('notifications:incorrectLoginOrPassword'));
       return null;
     }
     default: {
@@ -52,8 +52,8 @@ export async function signUp(
   const response = await customFetch(
     `${envs?.API_SERVER_URL}/auth/signUp`,
     JSON.stringify({
-      username,
-      email,
+      username: username.toLowerCase(),
+      email: email.toLowerCase(),
       password,
     }),
     'POST',
