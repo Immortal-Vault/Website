@@ -84,10 +84,7 @@ export const Secrets = () => {
       folders: [],
       lastUpdated: Date.now(),
       created: Date.now(),
-      username: values.username,
-      email: values.email,
-      password: values.password,
-      label: values.label,
+      ...values,
     };
 
     const newSecrets = [secret, ...secrets];
