@@ -28,11 +28,11 @@ export async function signIn(
 
   switch (response.status) {
     case 404: {
-      sendErrorNotification(t('notifications:userNotFound'));
+      sendErrorNotification(t('notifications:incorrectLoginOrPassword'));
       return null;
     }
     case 409: {
-      sendErrorNotification(t('notifications:incorrectPassword'));
+      sendErrorNotification(t('notifications:incorrectLoginOrPassword'));
       return null;
     }
     default: {
