@@ -1,7 +1,6 @@
 {
   "serverNotResponding": "Immortal Vault server is down, please try again later",
-  "userNotFound": "User was not found",
-  "incorrectPassword": "Incorrect password",
+  "incorrectLoginOrPassword": "Incorrect login or password",
   "failedError": "An error has occurred, contact technical support",
   "successful": "Successful",
   "passwordsDoNotMatch": "Passwords do not match",
