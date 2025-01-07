@@ -40,7 +40,7 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
 
   const [showPassword, setShowPassword] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [secret, setSecret] = useState<TSecret | null>();
+  const [secret, setSecret] = useState<TSecret | null>(null);
   const [editedSecret, setEditedSecret] = useState<TSecret | null>(null);
   const [submitModalState, { open: openSubmitModal, close: closeSubmitModal }] =
     useDisclosure(false);
@@ -55,11 +55,7 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
   }, [props.sourceSecret]);
 
   useEffect(() => {
-    if (!secret) {
-      return;
-    }
-
-    const secretFolders = secret.folders ? secret.folders : [];
+    const secretFolders = secret?.folders ? secret.folders : [];
     setAttachedFolders(folders.filter((f) => secretFolders.includes(f.id)).map((f) => f.id));
   }, [folders, secret]);
 
@@ -78,11 +74,7 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
   }, [isEditing]);
 
   const handleFoldersChange = async (folderIds: string[]) => {
-    if (!secret) {
-      return;
-    }
-
-    const foundSecret = secrets.find((s) => s.id === secret.id);
+    const foundSecret = secrets.find((s) => s.id === secret?.id);
     if (!foundSecret) {
       return;
     }
@@ -94,10 +86,6 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
   };
 
   const handleEditToggle = () => {
-    if (!secret) {
-      return;
-    }
-
     setIsEditing(!isEditing);
     setEditedSecret(secret);
   };
