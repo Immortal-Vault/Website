@@ -43,7 +43,7 @@ export function Primary() {
     <>
       {selectedSecret ? (
         <Secret
-          secret={selectedSecret}
+          sourceSecret={selectedSecret}
           delete={async () => {
             closeFoldersDrawer();
             setSelectedSecret(null);
