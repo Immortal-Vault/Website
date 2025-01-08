@@ -5,6 +5,7 @@ import { IoLogoGithub } from 'react-icons/io';
 import { useTranslation } from 'react-i18next';
 import { ROUTER_PATH } from '../../shared';
 import { useNavigate } from 'react-router-dom';
+import { LanguageSelector } from '../LanguageSelector.tsx';
 
 const links = [
   {
@@ -75,7 +76,16 @@ export function Footer() {
         >
           <Text>{t('footer.privacy')}</Text>
         </Anchor>
-        <Group pt={'10px'}>{items}</Group>
+        <Group pt={'5px'} justify={'center'} align={'center'}>
+          {items}
+          <div
+            style={{
+              paddingBottom: '0.3rem',
+            }}
+          >
+            <LanguageSelector settings={false} />
+          </div>
+        </Group>
       </Container>
     </div>
   );
