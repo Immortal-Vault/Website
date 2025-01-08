@@ -40,9 +40,14 @@ export function PrivacyPolicy() {
           const sectionNumber = index + 1;
 
           return (
-            <section key={sectionKey}>
+            <section
+              key={sectionKey}
+              style={{
+                marginBottom: '2rem',
+              }}
+            >
               {' '}
-              <Title order={2}>
+              <Title order={2} mb={'xs'}>
                 {sectionNumber}. {section['title']}
               </Title>
               {Array.isArray(section.items) && (
