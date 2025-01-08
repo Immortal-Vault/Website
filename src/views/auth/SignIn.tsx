@@ -67,7 +67,7 @@ export default function SignIn() {
     const username = jsonResponse.username;
 
     sendSuccessNotification(t('notifications:successful'));
-    authSignIn(email, username);
+    authSignIn(email, username, localization);
     setLoaderState.close();
 
     // redirect to main after sign In
