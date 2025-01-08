@@ -13,7 +13,7 @@ export interface AuthContextType {
   authUsername: string;
   secretPassword: string;
   openSecretPasswordModel: () => void;
-  authSignIn: (email: string, username: string) => void;
+  authSignIn: (email: string, username: string, localization: string) => void;
   authSignOut: (expired: boolean) => Promise<void>;
 }
 
@@ -25,7 +25,7 @@ const AuthContext = createContext<AuthContextType>({
   openSecretPasswordModel: function (): void {
     throw new Error('Function is not implemented.');
   },
-  authSignIn: function (_email: string, _username: string): void {
+  authSignIn: function (_email: string, _username: string, _localization: string): void {
     throw new Error('Function is not implemented.');
   },
   authSignOut: async function (_expired: boolean): Promise<void> {
@@ -54,14 +54,23 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     (localStorage.getItem(LOCAL_STORAGE.AUTH_STATE) as EAuthState) ?? EAuthState.Deauthorized,
   );
 
-  const setAuthSignIn = (email: string, username: string): void => {
-    setAuthState(EAuthState.Authorized);
-    setAuthEmail(email);
-    setAuthUsername(username);
+  useEffect(() => {
+    if (authEmail) {
+      return;
+    }
+
     const userLocalization = localStorage.getItem(LOCAL_STORAGE.USER_LOCALE);
     if (userLocalization && i18n.languages.includes(userLocalization)) {
       i18n.changeLanguage(userLocalization);
     }
+  }, []);
+
+  const setAuthSignIn = (email: string, username: string, localization: string): void => {
+    setAuthState(EAuthState.Authorized);
+    setAuthEmail(email);
+    setAuthUsername(username);
+
+    i18n.changeLanguage(localization);
   };
 
   const setAuthSignOut = async (expired: boolean): Promise<void> => {
