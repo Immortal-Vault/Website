@@ -1,4 +1,13 @@
-﻿import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
+﻿import {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { EAuthState, EPrimaryViewPage } from '../types';
 import { signOut } from '../api';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +21,12 @@ export interface AuthContextType {
   authEmail: string;
   authUsername: string;
   secretPassword: string;
-  openSecretPasswordModel: () => void;
+  secretPasswordModalState: boolean;
+  modalSubmitCallback: (() => void) | null | undefined;
+  modalCloseCallback: (() => void) | null | undefined;
+  openSecretPasswordModal: (submitCallback?: () => void, closeCallback?: () => void) => void;
+  closeSecretPasswordModal: () => void;
+  setSecretPassword: Dispatch<SetStateAction<string>>;
   authSignIn: (email: string, username: string) => void;
   authSignOut: (expired: boolean) => Promise<void>;
 }
@@ -22,7 +36,16 @@ const AuthContext = createContext<AuthContextType>({
   authEmail: '',
   authUsername: '',
   secretPassword: '',
-  openSecretPasswordModel: function (): void {
+  secretPasswordModalState: false,
+  modalCloseCallback: null,
+  modalSubmitCallback: null,
+  setSecretPassword: function (): void {
+    throw new Error('Function is not implemented.');
+  },
+  openSecretPasswordModal: function (): void {
+    throw new Error('Function is not implemented.');
+  },
+  closeSecretPasswordModal: function (): void {
     throw new Error('Function is not implemented.');
   },
   authSignIn: function (_email: string, _username: string): void {
@@ -43,7 +66,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const { setCurrentPage } = useMenu();
   const [
     secretPasswordModalState,
-    { open: openSecretPasswordModel, close: closeSecretPasswordModal },
+    { open: openSecretPasswordModal, close: closeSecretPasswordModal },
   ] = useDisclosure(false);
   const [passwordInput, setPasswordInput] = useState('');
   const [secretPassword, setSecretPassword] = useState('');
@@ -53,6 +76,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [authState, setAuthState] = useState<EAuthState>(
     (localStorage.getItem(LOCAL_STORAGE.AUTH_STATE) as EAuthState) ?? EAuthState.Deauthorized,
   );
+
+  // const [modalSubmitCallback, setModalSubmitCallback] = useState<(() => void) | null | undefined>(
+  //   null,
+  // );
+  // const [modalCloseCallback, setModalCloseCallback] = useState<(() => void) | null | undefined>(
+  //   null,
+  // );
+
+  const [modalCloseCallback, setModalClose] = useState<(() => void) | null | undefined>();
+  const [modalSubmitCallback, setModalSubmit] = useState<(() => void) | null | undefined>();
 
   const setAuthSignIn = (email: string, username: string): void => {
     setAuthState(EAuthState.Authorized);
@@ -114,17 +147,40 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return authPingInterval.stop;
   }, [authState]);
 
+  const openSecretPasswordModalWithCallback = (
+    submitCallback?: () => void,
+    closeCallback?: () => void,
+  ): void => {
+    openSecretPasswordModal();
+
+    setModalSubmit(() => submitCallback);
+    setModalClose(() => closeCallback);
+  };
+
   const contextValue = useMemo(
     () => ({
       authState,
       authEmail,
       authUsername,
       secretPassword,
-      openSecretPasswordModel,
+      secretPasswordModalState,
+      setSecretPassword,
+      modalSubmitCallback,
+      modalCloseCallback,
+      openSecretPasswordModal: openSecretPasswordModalWithCallback,
+      closeSecretPasswordModal,
       authSignIn: setAuthSignIn,
       authSignOut: setAuthSignOut,
     }),
-    [authState, authEmail, authUsername, secretPassword],
+    [
+      authState,
+      authEmail,
+      authUsername,
+      secretPassword,
+      secretPasswordModalState,
+      modalCloseCallback,
+      modalSubmitCallback,
+    ],
   );
 
   return (
@@ -149,6 +205,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           <Button
             onClick={() => {
               setCurrentPage(EPrimaryViewPage.None);
+              if (modalCloseCallback !== undefined && modalCloseCallback !== null) {
+                modalCloseCallback();
+              }
               closeSecretPasswordModal();
             }}
           >
@@ -157,7 +216,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           <Button
             onClick={() => {
               setSecretPassword(passwordInput);
-              closeSecretPasswordModal();
+              if (modalSubmitCallback) {
+                modalSubmitCallback();
+              }
             }}
           >
             {t('vault:modals.masterPassword.buttons.submit')}

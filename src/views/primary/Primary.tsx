@@ -6,14 +6,22 @@ import { Container, Drawer, Grid, ScrollArea, Text } from '@mantine/core';
 import { Secrets } from './subviews';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { Folders } from './subviews/folders';
-import { useGoogleDrive, useSecrets } from '../../stores';
+import { useAuth, useGoogleDrive, useSecrets } from '../../stores';
 import { useNavigate } from 'react-router-dom';
 
 export function Primary() {
   const isMobile = useMediaQuery('(max-width: 768px)');
   const { i18n, t } = useTranslation('views');
-  const { selectedSecret, selectedFolder, setSelectedSecret, setSelectedFolder, deleteSecret } =
-    useSecrets();
+  const {
+    selectedSecret,
+    selectedFolder,
+    setSelectedSecret,
+    setSelectedFolder,
+    deleteSecret,
+    fetchSecrets,
+    secrets,
+  } = useSecrets();
+  const { openSecretPasswordModal, secretPasswordModalState } = useAuth();
   const { googleDriveState, googleDriveStateFetched } = useGoogleDrive();
   const navigate = useNavigate();
 
@@ -38,6 +46,19 @@ export function Primary() {
       sendNotification(t('notifications:needConnectVault'));
     }
   }, [googleDriveStateFetched]);
+  const submit = (): void => {
+    if (!secrets) fetchSecrets();
+  };
+
+  const close = (): void => {
+    navigate(ROUTER_PATH.MENU_VAULT);
+  };
+
+  useEffect(() => {
+    if (secrets === null && !secretPasswordModalState) {
+      openSecretPasswordModal(submit, close);
+    }
+  }, [secrets]);
 
   const getSecretSection = () => (
     <>
@@ -138,11 +159,15 @@ export function Primary() {
     </Grid>
   );
 
+  const getContent = () => {
+    return isMobile ? getMobileLayout() : getPCLayout();
+  };
+
   return (
     <>
       <PrimaryHeader />
       <Container fluid mb='xl'>
-        {isMobile ? getMobileLayout() : getPCLayout()}
+        {getContent()}
       </Container>
       <Footer />
     </>

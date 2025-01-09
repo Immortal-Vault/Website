@@ -66,7 +66,7 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
   const addFolder = async () => {
     const values = addFolderForm.values;
 
-    if (values.label.length < 1) {
+    if (values.label.length < 1 || secrets === null) {
       return;
     }
 
@@ -79,7 +79,7 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
     const newFolders = [folder, ...folders];
     setFolders(newFolders);
     setFilteredFolders(newFolders);
-    await saveSecrets(secrets, newFolders);
+    await saveSecrets(secrets ?? [], newFolders);
     sendSuccessNotification(t('notifications:folder.addedSuccessfully'));
   };
 
@@ -90,7 +90,7 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
 
     const folder = JSON.parse(folderForDelete.value) as TFolder;
 
-    const updatedSecrets = secrets.map((secret) => ({
+    const updatedSecrets = (secrets ?? []).map((secret) => ({
       ...secret,
       folders: secret.folders?.filter((f) => f !== folder.id) ?? [],
     }));

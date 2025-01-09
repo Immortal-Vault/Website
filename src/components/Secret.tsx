@@ -57,6 +57,9 @@ export const Secret = (props: { secret: TSecret; delete: () => Promise<void> }) 
   }, []);
 
   const handleFoldersChange = async (folderIds: string[]) => {
+    if (!secrets) {
+      return;
+    }
     const secret = secrets.find((secret) => secret.id === props.secret.id);
     if (!secret) {
       return;

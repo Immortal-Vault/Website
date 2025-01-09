@@ -12,35 +12,40 @@ import { TFolder, TSecret, TSecretFile } from '../types';
 import { useGoogleDrive } from './GoogleDriveContext.tsx';
 import { toast } from 'react-toastify';
 import { customFetch, uploadSecretFile } from '../api';
-import { decrypt, encrypt, ROUTER_PATH, SECRET_FILE_VERSION } from '../shared';
+import { decrypt, encrypt, SECRET_FILE_VERSION } from '../shared';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from './AuthContext.tsx';
 import { useEnvVars } from './EnvVarsContext.tsx';
-import { useLocation } from 'react-router-dom';
 import { applyMigrations } from '../migrations';
 
 export interface SecretsContextType {
-  secrets: TSecret[];
-  filteredSecrets: TSecret[];
+  secrets: TSecret[] | null;
+  filteredSecrets: TSecret[] | null;
   selectedSecret: TSecret | null;
   folders: TFolder[];
   selectedFolder: TFolder | null;
-  setSecrets: Dispatch<SetStateAction<TSecret[]>>;
+  isSuccessFetch: boolean;
+  fetchSecrets: () => Promise<void>;
+  setSecrets: Dispatch<SetStateAction<TSecret[] | null>>;
   setFolders: Dispatch<SetStateAction<TFolder[]>>;
   setSelectedFolder: Dispatch<SetStateAction<TFolder | null>>;
   setSelectedSecret: Dispatch<SetStateAction<TSecret | null>>;
-  setFilteredSecrets: Dispatch<SetStateAction<TSecret[]>>;
+  setFilteredSecrets: Dispatch<SetStateAction<TSecret[] | null>>;
   saveSecrets: (secrets: TSecret[], folders: TFolder[]) => Promise<void>;
   deleteSecret: (secret: TSecret) => Promise<void>;
 }
 
 const SecretsContext = createContext<SecretsContextType>({
-  secrets: [],
-  filteredSecrets: [],
+  secrets: null,
+  filteredSecrets: null,
   selectedSecret: null,
   folders: [],
   selectedFolder: null,
+  isSuccessFetch: false,
   setSecrets: function (): void {
+    throw new Error('Function is not implemented.');
+  },
+  fetchSecrets: (): Promise<void> => {
     throw new Error('Function is not implemented.');
   },
   setSelectedSecret: function (): void {
@@ -68,17 +73,17 @@ interface SecretsProps {
 }
 
 export const SecretsProvider = ({ children }: SecretsProps) => {
-  const [secrets, setSecrets] = useState<TSecret[]>([]);
-  const [filteredSecrets, setFilteredSecrets] = useState<TSecret[]>([]);
+  const [secrets, setSecrets] = useState<TSecret[] | null>(null);
+  const [filteredSecrets, setFilteredSecrets] = useState<TSecret[] | null>(null);
   const [selectedSecret, setSelectedSecret] = useState<TSecret | null>(null);
   const [folders, setFolders] = useState<TFolder[]>([]);
   const [selectedFolder, setSelectedFolder] = useState<TFolder | null>(null);
+  const [isSuccessFetch, setIsSuccessFetch] = useState<boolean>(false);
 
   const { googleDriveState } = useGoogleDrive();
   const { t } = useTranslation('secrets');
   const authContext = useAuth();
   const { envs } = useEnvVars();
-  const location = useLocation();
 
   const saveSecrets = async (secrets: TSecret[], folders: TFolder[]): Promise<void> => {
     const notificationId = toast.loading(t('data.updating'));
@@ -106,6 +111,10 @@ export const SecretsProvider = ({ children }: SecretsProps) => {
   };
 
   const deleteSecret = async (secret: TSecret) => {
+    if (!secrets) {
+      return;
+    }
+
     const newSecrets = secrets.filter((s) => s.id !== secret.id);
     setSecrets(newSecrets);
     setFilteredSecrets(newSecrets);
@@ -113,7 +122,6 @@ export const SecretsProvider = ({ children }: SecretsProps) => {
   };
 
   useEffect(() => {
-    setSecrets([]);
     setFolders([]);
   }, [googleDriveState]);
 
@@ -129,6 +137,7 @@ export const SecretsProvider = ({ children }: SecretsProps) => {
       const secretFileResponse = await response?.text();
       if (!secretFileResponse) {
         toast.error(t('data.fetch.failed'));
+        authContext.setSecretPassword('');
         toast.dismiss(notificationId);
         return;
       }
@@ -140,37 +149,20 @@ export const SecretsProvider = ({ children }: SecretsProps) => {
       const secrets = migratedSecretFile.secrets;
       const folders = migratedSecretFile.folders;
 
-      setSecrets(secrets ?? []);
-      setFilteredSecrets(secrets ?? []);
+      setSecrets(secrets ?? null);
+      setFilteredSecrets(secrets ?? null);
       setFolders(folders ?? []);
-
+      authContext.closeSecretPasswordModal();
+      setIsSuccessFetch(true);
       toast.dismiss(notificationId);
     } catch (error) {
-      authContext.openSecretPasswordModel();
       console.error(error);
       toast.error(t('incorrectMasterPassword'));
+      authContext.setSecretPassword('');
+      setIsSuccessFetch(false);
       toast.dismiss(notificationId);
     }
   };
-
-  useEffect(() => {
-    const pathName = location.pathname;
-    const isIncludingMenuPath = pathName.includes(ROUTER_PATH.MENU);
-
-    if (
-      (isIncludingMenuPath && pathName.replace(ROUTER_PATH.MENU, '').length > 1) ||
-      !isIncludingMenuPath ||
-      !googleDriveState
-    ) {
-      return;
-    }
-
-    if (!authContext.secretPassword) {
-      authContext.openSecretPasswordModel();
-    } else if (secrets.length < 1) {
-      fetchSecrets();
-    }
-  }, [authContext.secretPassword, location.pathname, googleDriveState]);
 
   const contextValue = useMemo(
     () => ({
@@ -185,6 +177,8 @@ export const SecretsProvider = ({ children }: SecretsProps) => {
       setSecrets,
       setFolders,
       saveSecrets,
+      fetchSecrets,
+      isSuccessFetch,
       deleteSecret,
     }),
     [secrets, filteredSecrets, folders, selectedFolder, selectedSecret],
