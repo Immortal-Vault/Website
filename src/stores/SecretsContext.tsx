@@ -24,7 +24,6 @@ export interface SecretsContextType {
   selectedSecret: TSecret | null;
   folders: TFolder[];
   selectedFolder: TFolder | null;
-  isSuccessFetch: boolean;
   fetchSecrets: () => Promise<void>;
   setSecrets: Dispatch<SetStateAction<TSecret[] | null>>;
   setFolders: Dispatch<SetStateAction<TFolder[]>>;
@@ -41,7 +40,6 @@ const SecretsContext = createContext<SecretsContextType>({
   selectedSecret: null,
   folders: [],
   selectedFolder: null,
-  isSuccessFetch: false,
   setSecrets: function (): void {
     throw new Error('Function is not implemented.');
   },
@@ -78,7 +76,6 @@ export const SecretsProvider = ({ children }: SecretsProps) => {
   const [selectedSecret, setSelectedSecret] = useState<TSecret | null>(null);
   const [folders, setFolders] = useState<TFolder[]>([]);
   const [selectedFolder, setSelectedFolder] = useState<TFolder | null>(null);
-  const [isSuccessFetch, setIsSuccessFetch] = useState<boolean>(false);
 
   const { googleDriveState } = useGoogleDrive();
   const { t } = useTranslation('secrets');
@@ -142,6 +139,7 @@ export const SecretsProvider = ({ children }: SecretsProps) => {
         return;
       }
 
+      console.log('test: ', authContext.secretPassword);
       const decryptedSecretFile = await decrypt(secretFileResponse, authContext.secretPassword);
       const secretFileInfo = JSON.parse(decryptedSecretFile) as TSecretFile;
       const migratedSecretFile = applyMigrations(secretFileInfo);
@@ -153,13 +151,11 @@ export const SecretsProvider = ({ children }: SecretsProps) => {
       setFilteredSecrets(secrets ?? null);
       setFolders(folders ?? []);
       authContext.closeSecretPasswordModal();
-      setIsSuccessFetch(true);
       toast.dismiss(notificationId);
     } catch (error) {
       console.error(error);
       toast.error(t('incorrectMasterPassword'));
       authContext.setSecretPassword('');
-      setIsSuccessFetch(false);
       toast.dismiss(notificationId);
     }
   };
@@ -178,7 +174,6 @@ export const SecretsProvider = ({ children }: SecretsProps) => {
       setFolders,
       saveSecrets,
       fetchSecrets,
-      isSuccessFetch,
       deleteSecret,
     }),
     [secrets, filteredSecrets, folders, selectedFolder, selectedSecret],

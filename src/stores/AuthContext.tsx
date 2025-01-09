@@ -174,15 +174,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       authSignIn: setAuthSignIn,
       authSignOut: setAuthSignOut,
     }),
-    [
-      authState,
-      authEmail,
-      authUsername,
-      secretPassword,
-      secretPasswordModalState,
-      modalCloseCallback,
-      modalSubmitCallback,
-    ],
+    [authState, authEmail, authUsername, secretPassword, secretPasswordModalState],
   );
 
   return (
@@ -207,7 +199,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           <Button
             onClick={() => {
               setCurrentPage(EPrimaryViewPage.None);
-              if (modalCloseCallback !== undefined && modalCloseCallback !== null) {
+              if (modalCloseCallback) {
                 modalCloseCallback();
               }
               closeSecretPasswordModal();

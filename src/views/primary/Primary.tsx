@@ -13,13 +13,13 @@ export function Primary() {
   const isMobile = useMediaQuery('(max-width: 768px)');
   const { i18n, t } = useTranslation('views');
   const {
+    secrets,
     selectedSecret,
     selectedFolder,
     setSelectedSecret,
     setSelectedFolder,
     deleteSecret,
     fetchSecrets,
-    secrets,
   } = useSecrets();
   const { openSecretPasswordModal, secretPasswordModalState } = useAuth();
   const { googleDriveState, googleDriveStateFetched } = useGoogleDrive();
@@ -47,7 +47,9 @@ export function Primary() {
     }
   }, [googleDriveStateFetched]);
   const submit = (): void => {
-    if (!secrets) fetchSecrets();
+    if (!secrets) {
+      fetchSecrets();
+    }
   };
 
   const close = (): void => {
@@ -113,7 +115,7 @@ export function Primary() {
     </>
   );
 
-  const getPCLayout = () => (
+  const getLayout = () => (
     <Grid>
       <Grid.Col
         span={2}
@@ -160,7 +162,7 @@ export function Primary() {
   );
 
   const getContent = () => {
-    return isMobile ? getMobileLayout() : getPCLayout();
+    return isMobile ? getMobileLayout() : getLayout();
   };
 
   return (

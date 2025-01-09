@@ -77,7 +77,7 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
     if (!secrets) {
       return;
     }
-    const secret = secrets.find((secret) => secret.id === props.sourceSecret.id);
+
     const foundSecret = secrets.find((s) => s.id === secret?.id);
     if (!foundSecret) {
       return;
