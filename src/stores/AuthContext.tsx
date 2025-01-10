@@ -22,6 +22,7 @@ export interface AuthContextType {
   authUsername: string;
   secretPassword: string;
   secretPasswordModalState: boolean;
+  is12HoursFormat: boolean;
   modalSubmitCallback: ((masterPassword: string) => void) | null | undefined;
   modalCloseCallback: (() => void) | null | undefined;
   openSecretPasswordModal: (
@@ -30,9 +31,15 @@ export interface AuthContextType {
   ) => void;
   closeSecretPasswordModal: () => void;
   setSecretPassword: Dispatch<SetStateAction<string>>;
-  authSignIn: (email: string, username: string, localization: string) => void;
+  authSignIn: (
+    email: string,
+    username: string,
+    localization: string,
+    is12HoursFormat: boolean,
+  ) => void;
   authSignOut: (expired: boolean) => Promise<void>;
   setIsFetchInProgress: Dispatch<SetStateAction<boolean>>;
+  setIs12HoursFormat: Dispatch<SetStateAction<boolean>>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -43,6 +50,7 @@ const AuthContext = createContext<AuthContextType>({
   secretPasswordModalState: false,
   modalCloseCallback: null,
   modalSubmitCallback: null,
+  is12HoursFormat: false,
   setSecretPassword: function (): void {
     throw new Error('Function is not implemented.');
   },
@@ -52,13 +60,21 @@ const AuthContext = createContext<AuthContextType>({
   closeSecretPasswordModal: function (): void {
     throw new Error('Function is not implemented.');
   },
-  authSignIn: function (_email: string, _username: string, _localization: string): void {
+  authSignIn: function (
+    _email: string,
+    _username: string,
+    _localization: string,
+    _is12HoursFormat: boolean,
+  ): void {
     throw new Error('Function is not implemented.');
   },
   authSignOut: async function (_expired: boolean): Promise<void> {
     throw new Error('Function is not implemented.');
   },
   setIsFetchInProgress: async function (): Promise<void> {
+    throw new Error('Function is not implemented.');
+  },
+  setIs12HoursFormat: async function (): Promise<void> {
     throw new Error('Function is not implemented.');
   },
 });
@@ -80,6 +96,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isFetchInProgress, setIsFetchInProgress] = useState<boolean>(false);
   const [authEmail, setAuthEmail] = useState('');
   const [authUsername, setAuthUsername] = useState('');
+  const [is12HoursFormat, setIs12HoursFormat] = useState(false);
   const authPingInterval = useInterval(() => authPing(), 10000);
   const [authState, setAuthState] = useState<EAuthState>(
     (localStorage.getItem(LOCAL_STORAGE.AUTH_STATE) as EAuthState) ?? EAuthState.Deauthorized,
@@ -91,22 +108,31 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   >();
 
   useEffect(() => {
-    if (authEmail) {
+    if (!authEmail) {
       return;
     }
 
-    const userLocalization = localStorage.getItem(LOCAL_STORAGE.USER_LOCALE);
-    if (userLocalization && i18n.languages.includes(userLocalization)) {
-      i18n.changeLanguage(userLocalization);
-    }
-  }, []);
+    const localization = localStorage.getItem(LOCAL_STORAGE.USER_LOCALE);
+    i18n.changeLanguage(localization ?? 'en');
 
-  const setAuthSignIn = (email: string, username: string, localization: string): void => {
+    const is12HoursFormat = localStorage.getItem(LOCAL_STORAGE.USER_TIME_FORMAT);
+    if (is12HoursFormat) {
+      setIs12HoursFormat(JSON.parse(is12HoursFormat));
+    }
+  }, [authEmail]);
+
+  const setAuthSignIn = (
+    email: string,
+    username: string,
+    localization: string,
+    is12HoursFormat: boolean,
+  ): void => {
     setAuthState(EAuthState.Authorized);
     setAuthEmail(email);
     setAuthUsername(username);
 
     i18n.changeLanguage(localization);
+    setIs12HoursFormat(is12HoursFormat);
   };
 
   const setAuthSignOut = async (expired: boolean): Promise<void> => {
@@ -116,7 +142,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setAuthUsername('');
     setSecretPassword('');
     localStorage.removeItem(LOCAL_STORAGE.USER_LOCALE);
+    localStorage.removeItem(LOCAL_STORAGE.USER_TIME_FORMAT);
     i18n.changeLanguage(undefined);
+    setIs12HoursFormat(false);
 
     if (expired) {
       sendNotification(t('notifications:sessionExpired'));
@@ -176,6 +204,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       authUsername,
       secretPassword,
       secretPasswordModalState,
+      is12HoursFormat,
       setSecretPassword,
       modalSubmitCallback,
       modalCloseCallback,
@@ -184,8 +213,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       authSignIn: setAuthSignIn,
       authSignOut: setAuthSignOut,
       setIsFetchInProgress,
+      setIs12HoursFormat,
     }),
-    [authState, authEmail, authUsername, secretPassword, secretPasswordModalState],
+    [authState, authEmail, authUsername, secretPassword, secretPasswordModalState, is12HoursFormat],
   );
 
   return (

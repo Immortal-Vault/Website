@@ -14,14 +14,19 @@ import { useForm } from '@mantine/form';
 import validator from 'validator';
 import passwordValidator from 'password-validator';
 import { useNavigate } from 'react-router-dom';
-import { ROUTER_PATH, sendErrorNotification, sendSuccessNotification } from '../../shared';
+import {
+  getTimeFormatByLocalization,
+  ROUTER_PATH,
+  sendErrorNotification,
+  sendSuccessNotification,
+} from '../../shared';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { useTranslation } from 'react-i18next';
 import { signUp } from '../../api';
 import { useEnvVars } from '../../stores';
 
 export default function SignUp() {
-  const { t } = useTranslation('auth');
+  const { t, i18n } = useTranslation('auth');
   const navigate = useNavigate();
   const form = useForm({
     initialValues: {
@@ -84,7 +89,16 @@ export default function SignUp() {
       return;
     }
 
-    const response = await signUp(username, email, password, envs, t);
+    const response = await signUp(
+      username,
+      email,
+      password,
+      i18n.language,
+      getTimeFormatByLocalization(i18n.language) ?? false,
+      envs,
+      t,
+    );
+
     if (!response || !response.ok) {
       setLoaderState.close();
       return;

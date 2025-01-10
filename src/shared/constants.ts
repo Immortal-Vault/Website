@@ -12,6 +12,7 @@
 export const LOCAL_STORAGE = {
   LAST_EMAIL: 'last_email',
   USER_LOCALE: 'user_locale',
+  USER_TIME_FORMAT: 'user_time_format',
   AUTH_STATE: 'auth_state',
 };
 
