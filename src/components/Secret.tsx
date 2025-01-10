@@ -315,7 +315,7 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
           <Group>
             <FaClock size={18} />
             <Text c='gray'>
-              {t('fields.created.title')}:{dateTimeFormatOptions.format(secret.created)}
+              {t('fields.created.title')}: {dateTimeFormatOptions.format(secret.created)}
             </Text>
           </Group>
         </Flex>
