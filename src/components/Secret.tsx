@@ -29,14 +29,15 @@ import {
 import { TSecret } from '../types';
 import { useEffect, useState } from 'react';
 import { useMediaQuery, useDisclosure } from '@mantine/hooks';
-import { useSecrets } from '../stores';
+import { useAuth, useSecrets } from '../stores';
 import { useTranslation } from 'react-i18next';
 import { MdOutlineAlternateEmail } from 'react-icons/md';
-import { trimText } from '../shared';
+import { getDateTimeFormatOptions, trimText } from '../shared';
 
 export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<void> }) => {
   const { folders, secrets, saveSecrets } = useSecrets();
-  const { t } = useTranslation('secrets');
+  const { t, i18n } = useTranslation('secrets');
+  const { is12HoursFormat } = useAuth();
 
   const [showPassword, setShowPassword] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -47,6 +48,7 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
 
   const [attachedFolders, setAttachedFolders] = useState<string[]>([]);
   const isMobile = useMediaQuery('(max-width: 768px)');
+  const dateTimeFormatOptions = getDateTimeFormatOptions(i18n.language, is12HoursFormat);
 
   useEffect(() => {
     setSecret(props.sourceSecret);
@@ -307,14 +309,12 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
           <Group>
             <FaClock size={18} />
             <Text c='gray'>
-              {t('fields.lastUpdated.title')}: {new Date(secret.lastUpdated).toLocaleString()}
+              {t('fields.lastUpdated.title')}: {dateTimeFormatOptions.format(secret.lastUpdated)}
             </Text>
           </Group>
           <Group>
             <FaClock size={18} />
-            <Text c='gray'>
-              {t('fields.created.title')}: {new Date(secret.created).toLocaleString()}
-            </Text>
+            <Text c='gray'>{dateTimeFormatOptions.format(secret.created)}</Text>
           </Group>
         </Flex>
       )}

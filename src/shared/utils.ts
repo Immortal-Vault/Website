@@ -92,3 +92,8 @@ export function trimText(text: string | undefined, length: number): string {
 
   return text.slice(0, length) + '...';
 }
+
+export const getTimeFormatByLocalization = (language: string) => {
+  const options = new Intl.DateTimeFormat(language, { hour: 'numeric' }).resolvedOptions();
+  return options.hour12;
+};

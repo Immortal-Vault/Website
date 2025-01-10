@@ -46,6 +46,8 @@ export async function signUp(
   username: string,
   email: string,
   password: string,
+  language: string,
+  is12HoursFormat: boolean,
   envs: TEnvVars | undefined,
   t: TFunction,
 ): Promise<Response | null> {
@@ -55,6 +57,8 @@ export async function signUp(
       username: username.toLowerCase(),
       email: email.toLowerCase(),
       password,
+      language,
+      is12HoursFormat,
     }),
     'POST',
     t,
