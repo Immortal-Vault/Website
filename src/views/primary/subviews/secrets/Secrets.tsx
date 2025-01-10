@@ -9,6 +9,7 @@ import {
   Input,
   List,
   Modal,
+  Select,
   Text,
   Textarea,
   TextInput,
@@ -62,6 +63,7 @@ export const Secrets = () => {
       website: '',
       phone: '',
       notes: '',
+      folder: selectedFolder ? selectedFolder.id : null,
     },
     validate: {
       label: (val) => (val.length < 1 ? 'fields.label.canNotBeEmpty' : null),
@@ -73,7 +75,7 @@ export const Secrets = () => {
   }, [secrets]);
 
   const addSecret = async () => {
-    const values = addSecretForm.values;
+    const { folder: folderId, ...values } = addSecretForm.values;
 
     if (values.label.length < 1) {
       return;
@@ -81,7 +83,7 @@ export const Secrets = () => {
 
     const secret: TSecret = {
       id: uuid(),
-      folders: [],
+      folders: folderId ? [folderId] : [],
       lastUpdated: Date.now(),
       created: Date.now(),
       ...values,
@@ -228,6 +230,21 @@ export const Secrets = () => {
             value={addSecretForm.values.notes}
             onChange={(event) => addSecretForm.setFieldValue('notes', event.currentTarget.value)}
           />
+
+          {folders.length > 0 && (
+            <Select
+              label={t('fields.folder.title')}
+              data={folders.map((f) => ({ value: f.id, label: f.label }))}
+              value={addSecretForm.values.folder}
+              onChange={(value) => {
+                if (!value) {
+                  return;
+                }
+
+                addSecretForm.setFieldValue('folder', value);
+              }}
+            />
+          )}
         </Flex>
 
         <Group mt='xl' justify={'end'}>
@@ -307,7 +324,14 @@ export const Secrets = () => {
             onChange={(e) => handleSearch(e.currentTarget.value)}
           />
           <Flex gap={'md'}>
-            <Button mb={'md'} fullWidth={isMobile} onClick={openAddModal}>
+            <Button
+              mb={'md'}
+              fullWidth={isMobile}
+              onClick={() => {
+                addSecretForm.values.folder = selectedFolder ? selectedFolder.id : null;
+                openAddModal();
+              }}
+            >
               {t('buttons.add')}
             </Button>
             <Button mb={'md'} fullWidth={isMobile} onClick={openImportModal}>
