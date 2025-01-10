@@ -6,15 +6,23 @@ import { Container, Drawer, Grid, ScrollArea, Text } from '@mantine/core';
 import { Secrets } from './subviews';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { Folders } from './subviews/folders';
-import { useGoogleDrive, useSecrets } from '../../stores';
+import { useAuth, useGoogleDrive, useSecrets } from '../../stores';
 import { useNavigate } from 'react-router-dom';
 
 export function Primary() {
   const isMobile = useMediaQuery('(max-width: 768px)');
   const { i18n, t } = useTranslation('views');
-  const { selectedSecret, selectedFolder, setSelectedSecret, setSelectedFolder, deleteSecret } =
-    useSecrets();
-  const { googleDriveState, googleDriveStateFetched } = useGoogleDrive();
+  const {
+    secrets,
+    selectedSecret,
+    selectedFolder,
+    setSelectedSecret,
+    setSelectedFolder,
+    deleteSecret,
+    fetchSecrets,
+  } = useSecrets();
+  const { openSecretPasswordModal, secretPasswordModalState } = useAuth();
+  const { doesGoogleDriveConnected, googleDriveStateFetched } = useGoogleDrive();
   const navigate = useNavigate();
 
   const [foldersDrawerState, { close: closeFoldersDrawer, open: openFoldersDrawer }] =
@@ -28,16 +36,33 @@ export function Primary() {
     }
   }, []);
 
+  const submit = (masterPassword: string): void => {
+    if (!secrets) {
+      fetchSecrets(masterPassword);
+    }
+  };
+
+  const close = (): void => {
+    navigate(ROUTER_PATH.MENU_VAULT);
+  };
+
   useEffect(() => {
     if (!googleDriveStateFetched) {
       return;
     }
 
-    if (!googleDriveState) {
+    if (!doesGoogleDriveConnected()) {
       navigate(ROUTER_PATH.MENU_VAULT);
       sendNotification(t('notifications:needConnectVault'));
+      return;
     }
-  }, [googleDriveStateFetched]);
+
+    if (!(secrets === null && !secretPasswordModalState)) {
+      return;
+    }
+
+    openSecretPasswordModal(submit, close);
+  }, [secrets, googleDriveStateFetched]);
 
   const getSecretSection = () => (
     <>
@@ -92,7 +117,7 @@ export function Primary() {
     </>
   );
 
-  const getPCLayout = () => (
+  const getLayout = () => (
     <Grid>
       <Grid.Col
         span={2}
@@ -138,11 +163,15 @@ export function Primary() {
     </Grid>
   );
 
+  const getContent = () => {
+    return isMobile ? getMobileLayout() : getLayout();
+  };
+
   return (
     <>
       <PrimaryHeader />
       <Container fluid mb='xl'>
-        {isMobile ? getMobileLayout() : getPCLayout()}
+        {getContent()}
       </Container>
       <Footer />
     </>

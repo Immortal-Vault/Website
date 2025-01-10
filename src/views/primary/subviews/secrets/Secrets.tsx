@@ -50,7 +50,7 @@ export const Secrets = () => {
   const [importedSecretFile, setImportedSecretFile] = useState<File | null>(null);
 
   const secretsToRender = selectedFolder
-    ? filteredSecrets.filter((s) => s.folders?.includes(selectedFolder.id))
+    ? (filteredSecrets ?? []).filter((s) => s.folders?.includes(selectedFolder.id))
     : filteredSecrets;
 
   const addSecretForm = useForm({
@@ -87,7 +87,7 @@ export const Secrets = () => {
       ...values,
     };
 
-    const newSecrets = [secret, ...secrets];
+    const newSecrets = [secret, ...(secrets ?? [])];
     setSecrets(newSecrets);
     setFilteredSecrets(newSecrets);
     await saveSecrets(newSecrets, folders);
@@ -104,7 +104,7 @@ export const Secrets = () => {
 
     if (fileContent.items) {
       fileContent.items.map((item: TEnpassItem) => {
-        if (secrets.find((s) => s.id === item.uuid)) {
+        if ((secrets ?? []).find((s) => s.id === item.uuid)) {
           return;
         }
 
@@ -139,7 +139,7 @@ export const Secrets = () => {
       });
     }
 
-    const newSecrets = [...importedSecrets, ...secrets];
+    const newSecrets = [...importedSecrets, ...(secrets ?? [])];
     const newFolders = [...importedFolders, ...folders];
 
     let changed = false;
@@ -165,7 +165,7 @@ export const Secrets = () => {
     if (query.trim() === '') {
       setFilteredSecrets(secrets);
     } else {
-      const filtered = secrets.filter((secret) =>
+      const filtered = (secrets ?? []).filter((secret) =>
         secret.label.toLowerCase().includes(query.toLowerCase()),
       );
       setFilteredSecrets(filtered);
@@ -315,11 +315,11 @@ export const Secrets = () => {
             </Button>
           </Flex>
           <Text size='lg' c='gray' mb='md'>
-            {t('elements.title')}: {secretsToRender.length}
+            {t('elements.title')}: {(secretsToRender ?? []).length}
           </Text>
           <List spacing='md'>
-            {secretsToRender?.length > 0 ? (
-              secretsToRender.map((secret, index) => (
+            {(secretsToRender ?? [])?.length > 0 ? (
+              (secretsToRender ?? []).map((secret, index) => (
                 <>
                   <List.Item
                     key={secret.id}
@@ -339,7 +339,7 @@ export const Secrets = () => {
                       </div>
                     </Group>
                   </List.Item>
-                  {index != secretsToRender.length - 1 && <Divider my={'md'} />}
+                  {index != (secretsToRender ?? []).length - 1 && <Divider my={'md'} />}
                 </>
               ))
             ) : (
