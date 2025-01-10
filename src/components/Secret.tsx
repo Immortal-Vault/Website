@@ -74,6 +74,10 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
   }, [isEditing]);
 
   const handleFoldersChange = async (folderIds: string[]) => {
+    if (!secrets) {
+      return;
+    }
+
     const foundSecret = secrets.find((s) => s.id === secret?.id);
     if (!foundSecret) {
       return;
@@ -91,7 +95,7 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
   };
 
   const handleSave = async () => {
-    if (!editedSecret || !secret) {
+    if (!editedSecret || !secret || !secrets) {
       return;
     }
 

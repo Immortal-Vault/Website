@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { EStage, TEnvVars } from '../types';
+import { LoadingOverlay } from '@mantine/core';
 
 export interface EnvVarsContextType {
   envs: TEnvVars | undefined;
@@ -41,6 +42,17 @@ export const EnvVarsProvider = ({ children }: EnvVarsProps) => {
     }),
     [envVars],
   );
+
+  if (!envVars) {
+    return (
+      <LoadingOverlay
+        visible={true}
+        zIndex={1000}
+        overlayProps={{ radius: 'sm', blur: 2 }}
+        loaderProps={{ color: 'blue' }}
+      />
+    );
+  }
 
   return <EnvVarsContext.Provider value={contextValue}>{children}</EnvVarsContext.Provider>;
 };

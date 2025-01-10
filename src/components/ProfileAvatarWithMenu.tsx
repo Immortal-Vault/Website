@@ -1,13 +1,13 @@
 import { FC, forwardRef } from 'react';
 import { Avatar, Button, Group, Menu, Modal, rem, UnstyledButton } from '@mantine/core';
-import { ROUTER_PATH, sendSuccessNotification } from '../shared';
+import { ROUTER_PATH, sendNotification, sendSuccessNotification } from '../shared';
 import { useNavigate } from 'react-router-dom';
 import { MdOutlineSettings } from 'react-icons/md';
 import { TiCloudStorage } from 'react-icons/ti';
 import { ImExit } from 'react-icons/im';
 import { BsPersonCircle } from 'react-icons/bs';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from '../stores';
+import { useAuth, useGoogleDrive } from '../stores';
 import { useDisclosure } from '@mantine/hooks';
 
 // eslint-disable-next-line react/display-name
@@ -21,6 +21,7 @@ const ProfileButton = forwardRef<HTMLButtonElement>(({ ...others }, ref) => {
 
 const elementsData = [
   {
+    id: 'profile',
     title: 'header.profile',
     link: ROUTER_PATH.MENU,
     icon: (
@@ -33,6 +34,7 @@ const elementsData = [
     ),
   },
   {
+    id: 'settings',
     title: 'header.settings',
     link: ROUTER_PATH.MENU_SETTINGS,
     icon: (
@@ -45,6 +47,7 @@ const elementsData = [
     ),
   },
   {
+    id: 'vault',
     title: 'header.vault',
     link: ROUTER_PATH.MENU_VAULT,
     icon: (
@@ -63,12 +66,20 @@ export const ProfileAvatarWithMenu: FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('root');
   const { authUsername, authSignOut } = useAuth();
+  const { doesGoogleDriveConnected } = useGoogleDrive();
 
   const elements = elementsData.map((element) => (
     <Menu.Item
       key={element.title}
       leftSection={element.icon}
       onClick={() => {
+        if (element.id === 'profile') {
+          if (!doesGoogleDriveConnected()) {
+            navigate(ROUTER_PATH.MENU_VAULT);
+            sendNotification(t('notifications:needConnectVault'));
+            return;
+          }
+        }
         if (element.link) {
           navigate(element.link);
         }

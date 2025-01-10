@@ -20,6 +20,7 @@ export interface GoogleDriveContextType {
   googleDriveEmail: string;
   setGoogleDriveState: Dispatch<SetStateAction<boolean>>;
   setGoogleDriveEmail: Dispatch<SetStateAction<string>>;
+  doesGoogleDriveConnected: () => boolean;
 }
 
 const GoogleDriveContext = createContext<GoogleDriveContextType>({
@@ -30,6 +31,9 @@ const GoogleDriveContext = createContext<GoogleDriveContextType>({
     throw new Error('Function is not implemented.');
   },
   setGoogleDriveEmail: function (): void {
+    throw new Error('Function is not implemented.');
+  },
+  doesGoogleDriveConnected: function (): boolean {
     throw new Error('Function is not implemented.');
   },
 });
@@ -51,11 +55,17 @@ export const GoogleDriveProvider = ({ children }: GoogleDriveProviderProps) => {
     const googleDriveEmail = await getGoogleDriveState(envs, t, authContext);
     if (!googleDriveEmail) {
       setGoogleDriveState(false);
+      setGoogleDriveStateFetched(true);
       return;
     }
+
     setGoogleDriveState(true);
     setGoogleDriveEmail(googleDriveEmail);
     setGoogleDriveStateFetched(true);
+  };
+
+  const doesGoogleDriveConnected = (): boolean => {
+    return googleDriveState && googleDriveStateFetched;
   };
 
   useEffect(() => {
@@ -73,6 +83,7 @@ export const GoogleDriveProvider = ({ children }: GoogleDriveProviderProps) => {
       googleDriveEmail,
       setGoogleDriveState,
       setGoogleDriveEmail,
+      doesGoogleDriveConnected,
     }),
     [googleDriveState, googleDriveEmail, googleDriveStateFetched],
   );
