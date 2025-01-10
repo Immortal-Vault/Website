@@ -24,7 +24,7 @@ export interface SecretsContextType {
   selectedSecret: TSecret | null;
   folders: TFolder[];
   selectedFolder: TFolder | null;
-  fetchSecrets: () => Promise<void>;
+  fetchSecrets: (masterPassword: string) => Promise<void>;
   setSecrets: Dispatch<SetStateAction<TSecret[] | null>>;
   setFolders: Dispatch<SetStateAction<TFolder[]>>;
   setSelectedFolder: Dispatch<SetStateAction<TFolder | null>>;
@@ -43,7 +43,7 @@ const SecretsContext = createContext<SecretsContextType>({
   setSecrets: function (): void {
     throw new Error('Function is not implemented.');
   },
-  fetchSecrets: (): Promise<void> => {
+  fetchSecrets: (_masterPassword: string): Promise<void> => {
     throw new Error('Function is not implemented.');
   },
   setSelectedSecret: function (): void {
@@ -122,7 +122,8 @@ export const SecretsProvider = ({ children }: SecretsProps) => {
     setFolders([]);
   }, [googleDriveState]);
 
-  const fetchSecrets = async () => {
+  const fetchSecrets = async (masterPassword: string) => {
+    authContext.setIsFetchInProgress(true);
     const notificationId = toast.loading(t('data.fetch.inProgress'));
     try {
       const response = await customFetch(
@@ -134,13 +135,11 @@ export const SecretsProvider = ({ children }: SecretsProps) => {
       const secretFileResponse = await response?.text();
       if (!secretFileResponse) {
         toast.error(t('data.fetch.failed'));
-        authContext.setSecretPassword('');
         toast.dismiss(notificationId);
         return;
       }
 
-      console.log('test: ', authContext.secretPassword);
-      const decryptedSecretFile = await decrypt(secretFileResponse, authContext.secretPassword);
+      const decryptedSecretFile = await decrypt(secretFileResponse, masterPassword);
       const secretFileInfo = JSON.parse(decryptedSecretFile) as TSecretFile;
       const migratedSecretFile = applyMigrations(secretFileInfo);
       console.log(migratedSecretFile); // TODO: remove debug logs
@@ -151,12 +150,12 @@ export const SecretsProvider = ({ children }: SecretsProps) => {
       setFilteredSecrets(secrets ?? null);
       setFolders(folders ?? []);
       authContext.closeSecretPasswordModal();
-      toast.dismiss(notificationId);
     } catch (error) {
       console.error(error);
       toast.error(t('incorrectMasterPassword'));
-      authContext.setSecretPassword('');
+    } finally {
       toast.dismiss(notificationId);
+      authContext.setIsFetchInProgress(false);
     }
   };
 

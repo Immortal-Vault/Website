@@ -15,9 +15,9 @@ import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import classes from './RootHeader.module.css';
 import { useTranslation } from 'react-i18next';
 import { ProfileAvatarWithMenu } from '../ProfileAvatarWithMenu.tsx';
-import { ROUTER_PATH, sendSuccessNotification } from '../../shared';
+import { ROUTER_PATH, sendNotification, sendSuccessNotification } from '../../shared';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../stores';
+import { useAuth, useGoogleDrive } from '../../stores';
 
 export function PrimaryHeader() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
@@ -25,6 +25,7 @@ export function PrimaryHeader() {
   const { t } = useTranslation('root');
   const { authSignOut } = useAuth();
   const navigate = useNavigate();
+  const { doesGoogleDriveConnected } = useGoogleDrive();
 
   return (
     <Box mb={'xl'}>
@@ -76,6 +77,13 @@ export function PrimaryHeader() {
               <Button
                 fullWidth
                 onClick={() => {
+                  if (!doesGoogleDriveConnected()) {
+                    closeDrawer();
+                    navigate(ROUTER_PATH.MENU_VAULT);
+                    sendNotification(t('notifications:needConnectVault'));
+                    return;
+                  }
+
                   navigate(ROUTER_PATH.MENU);
                 }}
               >

@@ -22,7 +22,7 @@ export function Primary() {
     fetchSecrets,
   } = useSecrets();
   const { openSecretPasswordModal, secretPasswordModalState } = useAuth();
-  const { googleDriveState, googleDriveStateFetched } = useGoogleDrive();
+  const { doesGoogleDriveConnected, googleDriveStateFetched } = useGoogleDrive();
   const navigate = useNavigate();
 
   const [foldersDrawerState, { close: closeFoldersDrawer, open: openFoldersDrawer }] =
@@ -36,19 +36,9 @@ export function Primary() {
     }
   }, []);
 
-  useEffect(() => {
-    if (!googleDriveStateFetched) {
-      return;
-    }
-
-    if (!googleDriveState) {
-      navigate(ROUTER_PATH.MENU_VAULT);
-      sendNotification(t('notifications:needConnectVault'));
-    }
-  }, [googleDriveStateFetched]);
-  const submit = (): void => {
+  const submit = (masterPassword: string): void => {
     if (!secrets) {
-      fetchSecrets();
+      fetchSecrets(masterPassword);
     }
   };
 
@@ -57,10 +47,22 @@ export function Primary() {
   };
 
   useEffect(() => {
-    if (secrets === null && !secretPasswordModalState) {
-      openSecretPasswordModal(submit, close);
+    if (!googleDriveStateFetched) {
+      return;
     }
-  }, [secrets]);
+
+    if (!doesGoogleDriveConnected()) {
+      navigate(ROUTER_PATH.MENU_VAULT);
+      sendNotification(t('notifications:needConnectVault'));
+      return;
+    }
+
+    if (!(secrets === null && !secretPasswordModalState)) {
+      return;
+    }
+
+    openSecretPasswordModal(submit, close);
+  }, [secrets, googleDriveStateFetched]);
 
   const getSecretSection = () => (
     <>

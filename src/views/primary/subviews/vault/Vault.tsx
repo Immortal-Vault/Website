@@ -159,6 +159,7 @@ export const Vault = (): JSX.Element => {
           <Input type={'password'} onChange={(e) => setSecretPassword(e.target.value)} />
           <Group mt='xl' justify={'end'}>
             <Button
+              disabled={secretPassword.length < 1}
               onClick={() => {
                 closeSecretPasswordModal();
                 googleLogin();

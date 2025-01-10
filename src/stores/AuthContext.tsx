@@ -22,13 +22,17 @@ export interface AuthContextType {
   authUsername: string;
   secretPassword: string;
   secretPasswordModalState: boolean;
-  modalSubmitCallback: (() => void) | null | undefined;
+  modalSubmitCallback: ((masterPassword: string) => void) | null | undefined;
   modalCloseCallback: (() => void) | null | undefined;
-  openSecretPasswordModal: (submitCallback?: () => void, closeCallback?: () => void) => void;
+  openSecretPasswordModal: (
+    submitCallback?: (masterPassword: string) => void,
+    closeCallback?: () => void,
+  ) => void;
   closeSecretPasswordModal: () => void;
   setSecretPassword: Dispatch<SetStateAction<string>>;
   authSignIn: (email: string, username: string, localization: string) => void;
   authSignOut: (expired: boolean) => Promise<void>;
+  setIsFetchInProgress: Dispatch<SetStateAction<boolean>>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -54,6 +58,9 @@ const AuthContext = createContext<AuthContextType>({
   authSignOut: async function (_expired: boolean): Promise<void> {
     throw new Error('Function is not implemented.');
   },
+  setIsFetchInProgress: async function (): Promise<void> {
+    throw new Error('Function is not implemented.');
+  },
 });
 
 interface AuthProviderProps {
@@ -70,6 +77,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   ] = useDisclosure(false);
   const [passwordInput, setPasswordInput] = useState('');
   const [secretPassword, setSecretPassword] = useState('');
+  const [isFetchInProgress, setIsFetchInProgress] = useState<boolean>(false);
   const [authEmail, setAuthEmail] = useState('');
   const [authUsername, setAuthUsername] = useState('');
   const authPingInterval = useInterval(() => authPing(), 10000);
@@ -78,7 +86,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   );
 
   const [modalCloseCallback, setModalClose] = useState<(() => void) | null | undefined>();
-  const [modalSubmitCallback, setModalSubmit] = useState<(() => void) | null | undefined>();
+  const [modalSubmitCallback, setModalSubmit] = useState<
+    ((masterPassword: string) => void) | null | undefined
+  >();
 
   useEffect(() => {
     if (authEmail) {
@@ -150,7 +160,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [authState]);
 
   const openSecretPasswordModalWithCallback = (
-    submitCallback?: () => void,
+    submitCallback?: (masterPassword: string) => void,
     closeCallback?: () => void,
   ): void => {
     openSecretPasswordModal();
@@ -173,6 +183,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       closeSecretPasswordModal,
       authSignIn: setAuthSignIn,
       authSignOut: setAuthSignOut,
+      setIsFetchInProgress,
     }),
     [authState, authEmail, authUsername, secretPassword, secretPasswordModalState],
   );
@@ -208,10 +219,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             {t('vault:modals.masterPassword.buttons.cancel')}
           </Button>
           <Button
+            disabled={isFetchInProgress}
             onClick={() => {
               setSecretPassword(passwordInput);
               if (modalSubmitCallback) {
-                modalSubmitCallback();
+                modalSubmitCallback(passwordInput);
               }
             }}
           >
