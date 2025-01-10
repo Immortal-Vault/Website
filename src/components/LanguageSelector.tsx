@@ -61,7 +61,6 @@ export const LanguageSelector = (props: { settings: boolean }) => {
         value={language}
         data={languages}
         onChange={selectLanguage}
-        searchable
         checkIconPosition='right'
         style={{
           width: props.settings ? '15rem' : '8rem',
