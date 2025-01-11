@@ -30,11 +30,11 @@ import {
 } from 'react-icons/fa';
 import { TSecret } from '../types';
 import { ReactNode, useEffect, useState } from 'react';
-import { useDisclosure } from '@mantine/hooks';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { useAuth, useSecrets } from '../stores';
 import { useTranslation } from 'react-i18next';
 import { MdOutlineAlternateEmail } from 'react-icons/md';
-import { getDateTimeFormatOptions, trimText } from '../shared';
+import { getDateTimeFormatOptions, sendSuccessNotification, trimText } from '../shared';
 
 export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<void> }) => {
   const { folders, secrets, saveSecrets, setSelectedFolder } = useSecrets();
@@ -49,6 +49,7 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
     useDisclosure(false);
 
   const dateTimeFormatOptions = getDateTimeFormatOptions(i18n.language, is12HoursFormat);
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   useEffect(() => {
     setSecret(props.sourceSecret);
@@ -93,8 +94,14 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
     return (
       <CopyButton value={copy} timeout={500}>
         {({ copied, copy }) => (
-          <UnstyledButton size='xs' onClick={copy}>
-            <FaCopy size={18} color={copied ? '#4dabf7' : 'gray'} />
+          <UnstyledButton
+            size='xs'
+            onClick={() => {
+              copy();
+              sendSuccessNotification(t('notifications:copied'));
+            }}
+          >
+            <FaCopy size={18} color={copied ? '#3fa2ed' : 'gray'} />
           </UnstyledButton>
         )}
       </CopyButton>
@@ -109,13 +116,13 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
     isPassword = false,
   ) => (
     <Grid align='center' mb='xs'>
-      <Grid.Col span={2.25}>
+      <Grid.Col span={isMobile ? 6 : 2.25}>
         <Group>
           {icon}
           <Text c='gray'>{label}</Text>
         </Group>
       </Grid.Col>
-      <Grid.Col span={3}>
+      <Grid.Col span={isMobile ? 4 : 3}>
         <Flex align='center' gap='sm'>
           <Text c='white' style={{ wordBreak: 'break-word' }}>
             {isPassword && !showPassword ? '••••••••' : trimText(value, 80)}
@@ -242,7 +249,7 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
   const getLayout = () => (
     <>
       <Group align='center' mb='md'>
-        <FaAddressCard size={24} color={'#1a86c5'} />
+        <FaAddressCard size={24} />
         <Title order={3} c='white' style={{ wordBreak: 'break-word' }}>
           {secret?.label}
         </Title>
