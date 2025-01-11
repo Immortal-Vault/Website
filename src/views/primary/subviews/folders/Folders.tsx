@@ -144,7 +144,7 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
               }
 
               closeAddModal();
-              await addFolder();
+              addFolder();
               addFolderForm.reset();
             }}
           >
@@ -207,10 +207,10 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
             onChange={(e) => handleSearch(e.currentTarget.value)}
           />
           <Flex gap={'md'}>
-            <Button mb={'md'} fullWidth={isMobile} onClick={openAddModal}>
+            <Button mb={'md'} fullWidth onClick={openAddModal}>
               {t('buttons.add')}
             </Button>
-            <Button mb={'md'} fullWidth={isMobile} onClick={openDeleteModal}>
+            <Button mb={'md'} fullWidth onClick={openDeleteModal}>
               {t('buttons.delete')}
             </Button>
           </Flex>

@@ -24,13 +24,12 @@ import {
 } from '../../../../types';
 import { useSecrets } from '../../../../stores';
 import { useTranslation } from 'react-i18next';
-import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import { useDisclosure } from '@mantine/hooks';
 import { v7 as uuid } from 'uuid';
 import { useForm } from '@mantine/form';
 import { trimText } from '../../../../shared';
 
 export const Secrets = () => {
-  const isMobile = useMediaQuery('(max-width: 768px)');
   const { t } = useTranslation('secrets');
   const {
     secrets,
@@ -326,7 +325,7 @@ export const Secrets = () => {
           <Flex gap={'md'}>
             <Button
               mb={'md'}
-              fullWidth={isMobile}
+              fullWidth
               onClick={() => {
                 addSecretForm.values.folder = selectedFolder ? selectedFolder.id : null;
                 openAddModal();
@@ -334,7 +333,7 @@ export const Secrets = () => {
             >
               {t('buttons.add')}
             </Button>
-            <Button mb={'md'} fullWidth={isMobile} onClick={openImportModal}>
+            <Button mb={'md'} fullWidth onClick={openImportModal}>
               {t('buttons.import')}
             </Button>
           </Flex>

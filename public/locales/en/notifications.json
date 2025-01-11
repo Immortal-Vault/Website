@@ -12,5 +12,6 @@
     "addedSuccessfully": "Folder added successfully",
     "deletedSuccessfully": "Folder deleted successfully"
   },
-  "needConnectVault": "You need to connect the vault"
+  "needConnectVault": "You need to connect the vault",
+  "copied": "Copied"
 }
