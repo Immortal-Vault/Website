@@ -4,25 +4,13 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ROUTER_PATH } from './shared';
 import SignIn from './views/auth/SignIn.tsx';
 import { ToastContainer, Zoom } from 'react-toastify';
-import {
-  ErrorBoundary,
-  ErrorBoundaryError,
-  NonAuthorizedRoute,
-  ProtectedRoute,
-} from './components';
+import { ErrorBoundary, ErrorPage, NonAuthorizedRoute, ProtectedRoute } from './components';
 import { useMediaQuery } from '@mantine/hooks';
-import {
-  EnvVarsProvider,
-  AuthProvider,
-  GoogleDriveProvider,
-  MenuProvider,
-  SecretsProvider,
-} from './stores';
-import ApproveSignIn from './views/auth/ApproveSignIn.tsx';
+import { AuthProvider, EnvVarsProvider, GoogleDriveProvider, SecretsProvider } from './stores';
 import Root from './views/root/Root.tsx';
 import { PrivacyPolicy } from './views/root/privacy/PrivacyPolicy.tsx';
 import { Suspense } from 'react';
-import { Vault, Settings, Primary } from './views/primary';
+import { Primary, Settings, Vault } from './views/primary';
 
 const theme = createTheme({
   components: {
@@ -73,22 +61,18 @@ const theme = createTheme({
   },
 });
 
+const errorElement = <ErrorPage />;
+
 const router = createBrowserRouter([
   {
     path: ROUTER_PATH.ROOT,
-    element: (
-      <SecretsProvider>
-        <Root />
-      </SecretsProvider>
-    ),
+    element: <Root />,
+    errorElement,
   },
   {
     path: ROUTER_PATH.PRIVACY_POLICY,
-    element: (
-      <SecretsProvider>
-        <PrivacyPolicy />
-      </SecretsProvider>
-    ),
+    element: <PrivacyPolicy />,
+    errorElement,
   },
   {
     path: ROUTER_PATH.SIGN_IN,
@@ -97,14 +81,7 @@ const router = createBrowserRouter([
         <SignIn />
       </NonAuthorizedRoute>
     ),
-  },
-  {
-    path: ROUTER_PATH.SIGN_IN_APPROVE,
-    element: (
-      <NonAuthorizedRoute>
-        <ApproveSignIn />
-      </NonAuthorizedRoute>
-    ),
+    errorElement,
   },
   {
     path: ROUTER_PATH.SIGN_UP,
@@ -113,36 +90,34 @@ const router = createBrowserRouter([
         <SignUp />
       </NonAuthorizedRoute>
     ),
+    errorElement,
   },
   {
     path: ROUTER_PATH.MENU,
     element: (
       <ProtectedRoute>
-        <SecretsProvider>
-          <Primary />
-        </SecretsProvider>
+        <Primary />
       </ProtectedRoute>
     ),
+    errorElement,
   },
   {
     path: ROUTER_PATH.MENU_SETTINGS,
     element: (
       <ProtectedRoute>
-        <SecretsProvider>
-          <Settings />
-        </SecretsProvider>
+        <Settings />
       </ProtectedRoute>
     ),
+    errorElement,
   },
   {
     path: ROUTER_PATH.MENU_VAULT,
     element: (
       <ProtectedRoute>
-        <SecretsProvider>
-          <Vault />
-        </SecretsProvider>
+        <Vault />
       </ProtectedRoute>
     ),
+    errorElement,
   },
 ]);
 
@@ -150,8 +125,8 @@ export default function App() {
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   return (
-    <ErrorBoundary fallback={ErrorBoundaryError}>
-      <MantineProvider theme={theme} defaultColorScheme={'dark'}>
+    <MantineProvider theme={theme} defaultColorScheme={'dark'}>
+      <ErrorBoundary>
         <ToastContainer
           position={isMobile ? 'bottom-center' : 'bottom-right'}
           autoClose={2500}
@@ -167,17 +142,17 @@ export default function App() {
           pauseOnHover={false}
         />
         <EnvVarsProvider>
-          <MenuProvider>
-            <AuthProvider>
-              <GoogleDriveProvider>
+          <AuthProvider>
+            <GoogleDriveProvider>
+              <SecretsProvider>
                 <Suspense fallback={null}>
                   <RouterProvider router={router} />
                 </Suspense>
-              </GoogleDriveProvider>
-            </AuthProvider>
-          </MenuProvider>
+              </SecretsProvider>
+            </GoogleDriveProvider>
+          </AuthProvider>
         </EnvVarsProvider>
-      </MantineProvider>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    </MantineProvider>
   );
 }

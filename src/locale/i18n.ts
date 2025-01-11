@@ -29,6 +29,7 @@ i18next
       'root',
       'folders',
       'privacyPolicy',
+      'errorBoundary',
     ],
     detection: {
       order: ['navigator'],

@@ -91,7 +91,7 @@ export function RootHeader() {
             )}
             {authState === EAuthState.Authorized && (
               <Flex direction={'column'} gap={'md'}>
-                <Button onClick={() => navigate(ROUTER_PATH.MENU)}>{t('header.profile')}</Button>
+                <Button onClick={() => navigate(ROUTER_PATH.MENU)}>{t('header.menu')}</Button>
                 <Button onClick={() => navigate(ROUTER_PATH.MENU_SETTINGS)}>
                   {t('header.settings')}
                 </Button>

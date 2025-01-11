@@ -13,5 +13,6 @@
     "deletedSuccessfully": "Folder deleted successfully"
   },
   "needConnectVault": "You need to connect the vault",
-  "copied": "Copied"
+  "copied": "Copied",
+  "outdatedClient": "Website is outdated, please refresh page"
 }
