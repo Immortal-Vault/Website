@@ -1,6 +1,6 @@
 {
-  "profile": {
-    "name": "Profile"
+  "menu": {
+    "name": "Menu"
   },
   "secrets": {
     "name": "Secrets"

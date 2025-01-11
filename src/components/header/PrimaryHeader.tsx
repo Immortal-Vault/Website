@@ -87,7 +87,7 @@ export function PrimaryHeader() {
                   navigate(ROUTER_PATH.MENU);
                 }}
               >
-                {t('header.profile')}
+                {t('header.menu')}
               </Button>
               <Button
                 fullWidth

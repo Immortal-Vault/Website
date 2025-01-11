@@ -21,8 +21,8 @@ const ProfileButton = forwardRef<HTMLButtonElement>(({ ...others }, ref) => {
 
 const elementsData = [
   {
-    id: 'profile',
-    title: 'header.profile',
+    id: 'menu',
+    title: 'header.menu',
     link: ROUTER_PATH.MENU,
     icon: (
       <BsPersonCircle
@@ -73,7 +73,7 @@ export const ProfileAvatarWithMenu: FC = () => {
       key={element.title}
       leftSection={element.icon}
       onClick={() => {
-        if (element.id === 'profile') {
+        if (element.id === 'menu') {
           if (!doesGoogleDriveConnected()) {
             navigate(ROUTER_PATH.MENU_VAULT);
             sendNotification(t('notifications:needConnectVault'));
