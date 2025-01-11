@@ -8,11 +8,11 @@
   useMemo,
   useState,
 } from 'react';
-import { EAuthState, EPrimaryViewPage } from '../types';
+import { EAuthState } from '../types';
 import { signOut } from '../api';
 import { useTranslation } from 'react-i18next';
 import { LOCAL_STORAGE, sendNotification } from '../shared';
-import { useEnvVars, useMenu } from './';
+import { useEnvVars } from './';
 import { useDisclosure, useInterval } from '@mantine/hooks';
 import { Button, Group, Input, Modal } from '@mantine/core';
 
@@ -86,7 +86,6 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const { t, i18n } = useTranslation();
   const { envs } = useEnvVars();
-  const { setCurrentPage } = useMenu();
   const [
     secretPasswordModalState,
     { open: openSecretPasswordModal, close: closeSecretPasswordModal },
@@ -239,7 +238,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         <Group mt='xl' justify={'end'}>
           <Button
             onClick={() => {
-              setCurrentPage(EPrimaryViewPage.None);
               if (modalCloseCallback) {
                 modalCloseCallback();
               }
