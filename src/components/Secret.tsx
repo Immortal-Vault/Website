@@ -1,9 +1,9 @@
 import {
-  Anchor,
   Button,
   CopyButton,
   Divider,
   Flex,
+  Grid,
   Group,
   Modal,
   MultiSelect,
@@ -29,7 +29,7 @@ import {
   FaUserAlt,
 } from 'react-icons/fa';
 import { TSecret } from '../types';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { useAuth, useSecrets } from '../stores';
 import { useTranslation } from 'react-i18next';
@@ -94,12 +94,50 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
       <CopyButton value={copy} timeout={500}>
         {({ copied, copy }) => (
           <UnstyledButton size='xs' onClick={copy}>
-            <FaCopy size={18} color={copied ? 'green' : 'gray'} />
+            <FaCopy size={18} color={copied ? '#4dabf7' : 'gray'} />
           </UnstyledButton>
         )}
       </CopyButton>
     );
   };
+
+  const renderField = (
+    icon: ReactNode,
+    label: string,
+    value: string,
+    copyable = false,
+    isPassword = false,
+  ) => (
+    <Grid align='center' mb='xs'>
+      <Grid.Col span={2.25}>
+        <Group>
+          {icon}
+          <Text c='gray'>{label}</Text>
+        </Group>
+      </Grid.Col>
+      <Grid.Col span={3}>
+        <Flex align='center' gap='sm'>
+          <Text c='white' style={{ wordBreak: 'break-word' }}>
+            {isPassword && !showPassword ? '••••••••' : trimText(value, 80)}
+          </Text>
+        </Flex>
+      </Grid.Col>
+      <Grid.Col span={1}>
+        <Flex direction={'row'} gap={'sm'}>
+          {copyable && getCopyButton(value)}
+          {isPassword && (
+            <UnstyledButton size='xs' onClick={() => setShowPassword(!showPassword)}>
+              {showPassword ? (
+                <FaRegEyeSlash size={22} color={'gray'} />
+              ) : (
+                <FaRegEye size={22} color={'gray'} />
+              )}
+            </UnstyledButton>
+          )}
+        </Flex>
+      </Grid.Col>
+    </Grid>
+  );
 
   const getEditorLayout = () => (
     <>
@@ -213,98 +251,62 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
       <Divider mb='md' />
 
       <Flex direction='column' gap='sm' mb='lg'>
-        {secret?.username && (
-          <Group>
-            <FaUserAlt size={18} />
-            <Text c='gray'>{t('fields.username.title')}:</Text>
-            <Text c='white' style={{ wordBreak: 'break-word' }}>
-              {trimText(secret.username, 30)}
-            </Text>
-            {getCopyButton(secret.username)}
-          </Group>
-        )}
-        {secret?.email && (
-          <Group>
-            <MdOutlineAlternateEmail size={18} />
-            <Text c='gray'>{t('fields.email.title')}:</Text>
-            <Text c='white' style={{ wordBreak: 'break-word' }}>
-              {trimText(secret.email, 30)}
-            </Text>
-            {getCopyButton(secret.email)}
-          </Group>
-        )}
-        {secret?.password && (
-          <Group>
-            <FaLock size={18} />
-            <Text c='gray'>{t('fields.password.title')}:</Text>
-
-            <Text c='white' style={{ wordBreak: 'break-all' }}>
-              {showPassword ? secret.password : '••••••••'}
-            </Text>
-            <Button size='xs' onClick={() => setShowPassword(!showPassword)}>
-              {showPassword ? <FaRegEyeSlash size={22} /> : <FaRegEye size={22} />}
-            </Button>
-            {getCopyButton(secret.password)}
-          </Group>
-        )}
-        {secret?.website && (
-          <Group>
-            <FaExternalLinkAlt size={18} />
-            <Text c='gray'>{t('fields.website.title')}:</Text>
-            <Anchor
-              href={
-                secret.website.startsWith('http') ? secret.website : `https://${secret.website}`
-              }
-              target='_blank'
-              underline='always'
-              style={{ wordBreak: 'break-word' }}
-            >
-              {secret.website}
-            </Anchor>
-            {getCopyButton(secret.website)}
-          </Group>
-        )}
-        {secret?.phone && (
-          <Group>
-            <FaPhoneAlt size={18} />
-            <Text c='gray'>{t('fields.phone.title')}:</Text>
-            <Text c='white' style={{ wordBreak: 'break-word' }}>
-              {secret.phone}
-            </Text>
-            {getCopyButton(secret.phone)}
-          </Group>
-        )}
-        {secret?.notes && (
-          <Group>
-            <FaStickyNote size={18} />
-            <Text c='gray'>{t('fields.notes.title')}:</Text>
-            <Text c='white' style={{ wordBreak: 'break-word' }}>
-              {secret.notes}
-            </Text>
-            {getCopyButton(secret.notes)}
-          </Group>
-        )}
+        {secret?.username &&
+          renderField(<FaUserAlt size={18} />, t('fields.username.title'), secret.username, true)}
+        {secret?.email &&
+          renderField(
+            <MdOutlineAlternateEmail size={18} />,
+            t('fields.email.title'),
+            secret.email,
+            true,
+          )}
+        {secret?.password &&
+          renderField(
+            <FaLock size={18} />,
+            t('fields.password.title'),
+            secret.password,
+            true,
+            true,
+          )}
+        {secret?.website &&
+          renderField(
+            <FaExternalLinkAlt size={18} />,
+            t('fields.website.title'),
+            secret.website,
+            true,
+          )}
+        {secret?.phone &&
+          renderField(<FaPhoneAlt size={18} />, t('fields.phone.title'), secret.phone, true)}
+        {secret?.notes &&
+          renderField(<FaStickyNote size={18} />, t('fields.notes.title'), secret.notes, true)}
 
         {secret && secret.folders.length > 0 && (
-          <Group>
-            <FaFolder />
-            <Text c='gray'>{t('fields.folders.title')}:</Text>
-
-            {secret.folders
-              .map((folderId) => folders.find((f) => f.id === folderId))
-              .filter((f) => !!f)
-              .map((f) => (
-                <Pill
-                  key={f.id}
-                  size={'lg'}
-                  radius={'lg'}
-                  bg={'gray'}
-                  onClick={() => setSelectedFolder(f)}
-                >
-                  {f.label}
-                </Pill>
-              ))}
-          </Group>
+          <Grid align='center' mb='xs'>
+            <Grid.Col span={2.25}>
+              <Group>
+                <FaFolder />
+                <Text c='gray'>{t('fields.folders.title')}</Text>
+              </Group>
+            </Grid.Col>
+            <Grid.Col span={5}>
+              <Group gap={'sm'}>
+                {secret.folders
+                  .map((folderId) => folders.find((f) => f.id === folderId))
+                  .filter((f) => !!f)
+                  .map((f) => (
+                    <Pill
+                      key={f.id}
+                      size={'lg'}
+                      radius={'lg'}
+                      bg={'gray'}
+                      onClick={() => setSelectedFolder(f)}
+                    >
+                      {f.label}
+                    </Pill>
+                  ))}
+              </Group>
+            </Grid.Col>
+          </Grid>
         )}
       </Flex>
 
