@@ -287,7 +287,7 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
         {secret?.notes &&
           renderField(<FaStickyNote size={18} />, t('fields.notes.title'), secret.notes, true)}
 
-        {secret && secret.folders.length > 0 && (
+        {secret && secret?.folders?.length > 0 && (
           <Grid align='center' mb='xs'>
             <Grid.Col span={2.25}>
               <Group>
