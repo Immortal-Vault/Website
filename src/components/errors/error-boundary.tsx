@@ -1,46 +1,36 @@
-import {
-  Component,
-  type ComponentType,
-  type GetDerivedStateFromError,
-  type PropsWithChildren,
-  type ReactNode,
-} from 'react';
+import React, { Component, ReactNode } from 'react';
+import { ErrorPage } from './error-page.tsx';
 
-export interface ErrorBoundaryProps extends PropsWithChildren {
-  fallback?: ReactNode | ComponentType<{ error: unknown }>;
+interface ErrorBoundaryProps {
+  children?: ReactNode;
 }
 
 interface ErrorBoundaryState {
-  error?: unknown;
+  hasError: boolean;
+  error: Error | null;
 }
 
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  state: ErrorBoundaryState = {};
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = {
+      hasError: false,
+      error: null,
+    };
+  }
 
-  // eslint-disable-next-line max-len
-  static getDerivedStateFromError: GetDerivedStateFromError<
-    ErrorBoundaryProps,
-    ErrorBoundaryState
-  > = (error) => ({ error });
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
+  }
 
-  componentDidCatch(error: Error) {
-    this.setState({ error });
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
+    console.error('Error caught in Error Boundary:', error, errorInfo);
   }
 
   render() {
-    const {
-      state: { error },
-      props: { fallback: Fallback, children },
-    } = this;
-
-    return 'error' in this.state ? (
-      typeof Fallback === 'function' ? (
-        <Fallback error={error} />
-      ) : (
-        Fallback
-      )
-    ) : (
-      children
-    );
+    if (this.state.hasError) {
+      return <ErrorPage error={this.state.error?.message} />;
+    }
+    return this.props.children;
   }
 }

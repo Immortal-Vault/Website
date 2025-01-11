@@ -1,0 +1,8 @@
+{
+  "title": "Aaaah! Something went wrong",
+  "message": {
+    "boundary": "We encountered an unexpected error. Our developers are already trying to fix it. Please try again later.",
+    "router": "Something went wrong while displaying this page. Please reload or visit a different page to continue"
+  },
+  "error": "Error: {{error}}"
+}
