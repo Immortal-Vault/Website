@@ -147,7 +147,7 @@ export function Primary() {
       >
         <div
           style={{
-            marginLeft: '10px',
+            padding: '0.2% 2%',
           }}
         >
           {getSecretSection()}

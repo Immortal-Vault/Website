@@ -1,17 +1,19 @@
 import {
   Anchor,
   Button,
-  Card,
   CopyButton,
+  Divider,
   Flex,
   Group,
   Modal,
   MultiSelect,
   PasswordInput,
+  Pill,
   Text,
   Textarea,
   TextInput,
   Title,
+  UnstyledButton,
 } from '@mantine/core';
 import {
   FaAddressCard,
@@ -28,14 +30,14 @@ import {
 } from 'react-icons/fa';
 import { TSecret } from '../types';
 import { useEffect, useState } from 'react';
-import { useMediaQuery, useDisclosure } from '@mantine/hooks';
+import { useDisclosure } from '@mantine/hooks';
 import { useAuth, useSecrets } from '../stores';
 import { useTranslation } from 'react-i18next';
 import { MdOutlineAlternateEmail } from 'react-icons/md';
 import { getDateTimeFormatOptions, trimText } from '../shared';
 
 export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<void> }) => {
-  const { folders, secrets, saveSecrets } = useSecrets();
+  const { folders, secrets, saveSecrets, setSelectedFolder } = useSecrets();
   const { t, i18n } = useTranslation('secrets');
   const { is12HoursFormat } = useAuth();
 
@@ -46,8 +48,6 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
   const [submitModalState, { open: openSubmitModal, close: closeSubmitModal }] =
     useDisclosure(false);
 
-  const [attachedFolders, setAttachedFolders] = useState<string[]>([]);
-  const isMobile = useMediaQuery('(max-width: 768px)');
   const dateTimeFormatOptions = getDateTimeFormatOptions(i18n.language, is12HoursFormat);
 
   useEffect(() => {
@@ -55,11 +55,6 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
     setEditedSecret(props.sourceSecret);
     setShowPassword(false);
   }, [props.sourceSecret]);
-
-  useEffect(() => {
-    const secretFolders = secret?.folders ? secret.folders : [];
-    setAttachedFolders(folders.filter((f) => secretFolders.includes(f.id)).map((f) => f.id));
-  }, [folders, secret]);
 
   useEffect(() => {
     if (!secret) {
@@ -74,22 +69,6 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
   useEffect(() => {
     setShowPassword(false);
   }, [isEditing]);
-
-  const handleFoldersChange = async (folderIds: string[]) => {
-    if (!secrets) {
-      return;
-    }
-
-    const foundSecret = secrets.find((s) => s.id === secret?.id);
-    if (!foundSecret) {
-      return;
-    }
-
-    setAttachedFolders(folderIds);
-    foundSecret.folders = folderIds;
-    foundSecret.lastUpdated = Date.now();
-    await saveSecrets(secrets, folders);
-  };
 
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
@@ -112,11 +91,11 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
 
   const getCopyButton = (copy: string) => {
     return (
-      <CopyButton value={copy}>
+      <CopyButton value={copy} timeout={500}>
         {({ copied, copy }) => (
-          <Button size='xs' color={copied ? 'teal' : 'blue'} onClick={copy}>
-            <FaCopy size={18} />
-          </Button>
+          <UnstyledButton size='xs' onClick={copy}>
+            <FaCopy size={18} color={copied ? 'green' : 'gray'} />
+          </UnstyledButton>
         )}
       </CopyButton>
     );
@@ -203,18 +182,35 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
             }
           />
         </Group>
+
+        <Group>
+          <FaFolder />
+          <Text c='gray'>{t('fields.folders.title')}:</Text>
+
+          <MultiSelect
+            w={'22.8rem'}
+            data={folders.map((folder) => ({ value: folder.id, label: folder.label }))}
+            value={editedSecret?.folders ?? []}
+            onChange={(folderIds) =>
+              editedSecret && setEditedSecret({ ...editedSecret, folders: folderIds })
+            }
+            clearable
+          />
+        </Group>
       </Flex>
     </>
   );
 
   const getLayout = () => (
     <>
-      <Group align='center' mb='xl'>
-        <FaAddressCard size={24} />
+      <Group align='center' mb='md'>
+        <FaAddressCard size={24} color={'#1a86c5'} />
         <Title order={3} c='white' style={{ wordBreak: 'break-word' }}>
           {secret?.label}
         </Title>
       </Group>
+
+      <Divider mb='md' />
 
       <Flex direction='column' gap='sm' mb='lg'>
         {secret?.username && (
@@ -289,19 +285,27 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
           </Group>
         )}
 
-        <Group>
-          <FaFolder />
-          <Text c='gray'>{t('fields.folders.title')}:</Text>
-        </Group>
-        <Group>
-          <MultiSelect
-            data={folders.map((folder) => ({ value: folder.id, label: folder.label }))}
-            value={attachedFolders}
-            onChange={handleFoldersChange}
-            placeholder={t('fields.folders.select.placeholder')}
-            clearable
-          />
-        </Group>
+        {secret && secret.folders.length > 0 && (
+          <Group>
+            <FaFolder />
+            <Text c='gray'>{t('fields.folders.title')}:</Text>
+
+            {secret.folders
+              .map((folderId) => folders.find((f) => f.id === folderId))
+              .filter((f) => !!f)
+              .map((f) => (
+                <Pill
+                  key={f.id}
+                  size={'lg'}
+                  radius={'lg'}
+                  bg={'gray'}
+                  onClick={() => setSelectedFolder(f)}
+                >
+                  {f.label}
+                </Pill>
+              ))}
+          </Group>
+        )}
       </Flex>
 
       {secret && (
@@ -374,11 +378,9 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
         </Group>
       </Modal>
 
-      <Card shadow='md' radius='md' padding='lg' withBorder w={!isMobile ? '90%' : '100%'}>
-        {isEditing ? getEditorLayout() : getLayout()}
+      {isEditing ? getEditorLayout() : getLayout()}
 
-        <Group mt='lg'>{isEditing ? getEditorButtonsLayout() : getButtonsLayout()}</Group>
-      </Card>
+      <Group mt='lg'>{isEditing ? getEditorButtonsLayout() : getButtonsLayout()}</Group>
     </>
   );
 };

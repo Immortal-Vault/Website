@@ -144,7 +144,7 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
               }
 
               closeAddModal();
-              await addFolder();
+              addFolder();
               addFolderForm.reset();
             }}
           >
