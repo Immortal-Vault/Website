@@ -154,6 +154,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     fetch(`${envs?.API_SERVER_URL}/auth/ping`, {
       headers: {
         'Content-Type': 'application/json',
+        'Client-Version': import.meta.env.VITE_WEBSITE_VERSION,
       },
       credentials: 'include',
       method: 'GET',
