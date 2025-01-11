@@ -297,20 +297,22 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
             </Grid.Col>
             <Grid.Col span={5}>
               <Group gap={'sm'}>
-                {secret.folders
-                  .map((folderId) => folders.find((f) => f.id === folderId))
-                  .filter((f) => !!f)
-                  .map((f) => (
+                {secret.folders.map((folderId) => {
+                  const f = folders.find((folder) => folder.id === folderId);
+                  return f ? (
                     <Pill
                       key={f.id}
-                      size={'lg'}
-                      radius={'lg'}
-                      bg={'gray'}
+                      size='lg'
+                      radius='lg'
+                      bg='gray'
                       onClick={() => setSelectedFolder(f)}
                     >
                       {f.label}
                     </Pill>
-                  ))}
+                  ) : (
+                    []
+                  );
+                })}
               </Group>
             </Grid.Col>
           </Grid>
