@@ -85,6 +85,7 @@ export function Footer() {
           >
             <LanguageSelector settings={false} />
           </div>
+          <Text c='dimmed'>{import.meta.env.VITE_WEBSITE_VERSION}</Text>
         </Group>
       </Container>
     </div>
