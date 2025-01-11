@@ -6,6 +6,9 @@
       "title": "Interface language",
       "placeholder": "English...",
       "nothingFound": "Nothing found"
+    },
+    "timeFormat": {
+      "title": "Time display format"
     }
   }
 }

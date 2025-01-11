@@ -6,10 +6,12 @@
   "passwordsDoNotMatch": "Пароли не совпадают",
   "userAlreadyExists": "Пользователь с такой почтой или именем уже существует",
   "languageChanged": "Язык успешно изменён на {{language}}",
+  "timeFormatChanged": "Формат времени успешно изменен на {{timeFormat}} часовой",
   "sessionExpired": "Ваша сессия истекла, необходима авторизация",
   "folder": {
     "addedSuccessfully": "Папка успешно добавлена",
     "deletedSuccessfully": "Папка успешно удалена"
   },
-  "needConnectVault": "Вам необходимо подключить хранилище"
+  "needConnectVault": "Вам необходимо подключить хранилище",
+  "copied": "Скопировано"
 }

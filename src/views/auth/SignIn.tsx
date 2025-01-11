@@ -64,10 +64,13 @@ export default function SignIn() {
     const localization = jsonResponse.localization;
     localStorage.setItem(LOCAL_STORAGE.USER_LOCALE, localization);
 
+    const is12Hours: boolean = jsonResponse.is12Hours;
+    localStorage.setItem(LOCAL_STORAGE.USER_TIME_FORMAT, JSON.stringify(is12Hours));
+
     const username = jsonResponse.username;
 
     sendSuccessNotification(t('notifications:successful'));
-    authSignIn(email, username, localization);
+    authSignIn(email, username, localization, is12Hours);
     setLoaderState.close();
 
     // redirect to main after sign In

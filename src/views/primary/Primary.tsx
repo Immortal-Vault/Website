@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { LOCAL_STORAGE, ROUTER_PATH, sendNotification } from '../../shared';
+import { ROUTER_PATH, sendNotification } from '../../shared';
 import { useTranslation } from 'react-i18next';
 import { Footer, PrimaryHeader, Secret } from '../../components';
 import { Container, Drawer, Grid, ScrollArea, Text } from '@mantine/core';
@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 export function Primary() {
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const { i18n, t } = useTranslation('views');
+  const { t } = useTranslation('views');
   const {
     secrets,
     selectedSecret,
@@ -28,13 +28,6 @@ export function Primary() {
   const [foldersDrawerState, { close: closeFoldersDrawer, open: openFoldersDrawer }] =
     useDisclosure(false);
   const [secretsDrawerState, { close: closeSecretsDrawer }] = useDisclosure(false);
-
-  useEffect(() => {
-    const userLocalization = localStorage.getItem(LOCAL_STORAGE.USER_LOCALE);
-    if (userLocalization && i18n.languages.includes(userLocalization)) {
-      i18n.changeLanguage(userLocalization);
-    }
-  }, []);
 
   const submit = (masterPassword: string): void => {
     if (!secrets) {
@@ -154,7 +147,7 @@ export function Primary() {
       >
         <div
           style={{
-            marginLeft: '10px',
+            padding: '0.2% 2%',
           }}
         >
           {getSecretSection()}
