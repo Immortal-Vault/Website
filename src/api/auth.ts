@@ -8,12 +8,13 @@ import { AuthContextType } from '../stores';
 export async function signIn(
   email: string,
   password: string,
+  mfaCode: string | null | undefined,
   envs: TEnvVars | undefined,
   t: TFunction,
 ): Promise<Response | null> {
   const response = await customFetch(
     `${envs?.API_SERVER_URL}/auth/signIn`,
-    JSON.stringify({ email: email.toLowerCase(), password }),
+    JSON.stringify({ email: email.toLowerCase(), password, mfaCode }),
     'POST',
     t,
   );
@@ -27,6 +28,14 @@ export async function signIn(
   }
 
   switch (response.status) {
+    case 400: {
+      if (response.statusText === 'mfa') {
+        sendErrorNotification(t('notifications:requiredMfa'));
+      } else if (response.statusText === 'invalidMfa') {
+        sendErrorNotification(t('notifications:incorrectMfaCode'));
+      }
+      return null;
+    }
     case 404: {
       sendErrorNotification(t('notifications:incorrectLoginOrPassword'));
       return null;
