@@ -6,12 +6,11 @@ import SignIn from './views/auth/SignIn.tsx';
 import { ToastContainer, Zoom } from 'react-toastify';
 import { ErrorBoundary, ErrorPage, NonAuthorizedRoute, ProtectedRoute } from './components';
 import { useMediaQuery } from '@mantine/hooks';
-import { EnvVarsProvider, AuthProvider, GoogleDriveProvider, SecretsProvider } from './stores';
-import ApproveSignIn from './views/auth/ApproveSignIn.tsx';
+import { AuthProvider, EnvVarsProvider, GoogleDriveProvider, SecretsProvider } from './stores';
 import Root from './views/root/Root.tsx';
 import { PrivacyPolicy } from './views/root/privacy/PrivacyPolicy.tsx';
 import { Suspense } from 'react';
-import { Vault, Settings, Primary } from './views/primary';
+import { Primary, Settings, Vault } from './views/primary';
 
 const theme = createTheme({
   components: {
@@ -80,15 +79,6 @@ const router = createBrowserRouter([
     element: (
       <NonAuthorizedRoute>
         <SignIn />
-      </NonAuthorizedRoute>
-    ),
-    errorElement,
-  },
-  {
-    path: ROUTER_PATH.SIGN_IN_APPROVE,
-    element: (
-      <NonAuthorizedRoute>
-        <ApproveSignIn />
       </NonAuthorizedRoute>
     ),
     errorElement,
