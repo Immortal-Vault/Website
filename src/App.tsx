@@ -76,19 +76,11 @@ const theme = createTheme({
 const router = createBrowserRouter([
   {
     path: ROUTER_PATH.ROOT,
-    element: (
-      <SecretsProvider>
-        <Root />
-      </SecretsProvider>
-    ),
+    element: <Root />,
   },
   {
     path: ROUTER_PATH.PRIVACY_POLICY,
-    element: (
-      <SecretsProvider>
-        <PrivacyPolicy />
-      </SecretsProvider>
-    ),
+    element: <PrivacyPolicy />,
   },
   {
     path: ROUTER_PATH.SIGN_IN,
@@ -118,9 +110,7 @@ const router = createBrowserRouter([
     path: ROUTER_PATH.MENU,
     element: (
       <ProtectedRoute>
-        <SecretsProvider>
-          <Primary />
-        </SecretsProvider>
+        <Primary />
       </ProtectedRoute>
     ),
   },
@@ -128,9 +118,7 @@ const router = createBrowserRouter([
     path: ROUTER_PATH.MENU_SETTINGS,
     element: (
       <ProtectedRoute>
-        <SecretsProvider>
-          <Settings />
-        </SecretsProvider>
+        <Settings />
       </ProtectedRoute>
     ),
   },
@@ -138,9 +126,7 @@ const router = createBrowserRouter([
     path: ROUTER_PATH.MENU_VAULT,
     element: (
       <ProtectedRoute>
-        <SecretsProvider>
-          <Vault />
-        </SecretsProvider>
+        <Vault />
       </ProtectedRoute>
     ),
   },
@@ -170,9 +156,11 @@ export default function App() {
           <MenuProvider>
             <AuthProvider>
               <GoogleDriveProvider>
-                <Suspense fallback={null}>
-                  <RouterProvider router={router} />
-                </Suspense>
+                <SecretsProvider>
+                  <Suspense fallback={null}>
+                    <RouterProvider router={router} />
+                  </Suspense>
+                </SecretsProvider>
               </GoogleDriveProvider>
             </AuthProvider>
           </MenuProvider>
