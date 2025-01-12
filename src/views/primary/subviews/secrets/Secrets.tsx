@@ -28,6 +28,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { v7 as uuid } from 'uuid';
 import { useForm } from '@mantine/form';
 import { trimText } from '../../../../shared';
+import { PasswordInputWithCapsLock } from '../../../../components';
 
 export const Secrets = () => {
   const { t } = useTranslation('secrets');
@@ -216,9 +217,8 @@ export const Secrets = () => {
               onChange={(event) => addSecretForm.setFieldValue('email', event.currentTarget.value)}
               type={'email'}
             />
-            <TextInput
+            <PasswordInputWithCapsLock
               label={t('fields.password.title')}
-              type={'password'}
               value={addSecretForm.values.password}
               onChange={(event) =>
                 addSecretForm.setFieldValue('password', event.currentTarget.value)
