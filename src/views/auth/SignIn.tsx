@@ -6,7 +6,6 @@ import {
   Group,
   Image,
   LoadingOverlay,
-  PasswordInput,
   Stack,
   TextInput,
   Title,
@@ -18,6 +17,7 @@ import { LOCAL_STORAGE, ROUTER_PATH, sendSuccessNotification } from '../../share
 import { useTranslation } from 'react-i18next';
 import { useAuth, useEnvVars } from '../../stores';
 import { signIn } from '../../api';
+import { PasswordInputWithCapsLock } from '../../components';
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -124,13 +124,14 @@ export default function SignIn() {
             />
           )}
 
-          <PasswordInput
+          <PasswordInputWithCapsLock
             required
             label={t('signIn.fields.password.title')}
             value={form.values.password}
             onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
             error={form.errors.password && t(form.errors.password.toString())}
             radius='md'
+            style={{ flex: 1 }}
             w={'90%'}
           />
 

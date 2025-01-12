@@ -15,7 +15,8 @@ import { useTranslation } from 'react-i18next';
 import { LOCAL_STORAGE, sendNotification } from '../shared';
 import { useEnvVars } from './';
 import { useDisclosure, useInterval } from '@mantine/hooks';
-import { Button, Group, Input, Modal } from '@mantine/core';
+import { Button, Group, Modal } from '@mantine/core';
+import { PasswordInputWithCapsLock } from '../components';
 
 export interface AuthContextType {
   authState: EAuthState;
@@ -247,7 +248,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         }}
       >
         <form onSubmit={auth}>
-          <Input type={'password'} onChange={(e) => setPasswordInput(e.target.value)} />
+          <PasswordInputWithCapsLock isModal onChange={(e) => setPasswordInput(e.target.value)} />
 
           <Group mt='xl' justify={'end'}>
             <Button

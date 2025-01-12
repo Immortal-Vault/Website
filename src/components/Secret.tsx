@@ -7,7 +7,6 @@ import {
   Group,
   Modal,
   MultiSelect,
-  PasswordInput,
   Pill,
   Text,
   Textarea,
@@ -35,6 +34,7 @@ import { useAuth, useSecrets } from '../stores';
 import { useTranslation } from 'react-i18next';
 import { MdOutlineAlternateEmail } from 'react-icons/md';
 import { getDateTimeFormatOptions, sendSuccessNotification, trimText } from '../shared';
+import { PasswordInputWithCapsLock } from './PasswordInputWithCapsLock.tsx';
 
 export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<void> }) => {
   const { folders, secrets, saveSecrets, setSelectedFolder } = useSecrets();
@@ -186,7 +186,7 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
           <FaLock size={18} />
           <Text c='gray'>{t('fields.password.title')}:</Text>
 
-          <PasswordInput
+          <PasswordInputWithCapsLock
             w={'23rem'}
             value={editedSecret?.password || ''}
             onChange={(e) =>

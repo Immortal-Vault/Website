@@ -6,3 +6,4 @@ export * from './header';
 export * from './footer';
 export * from './LanguageSelector.tsx';
 export * from './TimeFormatSelector.tsx';
+export * from './PasswordInputWithCapsLock.tsx';

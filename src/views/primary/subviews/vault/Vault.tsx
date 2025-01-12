@@ -7,7 +7,6 @@ import {
   Flex,
   Group,
   Image,
-  Input,
   LoadingOverlay,
   Modal,
   Text,
@@ -20,7 +19,7 @@ import { useAuth, useEnvVars, useGoogleDrive } from '../../../../stores';
 import { encrypt, SECRET_FILE_VERSION } from '../../../../shared';
 import { useState } from 'react';
 import { TSecretFile } from '../../../../types';
-import { Footer, PrimaryHeader } from '../../../../components';
+import { Footer, PasswordInputWithCapsLock, PrimaryHeader } from '../../../../components';
 
 export const Vault = (): JSX.Element => {
   const [loaderVisible, setLoaderState] = useDisclosure(false);
@@ -163,8 +162,8 @@ export const Vault = (): JSX.Element => {
               googleLogin();
             }}
           >
-            <Input
-              type={'password'}
+            <PasswordInputWithCapsLock
+              isModal
               value={secretPassword}
               onChange={(e) => setSecretPassword(e.target.value)}
             />

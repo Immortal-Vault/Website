@@ -5,7 +5,6 @@
   Group,
   Image,
   LoadingOverlay,
-  PasswordInput,
   Stack,
   TextInput,
   Title,
@@ -25,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 import { signUp } from '../../api';
 import { useEnvVars } from '../../stores';
 import { FormEvent } from 'react';
+import { PasswordInputWithCapsLock } from '../../components';
 
 export default function SignUp() {
   const { t, i18n } = useTranslation('auth');
@@ -164,7 +164,7 @@ export default function SignUp() {
             w={'90%'}
           />
 
-          <PasswordInput
+          <PasswordInputWithCapsLock
             withAsterisk
             label={t('signUp.fields.password.title')}
             value={form.values.password}
@@ -173,7 +173,8 @@ export default function SignUp() {
             radius='md'
             w={'90%'}
           />
-          <PasswordInput
+
+          <PasswordInputWithCapsLock
             withAsterisk
             label={t('signUp.fields.confirmPassword.title')}
             value={form.values.confirmPassword}
