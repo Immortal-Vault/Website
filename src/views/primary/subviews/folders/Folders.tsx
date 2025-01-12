@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import {
   Button,
   ComboboxItem,
@@ -63,13 +63,19 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
     }
   };
 
-  const addFolder = async () => {
+  const addFolder = async (e: FormEvent) => {
+    e.preventDefault();
+    if (addFolderForm.validate().hasErrors) {
+      return;
+    }
+
     const values = addFolderForm.values;
 
     if (values.label.length < 1 || secrets === null) {
       return;
     }
 
+    closeAddModal();
     const folder: TFolder = {
       id: uuid(),
       lastUpdated: Date.now(),
@@ -83,7 +89,8 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
     sendSuccessNotification(t('notifications:folder.addedSuccessfully'));
   };
 
-  const deleteFolder = async () => {
+  const deleteFolder = async (e: FormEvent) => {
+    e.preventDefault();
     if (!folderForDelete || !folderForDelete.value) {
       return;
     }
@@ -99,8 +106,10 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
 
     setFolders(newFolders);
     setFilteredFolders(newFolders);
+    closeDeleteModal();
     await saveSecrets(updatedSecrets, newFolders);
     sendSuccessNotification(t('notifications:folder.deletedSuccessfully'));
+    setFolderForDelete(null);
   };
 
   return (
@@ -119,38 +128,28 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
           blur: 3,
         }}
       >
-        <Flex direction={'column'} gap={'md'}>
-          <TextInput
-            label={t('fields.label.title')}
-            value={addFolderForm.values.label}
-            onChange={(event) => addFolderForm.setFieldValue('label', event.currentTarget.value)}
-            error={addFolderForm.errors.label && t(addFolderForm.errors.label.toString())}
-          />
-        </Flex>
+        <form onSubmit={addFolder}>
+          <Flex direction={'column'} gap={'md'}>
+            <TextInput
+              label={t('fields.label.title')}
+              value={addFolderForm.values.label}
+              onChange={(event) => addFolderForm.setFieldValue('label', event.currentTarget.value)}
+              error={addFolderForm.errors.label && t(addFolderForm.errors.label.toString())}
+            />
+          </Flex>
 
-        <Group mt='xl' justify={'end'}>
-          <Button
-            onClick={() => {
-              closeAddModal();
-              addFolderForm.reset();
-            }}
-          >
-            {t('modals.addFolder.buttons.cancel')}
-          </Button>
-          <Button
-            onClick={async () => {
-              if (addFolderForm.validate().hasErrors) {
-                return;
-              }
-
-              closeAddModal();
-              addFolder();
-              addFolderForm.reset();
-            }}
-          >
-            {t('modals.addFolder.buttons.submit')}
-          </Button>
-        </Group>
+          <Group mt='xl' justify={'end'}>
+            <Button
+              onClick={() => {
+                closeAddModal();
+                addFolderForm.reset();
+              }}
+            >
+              {t('modals.addFolder.buttons.cancel')}
+            </Button>
+            <Button type={'submit'}>{t('modals.addFolder.buttons.submit')}</Button>
+          </Group>
+        </form>
       </Modal>
       <Modal
         centered={true}
@@ -166,37 +165,30 @@ export const Folders = ({ allElementsButtonClick }: FoldersProps) => {
           blur: 3,
         }}
       >
-        <Flex direction={'column'} gap={'md'}>
-          <Select
-            data={folders.map((folder) => ({ value: JSON.stringify(folder), label: folder.label }))}
-            value={folderForDelete ? folderForDelete.value : null}
-            onChange={(_value, option) => setFolderForDelete(option)}
-          />
-        </Flex>
+        <form onSubmit={deleteFolder}>
+          <Flex direction={'column'} gap={'md'}>
+            <Select
+              data={folders.map((folder) => ({
+                value: JSON.stringify(folder),
+                label: folder.label,
+              }))}
+              value={folderForDelete ? folderForDelete.value : null}
+              onChange={(_value, option) => setFolderForDelete(option)}
+            />
+          </Flex>
 
-        <Group mt='xl' justify={'end'}>
-          <Button
-            onClick={() => {
-              closeDeleteModal();
-              setFolderForDelete(null);
-            }}
-          >
-            {t('modals.deleteFolder.buttons.cancel')}
-          </Button>
-          <Button
-            onClick={async () => {
-              if (!folderForDelete || !folderForDelete.value) {
-                return;
-              }
-
-              closeDeleteModal();
-              await deleteFolder();
-              setFolderForDelete(null);
-            }}
-          >
-            {t('modals.deleteFolder.buttons.submit')}
-          </Button>
-        </Group>
+          <Group mt='xl' justify={'end'}>
+            <Button
+              onClick={() => {
+                closeDeleteModal();
+                setFolderForDelete(null);
+              }}
+            >
+              {t('modals.deleteFolder.buttons.cancel')}
+            </Button>
+            <Button type={'submit'}>{t('modals.deleteFolder.buttons.submit')}</Button>
+          </Group>
+        </form>
       </Modal>
       <Grid grow>
         <Grid.Col span={3} style={{ height: '100%', paddingRight: '20px' }}>

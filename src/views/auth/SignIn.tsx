@@ -1,4 +1,5 @@
-﻿import {
+﻿import React from 'react';
+import {
   Anchor,
   Button,
   Container,
@@ -40,7 +41,8 @@ export default function SignIn() {
     },
   });
 
-  const signInUser = async () => {
+  const signInUser = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (form.validate().hasErrors) {
       return;
     }
@@ -106,57 +108,57 @@ export default function SignIn() {
         {isApproveMode ? t('signIn.exists', { user: form.values.email }) : t('signIn.desc')}
       </Title>
 
-      <Stack align={'center'} justify={'center'}>
-        {!isApproveMode && (
-          <TextInput
+      <form onSubmit={signInUser}>
+        <Stack align={'center'} justify={'center'}>
+          {!isApproveMode && (
+            <TextInput
+              required
+              type={'text'}
+              label={t('signIn.fields.emailOrUsername.title')}
+              placeholder={'JohnDoe@gmail.com'}
+              value={form.values.email}
+              onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
+              error={form.errors.email && t(form.errors.email.toString())}
+              radius='md'
+              w={'90%'}
+            />
+          )}
+
+          <PasswordInput
             required
-            type={'email'}
-            label={t('signIn.fields.emailOrUsername.title')}
-            placeholder={'JohnDoe@gmail.com'}
-            value={form.values.email}
-            onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
-            error={form.errors.email && t(form.errors.email.toString())}
+            label={t('signIn.fields.password.title')}
+            value={form.values.password}
+            onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
+            error={form.errors.password && t(form.errors.password.toString())}
             radius='md'
             w={'90%'}
           />
-        )}
 
-        <PasswordInput
-          required
-          label={t('signIn.fields.password.title')}
-          value={form.values.password}
-          onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
-          error={form.errors.password && t(form.errors.password.toString())}
-          radius='md'
-          w={'90%'}
-        />
-
-        <Group justify='space-between' w={'90%'}>
-          <Anchor
-            component='button'
-            type='button'
-            c='dimmed'
-            underline={'never'}
-            size={isMobile ? 'lg' : 'xl'}
-            onClick={isApproveMode ? resetEmail : () => navigate(ROUTER_PATH.SIGN_UP)}
-          >
-            {isApproveMode ? t('signIn.anotherAccount') : t('signIn.doNotHaveAccount')}
-            &nbsp;
+          <Group justify='space-between' w={'90%'}>
             <Anchor
               component='button'
               type='button'
+              c='dimmed'
               underline={'never'}
-              c='blue'
               size={isMobile ? 'lg' : 'xl'}
+              onClick={isApproveMode ? resetEmail : () => navigate(ROUTER_PATH.SIGN_UP)}
             >
-              {isApproveMode ? t('signOut.title') : t('signUp.title')}
+              {isApproveMode ? t('signIn.anotherAccount') : t('signIn.doNotHaveAccount')}
+              &nbsp;
+              <Anchor
+                component='button'
+                type='button'
+                underline={'never'}
+                c='blue'
+                size={isMobile ? 'lg' : 'xl'}
+              >
+                {isApproveMode ? t('signOut.title') : t('signUp.title')}
+              </Anchor>
             </Anchor>
-          </Anchor>
-          <Button type='submit' radius='xl' onClick={signInUser}>
-            {t('signIn.title')}
-          </Button>
-        </Group>
-      </Stack>
+            <Button type='submit'>{t('signIn.title')}</Button>
+          </Group>
+        </Stack>
+      </form>
     </Container>
   );
 }
