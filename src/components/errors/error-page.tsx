@@ -25,7 +25,7 @@ export const ErrorPage: FC<ErrorPageProps> = ({ error }) => {
               </Text>
             )}
           </Flex>
-          <Image src={'error-smile.png'} w={'60%'} alt={'error-smile'} />
+          <Image src={'/error.png'} w={'60%'} alt={'error-smile'} />
         </Group>
       </Center>
     </Container>
