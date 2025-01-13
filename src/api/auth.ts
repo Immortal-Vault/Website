@@ -29,9 +29,9 @@ export async function signIn(
 
   switch (response.status) {
     case 400: {
-      if (response.statusText === 'mfa') {
+      if (response.statusText === 'MFA') {
         sendErrorNotification(t('notifications:requiredMfa'));
-      } else if (response.statusText === 'invalidMfa') {
+      } else if (response.statusText === 'INVALID_MFA') {
         sendErrorNotification(t('notifications:incorrectMfaCode'));
       }
       return null;
