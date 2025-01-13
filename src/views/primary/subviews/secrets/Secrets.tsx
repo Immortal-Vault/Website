@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import {
   Button,
   Divider,
@@ -28,6 +28,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { v7 as uuid } from 'uuid';
 import { useForm } from '@mantine/form';
 import { trimText } from '../../../../shared';
+import { PasswordInputWithCapsLock } from '../../../../components';
 
 export const Secrets = () => {
   const { t } = useTranslation('secrets');
@@ -73,13 +74,19 @@ export const Secrets = () => {
     handleSearch(searchQuery);
   }, [secrets]);
 
-  const addSecret = async () => {
+  const addSecret = async (e: FormEvent) => {
+    e.preventDefault();
+    if (addSecretForm.validate().hasErrors) {
+      return;
+    }
     const { folder: folderId, ...values } = addSecretForm.values;
 
     if (values.label.length < 1) {
       return;
     }
 
+    closeAddModal();
+    addSecretForm.reset();
     const secret: TSecret = {
       id: uuid(),
       folders: folderId ? [folderId] : [],
@@ -189,86 +196,81 @@ export const Secrets = () => {
           blur: 3,
         }}
       >
-        <Flex direction={'column'} gap={'md'}>
-          <TextInput
-            label={t('fields.label.title')}
-            value={addSecretForm.values.label}
-            onChange={(event) => addSecretForm.setFieldValue('label', event.currentTarget.value)}
-            error={addSecretForm.errors.label && t(addSecretForm.errors.label.toString())}
-          />
-          <TextInput
-            label={t('fields.username.title')}
-            value={addSecretForm.values.username}
-            onChange={(event) => addSecretForm.setFieldValue('username', event.currentTarget.value)}
-          />
-          <TextInput
-            label={t('fields.email.title')}
-            value={addSecretForm.values.email}
-            onChange={(event) => addSecretForm.setFieldValue('email', event.currentTarget.value)}
-            type={'email'}
-          />
-          <TextInput
-            label={t('fields.password.title')}
-            type={'password'}
-            value={addSecretForm.values.password}
-            onChange={(event) => addSecretForm.setFieldValue('password', event.currentTarget.value)}
-          />
-          <TextInput
-            label={t('fields.website.title')}
-            value={addSecretForm.values.website}
-            onChange={(event) => addSecretForm.setFieldValue('website', event.currentTarget.value)}
-          />
-          <TextInput
-            label={t('fields.phone.title')}
-            type={'phone'}
-            value={addSecretForm.values.phone}
-            onChange={(event) => addSecretForm.setFieldValue('phone', event.currentTarget.value)}
-          />
-          <Textarea
-            label={t('fields.notes.title')}
-            value={addSecretForm.values.notes}
-            onChange={(event) => addSecretForm.setFieldValue('notes', event.currentTarget.value)}
-          />
-
-          {folders.length > 0 && (
-            <Select
-              label={t('fields.folder.title')}
-              data={folders.map((f) => ({ value: f.id, label: f.label }))}
-              value={addSecretForm.values.folder}
-              onChange={(value) => {
-                if (!value) {
-                  return;
-                }
-
-                addSecretForm.setFieldValue('folder', value);
-              }}
+        <form onSubmit={addSecret}>
+          <Flex direction={'column'} gap={'md'}>
+            <TextInput
+              label={t('fields.label.title')}
+              value={addSecretForm.values.label}
+              onChange={(event) => addSecretForm.setFieldValue('label', event.currentTarget.value)}
+              error={addSecretForm.errors.label && t(addSecretForm.errors.label.toString())}
             />
-          )}
-        </Flex>
-
-        <Group mt='xl' justify={'end'}>
-          <Button
-            onClick={() => {
-              closeAddModal();
-              addSecretForm.reset();
-            }}
-          >
-            {t('modals.addSecret.buttons.cancel')}
-          </Button>
-          <Button
-            onClick={() => {
-              if (addSecretForm.validate().hasErrors) {
-                return;
+            <TextInput
+              label={t('fields.username.title')}
+              value={addSecretForm.values.username}
+              onChange={(event) =>
+                addSecretForm.setFieldValue('username', event.currentTarget.value)
               }
+            />
+            <TextInput
+              label={t('fields.email.title')}
+              value={addSecretForm.values.email}
+              onChange={(event) => addSecretForm.setFieldValue('email', event.currentTarget.value)}
+              type={'email'}
+            />
+            <PasswordInputWithCapsLock
+              label={t('fields.password.title')}
+              value={addSecretForm.values.password}
+              onChange={(event) =>
+                addSecretForm.setFieldValue('password', event.currentTarget.value)
+              }
+            />
+            <TextInput
+              label={t('fields.website.title')}
+              value={addSecretForm.values.website}
+              onChange={(event) =>
+                addSecretForm.setFieldValue('website', event.currentTarget.value)
+              }
+            />
+            <TextInput
+              label={t('fields.phone.title')}
+              type={'phone'}
+              value={addSecretForm.values.phone}
+              onChange={(event) => addSecretForm.setFieldValue('phone', event.currentTarget.value)}
+            />
+            <Textarea
+              label={t('fields.notes.title')}
+              value={addSecretForm.values.notes}
+              onChange={(event) => addSecretForm.setFieldValue('notes', event.currentTarget.value)}
+            />
 
-              addSecret();
-              closeAddModal();
-              addSecretForm.reset();
-            }}
-          >
-            {t('modals.addSecret.buttons.submit')}
-          </Button>
-        </Group>
+            {folders.length > 0 && (
+              <Select
+                label={t('fields.folder.title')}
+                data={folders.map((f) => ({ value: f.id, label: f.label }))}
+                value={addSecretForm.values.folder}
+                onChange={(value) => {
+                  if (!value) {
+                    return;
+                  }
+
+                  addSecretForm.setFieldValue('folder', value);
+                }}
+              />
+            )}
+          </Flex>
+
+          <Group mt='xl' justify={'end'}>
+            <Button
+              onClick={() => {
+                closeAddModal();
+                addSecretForm.reset();
+              }}
+            >
+              {t('modals.addSecret.buttons.cancel')}
+            </Button>
+            <Button type={'submit'}>{t('modals.addSecret.buttons.submit')}</Button>
+          </Group>
+        </form>
       </Modal>
       <Modal
         centered={true}

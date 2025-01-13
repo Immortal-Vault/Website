@@ -14,6 +14,7 @@
   },
   "needConnectVault": "You need to connect the vault",
   "copied": "Copied",
+  "outdatedClient": "Website is outdated, please refresh page",
   "setupMfaFailed": "Failed to set up multi-factor authentication. Please try again.",
   "requiredMfa": "Multi-factor authentication is required.",
   "incorrectMfaCode": "The provided multi-factor authentication code is incorrect.",
