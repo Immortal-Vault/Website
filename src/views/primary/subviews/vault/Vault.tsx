@@ -7,7 +7,6 @@ import {
   Flex,
   Group,
   Image,
-  Input,
   LoadingOverlay,
   Modal,
   Text,
@@ -20,7 +19,7 @@ import { useAuth, useEnvVars, useGoogleDrive } from '../../../../stores';
 import { encrypt, SECRET_FILE_VERSION } from '../../../../shared';
 import { useState } from 'react';
 import { TSecretFile } from '../../../../types';
-import { Footer, PrimaryHeader } from '../../../../components';
+import { Footer, PasswordInputWithCapsLock, PrimaryHeader } from '../../../../components';
 
 export const Vault = (): JSX.Element => {
   const [loaderVisible, setLoaderState] = useDisclosure(false);
@@ -156,18 +155,24 @@ export const Vault = (): JSX.Element => {
             blur: 3,
           }}
         >
-          <Input type={'password'} onChange={(e) => setSecretPassword(e.target.value)} />
-          <Group mt='xl' justify={'end'}>
-            <Button
-              disabled={secretPassword.length < 1}
-              onClick={() => {
-                closeSecretPasswordModal();
-                googleLogin();
-              }}
-            >
-              {t('modals.masterPassword.buttons.submit')}
-            </Button>
-          </Group>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              closeSecretPasswordModal();
+              googleLogin();
+            }}
+          >
+            <PasswordInputWithCapsLock
+              isModal
+              value={secretPassword}
+              onChange={(e) => setSecretPassword(e.target.value)}
+            />
+            <Group mt='xl' justify={'end'}>
+              <Button type={'submit'} disabled={secretPassword.length < 1}>
+                {t('modals.masterPassword.buttons.submit')}
+              </Button>
+            </Group>
+          </form>
         </Modal>
         <Center>
           <Flex

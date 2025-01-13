@@ -1,6 +1,7 @@
 ﻿import {
   createContext,
   Dispatch,
+  FormEvent,
   ReactNode,
   SetStateAction,
   useContext,
@@ -14,7 +15,8 @@ import { useTranslation } from 'react-i18next';
 import { LOCAL_STORAGE, sendNotification } from '../shared';
 import { useEnvVars } from './';
 import { useDisclosure, useInterval } from '@mantine/hooks';
-import { Button, Group, Input, Modal } from '@mantine/core';
+import { Button, Group, Modal } from '@mantine/core';
+import { PasswordInputWithCapsLock } from '../components';
 
 export interface AuthContextType {
   authState: EAuthState;
@@ -218,6 +220,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     [authState, authEmail, authUsername, secretPassword, secretPasswordModalState, is12HoursFormat],
   );
 
+  const auth = (event: FormEvent) => {
+    event.preventDefault();
+    if (!secretPasswordModalState) {
+      return;
+    }
+    setSecretPassword(passwordInput);
+    if (modalSubmitCallback) {
+      modalSubmitCallback(passwordInput);
+    }
+  };
+
   return (
     <>
       <Modal
@@ -234,31 +247,25 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           blur: 3,
         }}
       >
-        <Input type={'password'} onChange={(e) => setPasswordInput(e.target.value)} />
+        <form onSubmit={auth}>
+          <PasswordInputWithCapsLock isModal onChange={(e) => setPasswordInput(e.target.value)} />
 
-        <Group mt='xl' justify={'end'}>
-          <Button
-            onClick={() => {
-              if (modalCloseCallback) {
-                modalCloseCallback();
-              }
-              closeSecretPasswordModal();
-            }}
-          >
-            {t('vault:modals.masterPassword.buttons.cancel')}
-          </Button>
-          <Button
-            disabled={isFetchInProgress}
-            onClick={() => {
-              setSecretPassword(passwordInput);
-              if (modalSubmitCallback) {
-                modalSubmitCallback(passwordInput);
-              }
-            }}
-          >
-            {t('vault:modals.masterPassword.buttons.submit')}
-          </Button>
-        </Group>
+          <Group mt='xl' justify={'end'}>
+            <Button
+              onClick={() => {
+                if (modalCloseCallback) {
+                  modalCloseCallback();
+                }
+                closeSecretPasswordModal();
+              }}
+            >
+              {t('vault:modals.masterPassword.buttons.cancel')}
+            </Button>
+            <Button disabled={isFetchInProgress} type={'submit'}>
+              {t('vault:modals.masterPassword.buttons.submit')}
+            </Button>
+          </Group>
+        </form>
       </Modal>
       <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
     </>
