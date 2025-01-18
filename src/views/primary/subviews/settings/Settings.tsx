@@ -2,10 +2,11 @@ import { useTranslation } from 'react-i18next';
 import { Center, Flex, Title } from '@mantine/core';
 import {
   Footer,
-  PrimaryHeader,
   LanguageSelector,
+  PrimaryHeader,
   TimeFormatSelector,
 } from '../../../../components';
+import { MfaManager } from './MfaManager.tsx';
 
 export const Settings = (): JSX.Element => {
   const { t } = useTranslation('settings');
@@ -19,6 +20,7 @@ export const Settings = (): JSX.Element => {
             <Title order={1} mb={'10px'}>
               {t('main.header')}
             </Title>
+            <MfaManager />
             <LanguageSelector settings />
             <TimeFormatSelector />
           </Flex>

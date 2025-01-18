@@ -1,6 +1,6 @@
 import { customFetch } from './customFetch.ts';
 import { TFunction } from 'i18next';
-import { TEnvVars } from '../types';
+import { EAuthState, TEnvVars } from '../types';
 import { sendErrorNotification } from '../shared';
 import { ensureAuthorized } from './ensureAuthorized.ts';
 import { AuthContextType } from '../stores';
@@ -11,7 +11,7 @@ export async function signIn(
   mfaCode: string | null | undefined,
   envs: TEnvVars | undefined,
   t: TFunction,
-): Promise<Response | null> {
+): Promise<Response | EAuthState | null> {
   const response = await customFetch(
     `${envs?.API_SERVER_URL}/auth/signIn`,
     JSON.stringify({ email: email.toLowerCase(), password, mfaCode }),
@@ -34,7 +34,8 @@ export async function signIn(
       } else if (response.statusText === 'INVALID_MFA') {
         sendErrorNotification(t('notifications:incorrectMfaCode'));
       }
-      return null;
+
+      return EAuthState.MfaRequired;
     }
     case 404: {
       sendErrorNotification(t('notifications:incorrectLoginOrPassword'));

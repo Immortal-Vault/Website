@@ -6,7 +6,13 @@ import SignIn from './views/auth/SignIn.tsx';
 import { ToastContainer, Zoom } from 'react-toastify';
 import { ErrorBoundary, ErrorPage, NonAuthorizedRoute, ProtectedRoute } from './components';
 import { useMediaQuery } from '@mantine/hooks';
-import { AuthProvider, EnvVarsProvider, GoogleDriveProvider, SecretsProvider } from './stores';
+import {
+  AuthProvider,
+  EnvVarsProvider,
+  GoogleDriveProvider,
+  MfaProvider,
+  SecretsProvider,
+} from './stores';
 import Root from './views/root/Root.tsx';
 import { PrivacyPolicy } from './views/root/privacy/PrivacyPolicy.tsx';
 import { Suspense } from 'react';
@@ -145,9 +151,11 @@ export default function App() {
           <AuthProvider>
             <GoogleDriveProvider>
               <SecretsProvider>
-                <Suspense fallback={null}>
-                  <RouterProvider router={router} />
-                </Suspense>
+                <MfaProvider>
+                  <Suspense fallback={null}>
+                    <RouterProvider router={router} />
+                  </Suspense>
+                </MfaProvider>
               </SecretsProvider>
             </GoogleDriveProvider>
           </AuthProvider>

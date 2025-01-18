@@ -1,10 +1,22 @@
 import { createContext, ReactNode, useContext, useMemo, useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
-import { Button, Center, Group, Image, Modal, Stack, Text, TextInput } from '@mantine/core';
+import {
+  Button,
+  Center,
+  Divider,
+  Group,
+  Image,
+  Modal,
+  Stack,
+  Text,
+  TextInput,
+} from '@mantine/core';
 import { disableMfa, enableMfa, setupMfa, validateMfa } from '../api/mfa';
 import { useTranslation } from 'react-i18next';
 import { useEnvVars } from './';
 import QRCode from 'qrcode';
+import { LOCAL_STORAGE, sendErrorNotification } from '../shared';
+import { getCopyButton } from '../components';
 
 export enum MfaModalState {
   SETUP = 'setup',
@@ -15,10 +27,14 @@ export enum MfaModalState {
 }
 
 export interface MfaContextType {
+  isMfaEnabled: boolean;
   isMfaModalOpen: boolean;
+  totpCode: string | null;
   mfaQrCode: string | null;
   recoveryCodes: string[] | null;
   modalState: MfaModalState;
+  setTotpCode: (value: string | null) => void;
+  setMfaEnabled: (value: boolean) => void;
   openMfaModalWithState: (
     state: MfaModalState,
     submitCallback?: (data: string) => void,
@@ -27,7 +43,7 @@ export interface MfaContextType {
   closeMfaModal: () => void;
   handleSetupMfa: () => Promise<void>;
   handleEnableMfa: (totpCode: string) => Promise<void>;
-  handleDisableMfa: (password: string, totpCode: string) => Promise<void>;
+  handleDisableMfa: (totpCode: string) => Promise<void>;
   handleValidateMfa: (totpCode: string) => Promise<boolean>;
 }
 
@@ -38,15 +54,20 @@ interface MfaProviderProps {
 }
 
 export const MfaProvider = ({ children }: MfaProviderProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('auth');
   const { envs } = useEnvVars();
   const [isMfaModalOpen, { open: openMfaModal, close: closeMfaModal }] = useDisclosure(false);
   const [mfaQrCode, setMfaQrCode] = useState<string | null>(null);
   const [mfa, setMfa] = useState<string | null>(null);
   const [recoveryCodes, setRecoveryCodes] = useState<string[] | null>(null);
   const [modalState, setModalState] = useState<MfaModalState>(MfaModalState.NONE);
-  const [totpCode, setTotpCode] = useState<string>(''); // Добавлено поле для ввода TOTP
-  const [modalSubmitCallback, setModalSubmit] = useState<((data: string) => void) | null>(null);
+  const [totpCode, setTotpCode] = useState<string | null>(null);
+  const [isMfaEnabled, setIsMfaEnabled] = useState<boolean>(
+    localStorage.getItem(LOCAL_STORAGE.MFA_ENABLED) === 'true',
+  );
+  const [modalSubmitCallback, setModalSubmit] = useState<((data: string | null) => void) | null>(
+    null,
+  );
   const [modalCloseCallback, setModalClose] = useState<(() => void) | null>(null);
 
   const openMfaModalWithState = (
@@ -57,7 +78,8 @@ export const MfaProvider = ({ children }: MfaProviderProps) => {
     setModalState(state);
     setModalSubmit(() => submitCallback || null);
     setModalClose(() => closeCallback || null);
-    setTotpCode('');
+    setTotpCode(null);
+    setRecoveryCodes(null);
     openMfaModal();
   };
 
@@ -66,12 +88,32 @@ export const MfaProvider = ({ children }: MfaProviderProps) => {
       const secret = await setupMfa(envs, t);
       setMfa(secret);
 
-      if (secret) {
-        const otpAuthUrl = `otpauth://totp/${import.meta.env.VITE_APP_NAME}?secret=${secret}&issuer=${encodeURIComponent(import.meta.env.VITE_APP_NAME)}`;
-        const qr = await QRCode.toDataURL(otpAuthUrl, { errorCorrectionLevel: 'H' });
-        setMfaQrCode(qr);
-        openMfaModalWithState(MfaModalState.SETUP);
+      if (!secret) {
+        return;
       }
+
+      const identifier = localStorage.getItem(LOCAL_STORAGE.LAST_EMAIL);
+      const otpAuthUrl = `otpauth://totp/${encodeURIComponent(import.meta.env.VITE_APP_NAME)}:${identifier}?secret=${secret}&issuer=${encodeURIComponent(import.meta.env.VITE_APP_NAME)}`;
+      const qr = await QRCode.toDataURL(otpAuthUrl, { errorCorrectionLevel: 'H' });
+
+      setMfaQrCode(qr);
+      openMfaModalWithState(MfaModalState.SETUP, (code: string | null) => {
+        if (!code) {
+          return sendErrorNotification(t('notifications:incorrectMfaCode'));
+        }
+
+        enableMfa(code, envs, t).then((result) => {
+          if (!result) {
+            return;
+          }
+
+          setRecoveryCodes(result);
+          setMfaEnabled(true);
+          setModalSubmit(null);
+          setMfa(null);
+          setModalState(MfaModalState.ENABLE);
+        });
+      });
     } catch (error) {
       console.error('Error during MFA setup:', error);
     }
@@ -85,25 +127,44 @@ export const MfaProvider = ({ children }: MfaProviderProps) => {
     }
   };
 
-  const handleDisableMfa = async (password: string, totpCode: string): Promise<void> => {
-    const result = await disableMfa(password, totpCode, envs, t);
-    if (result) {
-      setMfaQrCode(null);
-      setRecoveryCodes(null);
-      closeMfaModal();
+  const handleDisableMfa = async (totpCode: string): Promise<void> => {
+    const result = await disableMfa(totpCode, envs, t);
+    if (!result) {
+      return;
     }
+
+    setMfaQrCode(null);
+    setMfaEnabled(false);
+    setRecoveryCodes(null);
+    closeMfaModal();
   };
 
   const handleValidateMfa = async (totpCode: string): Promise<boolean> => {
-    return await validateMfa(totpCode, envs, t);
+    const result = await validateMfa(totpCode, envs, t);
+    if (!result) {
+      return result;
+    }
+
+    setTotpCode(null);
+    closeMfaModal();
+    return result;
+  };
+
+  const setMfaEnabled = (value: boolean): void => {
+    setIsMfaEnabled(value);
+    localStorage.setItem(LOCAL_STORAGE.MFA_ENABLED, JSON.stringify(value));
   };
 
   const contextValue = useMemo(
     () => ({
       isMfaModalOpen,
+      isMfaEnabled,
+      totpCode,
       mfaQrCode,
       recoveryCodes,
       modalState,
+      setTotpCode,
+      setMfaEnabled,
       openMfaModalWithState,
       closeMfaModal,
       handleSetupMfa,
@@ -111,7 +172,7 @@ export const MfaProvider = ({ children }: MfaProviderProps) => {
       handleDisableMfa,
       handleValidateMfa,
     }),
-    [isMfaModalOpen, mfaQrCode, recoveryCodes, modalState],
+    [isMfaModalOpen, mfaQrCode, recoveryCodes, modalState, isMfaEnabled, totpCode],
   );
 
   return (
@@ -123,40 +184,48 @@ export const MfaProvider = ({ children }: MfaProviderProps) => {
           closeMfaModal();
           modalCloseCallback?.();
         }}
-        title={t(`mfa:modalTitle.${modalState}`)}
+        title={t(`mfa.modalTitle.${modalState}`)}
         centered
       >
-        <Center>
+        <Group align={'center'} justify='center'>
           {modalState === MfaModalState.SETUP && mfa && mfaQrCode && (
             <Stack>
-              <Image src={mfaQrCode} alt={t('mfa:qrCodeAlt')} />
-              <Text>{t('mfa:scanQrCode')}</Text>
-              <Text>{t('mfa:secretForManual', { mfa })}</Text>
+              <Text>{t('mfa.scanQrCode')}</Text>
+              <Center>
+                <Image h={192} w={192} src={mfaQrCode} alt={t('mfa.qrCodeAlt')} />
+              </Center>
             </Stack>
           )}
           {(modalState === MfaModalState.SETUP ||
             modalState === MfaModalState.DISABLE ||
             modalState === MfaModalState.VALIDATE) && (
             <Stack>
-              <Text>{t(`mfa:${modalState}Instruction`)}</Text>
+              <Text>{t(`mfa.${modalState}Instruction`)}</Text>
+              {modalState === MfaModalState.SETUP && mfa && (
+                <>
+                  <Divider />
+                  <Group>
+                    <Text>{mfa}</Text>
+                    {getCopyButton(mfa, t)}
+                  </Group>
+                </>
+              )}
               <TextInput
-                value={totpCode}
+                value={totpCode ?? ''}
                 onChange={(e) => setTotpCode(e.currentTarget.value)}
-                placeholder={t('mfa:totpPlaceholder')}
-                label={t('mfa:totpLabel')}
+                placeholder={t('mfa.totpPlaceholder')}
+                label={t('mfa.totpLabel')}
               />{' '}
-              <Group mt='md'>
+              <Group mt='xl' justify={'end'}>
                 <Button
+                  variant={'outline'}
+                  color={'red'}
                   onClick={() => {
-                    if (!modalCloseCallback) {
-                      throw Error('mfa:callbackEmpty');
-                    }
-
-                    modalCloseCallback();
+                    modalCloseCallback?.();
                     closeMfaModal();
                   }}
                 >
-                  {t('mfa:closeButton')}
+                  {t('mfa.cancelButton')}
                 </Button>
                 <Button
                   onClick={() => {
@@ -164,20 +233,20 @@ export const MfaProvider = ({ children }: MfaProviderProps) => {
                   }}
                   disabled={!totpCode}
                 >
-                  {t('mfa:submitButton')}
+                  {t('mfa.submitButton')}
                 </Button>
               </Group>
             </Stack>
           )}
           {modalState === MfaModalState.ENABLE && recoveryCodes && (
             <Stack>
-              <Text>{t('mfa:recoveryCodesInstruction')}</Text>
+              <Text>{t('mfa.recoveryCodesInstruction')}</Text>
               <Stack gap='xs'>
                 {recoveryCodes.map((code, index) => (
                   <Text key={index}>{code}</Text>
                 ))}
               </Stack>
-              <Group>
+              <Group mt='xl' justify={'end'}>
                 <Button
                   onClick={() => {
                     const blob = new Blob([recoveryCodes.join('\n')], { type: 'text/plain' });
@@ -188,7 +257,7 @@ export const MfaProvider = ({ children }: MfaProviderProps) => {
                     URL.revokeObjectURL(link.href);
                   }}
                 >
-                  {t('mfa:downloadButton')}
+                  {t('mfa.downloadButton')}
                 </Button>
                 <Button
                   onClick={() => {
@@ -196,12 +265,12 @@ export const MfaProvider = ({ children }: MfaProviderProps) => {
                     closeMfaModal();
                   }}
                 >
-                  {t('mfa:confirmButton')}
+                  {t('mfa.confirmButton')}
                 </Button>
               </Group>
             </Stack>
           )}
-        </Center>
+        </Group>
       </Modal>
     </MfaContext.Provider>
   );
@@ -212,6 +281,7 @@ export const useMfa = (): MfaContextType => {
   if (!context) {
     throw new Error('useMfa must be used within a MfaProvider');
   }
+
   return context;
 };
 

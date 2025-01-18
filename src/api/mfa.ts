@@ -4,7 +4,7 @@ import { TEnvVars } from '../types';
 import { sendErrorNotification } from '../shared';
 
 export async function setupMfa(envs: TEnvVars | undefined, t: TFunction): Promise<string | null> {
-  const response = await customFetch(`${envs?.API_SERVER_URL}/api/mfa/setup`, null, 'POST', t);
+  const response = await customFetch(`${envs?.API_SERVER_URL}/mfa/setup`, null, 'POST', t);
 
   if (!response) {
     return null;
@@ -33,7 +33,7 @@ export async function enableMfa(
   t: TFunction,
 ): Promise<string[] | null> {
   const response = await customFetch(
-    `${envs?.API_SERVER_URL}/api/mfa/enable`,
+    `${envs?.API_SERVER_URL}/mfa/enable`,
     JSON.stringify({ totpCode }),
     'POST',
     t,
@@ -65,14 +65,13 @@ export async function enableMfa(
 }
 
 export async function disableMfa(
-  password: string,
   totpCode: string,
   envs: TEnvVars | undefined,
   t: TFunction,
 ): Promise<boolean> {
   const response = await customFetch(
-    `${envs?.API_SERVER_URL}/api/mfa/disable`,
-    JSON.stringify({ password, totpCode }),
+    `${envs?.API_SERVER_URL}/mfa/disable`,
+    JSON.stringify({ totpCode }),
     'POST',
     t,
   );
@@ -107,7 +106,7 @@ export async function validateMfa(
   t: TFunction,
 ): Promise<boolean> {
   const response = await customFetch(
-    `${envs?.API_SERVER_URL}/api/mfa/validate`,
+    `${envs?.API_SERVER_URL}/mfa/validate`,
     JSON.stringify({ totpCode }),
     'POST',
     t,
