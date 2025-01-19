@@ -1,4 +1,4 @@
-﻿import React from 'react';
+﻿import React, { useState } from 'react';
 import {
   Anchor,
   Button,
@@ -13,11 +13,17 @@ import {
 import { useForm } from '@mantine/form';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { useNavigate } from 'react-router-dom';
-import { LOCAL_STORAGE, ROUTER_PATH, sendSuccessNotification } from '../../shared';
+import {
+  LOCAL_STORAGE,
+  ROUTER_PATH,
+  sendErrorNotification,
+  sendSuccessNotification,
+} from '../../shared';
 import { useTranslation } from 'react-i18next';
-import { useAuth, useEnvVars } from '../../stores';
+import { useAuth, useEnvVars, useMfa } from '../../stores';
 import { signIn } from '../../api';
 import { PasswordInputWithCapsLock } from '../../components';
+import { EAuthState } from '../../types';
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -25,8 +31,10 @@ export default function SignIn() {
   const isMobile = useMediaQuery('(max-width: 768px)');
   const { envs } = useEnvVars();
   const { authSignIn } = useAuth();
+  const { totpCode, setTotpCode, setMfaEnabled, isMfaEnabled } = useMfa();
 
   const [loaderVisible, setLoaderState] = useDisclosure(false);
+  const [mfaRequired, setMfaRequired] = useState<boolean>(false);
 
   const initEmail = localStorage.getItem(LOCAL_STORAGE.LAST_EMAIL);
   const isApproveMode = !!initEmail;
@@ -47,16 +55,32 @@ export default function SignIn() {
       return;
     }
 
+    if (mfaRequired && (!totpCode || totpCode.length === 0 || totpCode.length !== 6)) {
+      sendErrorNotification(t('notifications:incorrectMfaCode'));
+      return;
+    }
+
     setLoaderState.open();
     const { email, password } = form.values;
 
-    const response = await signIn(email, password, envs, t);
+    const response = await signIn(email, password, totpCode, envs, t);
     if (!response) {
       setLoaderState.close();
       return;
     }
 
-    const jsonResponse = await response.json();
+    if (response === EAuthState.MfaRequired) {
+      setMfaRequired(true);
+      setMfaEnabled(true);
+      setLoaderState.close();
+      return;
+    } else if (!totpCode && isMfaEnabled) {
+      setMfaEnabled(false);
+    } else if (totpCode) {
+      setTotpCode(null);
+    }
+
+    const jsonResponse = await (response as Response).json();
     localStorage.setItem(LOCAL_STORAGE.LAST_EMAIL, email);
 
     const localization = jsonResponse.localization;
@@ -69,9 +93,8 @@ export default function SignIn() {
 
     sendSuccessNotification(t('notifications:successful'));
     authSignIn(email, username, localization, is12Hours);
-    setLoaderState.close();
-
     navigate(ROUTER_PATH.MENU);
+    setMfaRequired(false);
   };
 
   const resetEmail = () => {
@@ -134,6 +157,25 @@ export default function SignIn() {
             style={{ flex: 1 }}
             w={'90%'}
           />
+
+          {mfaRequired && (
+            <TextInput
+              required
+              placeholder={t('auth:mfa.totpPlaceholder')}
+              label={t('auth:mfa.totpLabel')}
+              value={totpCode!}
+              radius='md'
+              style={{ flex: 1 }}
+              w={'90%'}
+              onChange={(event) => {
+                if (totpCode && totpCode.length > 6) {
+                  return;
+                }
+
+                setTotpCode(event.currentTarget.value);
+              }}
+            />
+          )}
 
           <Group justify='space-between' w={'90%'}>
             <Anchor

@@ -15,7 +15,7 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import { useGoogleLogin } from '@react-oauth/google';
 import { signInGoogle, signOutGoogle, uploadSecretFile } from '../../../../api';
-import { useAuth, useEnvVars, useGoogleDrive } from '../../../../stores';
+import { MfaModalState, useAuth, useEnvVars, useGoogleDrive, useMfa } from '../../../../stores';
 import { encrypt, SECRET_FILE_VERSION } from '../../../../shared';
 import { useState } from 'react';
 import { TSecretFile } from '../../../../types';
@@ -32,9 +32,24 @@ export const Vault = (): JSX.Element => {
     useDisclosure(false);
   const { t } = useTranslation('vault');
   const { envs } = useEnvVars();
+  const { isMfaEnabled, openMfaModalWithState, handleValidateMfa } = useMfa();
   const authContext = useAuth();
   const { googleDriveState, googleDriveEmail, setGoogleDriveState, setGoogleDriveEmail } =
     useGoogleDrive();
+
+  const signOutWithMfa = async (code: string): Promise<void> => {
+    if (!code) {
+      return;
+    }
+
+    handleValidateMfa(code).then((result) => {
+      if (!result) {
+        return;
+      }
+
+      openKeepDataModal();
+    });
+  };
 
   const signOutGoogleButton = async (keepData: boolean) => {
     setLoaderState.open();
@@ -98,7 +113,18 @@ export const Vault = (): JSX.Element => {
 
   const getGoogleStateButton = (state: boolean) => {
     return state ? (
-      <Button onClick={openKeepDataModal}>{t('google.signOut')}</Button>
+      <Button
+        onClick={() => {
+          if (isMfaEnabled) {
+            openMfaModalWithState(MfaModalState.VALIDATE, signOutWithMfa);
+            return;
+          }
+
+          openKeepDataModal();
+        }}
+      >
+        {t('google.signOut')}
+      </Button>
     ) : (
       <Button onClick={openSecretPasswordModel}>{t('google.signIn')}</Button>
     );

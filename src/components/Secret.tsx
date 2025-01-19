@@ -35,6 +35,25 @@ import { useTranslation } from 'react-i18next';
 import { MdOutlineAlternateEmail } from 'react-icons/md';
 import { getDateTimeFormatOptions, sendSuccessNotification, trimText } from '../shared';
 import { PasswordInputWithCapsLock } from './PasswordInputWithCapsLock.tsx';
+import { TFunction } from 'i18next';
+
+export const getCopyButton = (copy: string, t: TFunction<string, undefined>) => {
+  return (
+    <CopyButton value={copy} timeout={500}>
+      {({ copied, copy }) => (
+        <UnstyledButton
+          size='xs'
+          onClick={() => {
+            copy();
+            sendSuccessNotification(t('notifications:copied'));
+          }}
+        >
+          <FaCopy size={18} color={copied ? '#3fa2ed' : 'gray'} />
+        </UnstyledButton>
+      )}
+    </CopyButton>
+  );
+};
 
 export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<void> }) => {
   const { folders, secrets, saveSecrets, setSelectedFolder } = useSecrets();
@@ -90,24 +109,6 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
     setIsEditing(false);
   };
 
-  const getCopyButton = (copy: string) => {
-    return (
-      <CopyButton value={copy} timeout={500}>
-        {({ copied, copy }) => (
-          <UnstyledButton
-            size='xs'
-            onClick={() => {
-              copy();
-              sendSuccessNotification(t('notifications:copied'));
-            }}
-          >
-            <FaCopy size={18} color={copied ? '#3fa2ed' : 'gray'} />
-          </UnstyledButton>
-        )}
-      </CopyButton>
-    );
-  };
-
   const renderField = (
     icon: ReactNode,
     label: string,
@@ -131,7 +132,7 @@ export const Secret = (props: { sourceSecret: TSecret; delete: () => Promise<voi
       </Grid.Col>
       <Grid.Col span={1}>
         <Flex direction={'row'} gap={'sm'}>
-          {copyable && getCopyButton(value)}
+          {copyable && getCopyButton(value, t)}
           {isPassword && (
             <UnstyledButton size='xs' onClick={() => setShowPassword(!showPassword)}>
               {showPassword ? (
